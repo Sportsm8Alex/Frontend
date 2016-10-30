@@ -2,4 +2,15 @@
     <string name="app_name">Welcome</string>
     <string name="my_app">This is my app!</string>
     <string name="date"></string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sportart">Sportart</string>
+    <string-array name="names">
+        <item>Beachen</item>
+        <item>Fußball</item>
+        <item>Laufen</item>
+
+    </string-array>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_sportart2">Sportart2</string>
+    <string name="title_activity_einladungen">Einladungen</string>
 </resources>

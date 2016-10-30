@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="ok"
+        android:onClick="ok"/>
+
+    <Button
+        android:id="@+id/button_beginn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="32dp"
+        android:layout_centerVertical="true"
+        android:onClick="beginn"
+        android:text="Beginn"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+
+    <Button
+        android:id="@+id/button_ende"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="32dp"
+        android:layout_centerVertical="true"
+        android:onClick="beginn"
+        android:text="Ende"
+        style="@style/Widget.AppCompat.Button.Borderless" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Datum"
+        android:onClick="datum"
+        android:layout_centerHorizontal="true"
+
+        />
+
+</RelativeLayout>

@@ -38,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_screen);
+        setContentView(R.layout.register_activity);
         username = (EditText)findViewById(R.id.eUsername);
         password = (EditText)findViewById(R.id.ePassword);
         email = (EditText)findViewById((R.id.ePassword));
@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params){
             try{
-                url = new URL("http://10.0.2.2/android_user_api/app0/index.php");
+                url = new URL("http://10.0.2.2/android_user_api/Backend/index.php");
             }
             catch(MalformedURLException e){
                 e.printStackTrace();

@@ -16,6 +16,28 @@
 
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
+        <activity
+            android:name=".Sportart"
+            android:label="@string/title_activity_sportart"
+            android:parentActivityName=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.alex.helloworld.Home" />
+        </activity>
+
+        <activity
+            android:name=".Einladungen"
+            android:label="@string/title_activity_einladungen"
+            android:parentActivityName=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.alex.helloworld.Home" />
+        </activity>
+        <activity android:name=".Pop"
+            android:theme="@style/AppTheme.Custom1">
+        </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
