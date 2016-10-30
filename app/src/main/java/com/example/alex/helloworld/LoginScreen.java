@@ -175,7 +175,7 @@ public class LoginScreen extends AppCompatActivity{
             progressDialog.dismiss();
 
             if(success.equalsIgnoreCase("1")){
-                Intent intent = new Intent(LoginScreen.this, MainActivity.class);
+                Intent intent = new Intent(LoginScreen.this, Home.class);
                 startActivity(intent);
                 LoginScreen.this.finish();
 

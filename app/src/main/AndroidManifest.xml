@@ -8,6 +8,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginScreen">
+        </activity>
+
+        <activity android:name=".Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -16,6 +19,7 @@
 
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
+
         <activity
             android:name=".Sportart"
             android:label="@string/title_activity_sportart"
