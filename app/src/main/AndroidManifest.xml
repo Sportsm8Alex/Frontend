@@ -8,10 +8,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".MainActivity"></activity>
@@ -38,6 +34,13 @@
         <activity android:name=".Pop"
             android:theme="@style/AppTheme.Custom1">
         </activity>
+        <activity android:name=".DisplayWeekActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
