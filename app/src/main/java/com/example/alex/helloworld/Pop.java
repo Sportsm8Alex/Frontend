@@ -6,87 +6,184 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Calendar;
 
 /**
  * Created by Korbi on 22.10.2016.
  */
 
-public class Pop extends Activity {
-    Button button_stdp;
-    static final int DIALOG_ID = 0;
-    static final int DIALOG_ID2 = 1;
-    int hour_a = 0;
-    int minute_a = 0;
-    int year_a;
-    int month_a;
-    int day_a;
+public class Pop extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    int hour_a, minute_a, day_a, month_a, year_a, numP;
+    int sportart_ID = -1;
     Button b;
+    Boolean start, end, date, num, ea;
+    Project project;
+    String extraInfo;
 
-
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup1);
-
+        project = new Project();
+        start = false;
+        end = false;
+        date = false;
+        ea = false;
+        num = false;
+        EditText extraInfos;
+        //Popup größe
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout((int)(width*.8),(int)(height*.3));
+        getWindow().setLayout((int) (width * .8), (int) (width * .8));
+        //sportartID
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            sportart_ID = b.getInt("sportart");
+        }
+        project.id = sportart_ID;
 
-    }
-
-    protected TimePickerDialog.OnTimeSetListener kTimePickerListner = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            hour_a = hourOfDay;
-            minute_a=minute;
-            b.setText(hour_a+":"+minute_a);
-            if(minute_a<10){
-                b.setText(hour_a+":0"+minute_a);
+        extraInfos = (EditText) findViewById(R.id.editText_additional);
+        extraInfos.setSingleLine();
+        extraInfos.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-        }
-    };
 
-    protected DatePickerDialog.OnDateSetListener kDateTimeListner = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            year_a = year;
-            month_a = month+1;
-            day_a = dayOfMonth;
-            b.setText(day_a+"."+month_a);
-        }
-    };
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-    public Dialog onCreateDialog(int id) {
-        switch(id){
-            case DIALOG_ID:
-                TimePickerDialog tp = new TimePickerDialog(this, kTimePickerListner, hour_a, minute_a, true);
-                return tp;
-            case DIALOG_ID2:
-                return new DatePickerDialog(this, kDateTimeListner, year_a, month_a, day_a);
-        }
-        return null;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //project.extraInfo = extraInfos.getText().toString();
+
+            }
+        });
     }
 
-    public void beginn(View v){
-        showDialog(DIALOG_ID);
+    public void beginn(View v) {
+
+        Calendar c = Calendar.getInstance();
+        hour_a = c.get(Calendar.HOUR);
+        minute_a = c.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, hour_a, minute_a, true);
+        timePickerDialog.show();
+        b = (Button) v;
+        ea = true;
+        start = true;
+    }
+
+    public void ende(View v) {
+
+        Calendar c = Calendar.getInstance();
+        hour_a = c.get(Calendar.HOUR);
+        minute_a = c.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, hour_a, minute_a, true);
+        timePickerDialog.show();
+        ea = false;
+        end = true;
         b = (Button) v;
     }
 
-    public void datum(View v){
-        showDialog(DIALOG_ID2);
-        b= (Button) v;
+    public void datum(View v) {
+
+        Calendar c = Calendar.getInstance();
+        year_a = c.get(Calendar.YEAR);
+        month_a = c.get(Calendar.MONTH);
+        day_a = c.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, year_a, month_a, day_a);
+        datePickerDialog.show();
+        date = true;
+        b = (Button) v;
+
     }
 
-    public void ok(View v){
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        year_a = year;
+        month_a = month;
+        day_a = dayOfMonth;
+        project.day = day_a;
+        project.month = month_a;
+        project.year = year_a;
+        b.setText(day_a + "." + month_a + "." + year_a);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+        NumberFormat f = new DecimalFormat("00");
+        hour_a = hourOfDay;
+        minute_a = minute;
+        if (ea) {
+            project.begin_m = minute_a;
+            project.begin_h = hour_a;
+        } else {
+            project.end_m = minute_a;
+            project.end_h = hour_a;
+        }
+        b.setText(f.format(hour_a) + ":" + f.format(minute_a));
+    }
+
+    public void cancel(View v) {
         finish();
+    }
+
+    public void plus(View v) {
+        numP++;
+        String s = String.valueOf(numP);
+        TextView textView = (TextView) findViewById(R.id.textview_num);
+        textView.setText(s);
+        project.numParti = numP;
+    }
+
+    public void minus(View v) {
+        if (numP > 0) {
+            numP--;
+        }
+        String s = String.valueOf(numP);
+        project.numParti = numP;
+        TextView textView = (TextView) findViewById(R.id.textview_num);
+        textView.setText(s);
+
+    }
+
+    public void ok(View v) {
+        int tempBe = project.begin_h * 60 + project.begin_m;
+        int tempEn = project.end_h * 60 + project.end_m;
+        Toast.makeText(this, project.extraInfo, Toast.LENGTH_SHORT).show();
+
+        if (date && start && end && project.numParti > 0) {
+            if (tempBe - tempEn < 0) {
+
+                //fertiges Projekt in Datenbank übertragen
+                //pushProject(project);
+                finish();
+
+            } else {
+                Toast.makeText(this, "Zeit falsch eingestellt", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }

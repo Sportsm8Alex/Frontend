@@ -4,50 +4,116 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/button_datum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="ok"
-        android:onClick="ok"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:onClick="datum"
+        android:text="@string/text_date"
+
+        />
+
+    <EditText
+        android:id="@+id/editText_additional"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_datum"
+        android:layout_margin="8dp"
+        android:hint="Ort, Habe Ball etc..."
+        android:maxLines="1" />
+
 
     <Button
         android:id="@+id/button_beginn"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="32dp"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
         android:onClick="beginn"
-        android:text="Beginn"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:text="@string/text_beginning" />
 
     <Button
         android:id="@+id/button_ende"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="32dp"
         android:layout_centerVertical="true"
-        android:onClick="beginn"
-        android:text="Ende"
-        style="@style/Widget.AppCompat.Button.Borderless" />
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:onClick="ende"
+        android:text="@string/text_end" />
 
     <TextView
+        android:id="@+id/button_until"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+        android:text="-" />
+
+
+    <TextView
+        android:id="@+id/textview_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_ende"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="0" />
+
+    <Button
+        android:id="@+id/button_plus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@id/textview_num"
+        android:layout_alignStart="@id/textview_num"
+        android:layout_below="@id/button_beginn"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:onClick="plus"
+        android:text="+" />
+
+    <Button
+        android:id="@+id/button_minus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignEnd="@id/textview_num"
+        android:layout_alignRight="@id/textview_num"
+        android:layout_below="@id/button_beginn"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:onClick="minus"
+        android:text="-" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Datum"
-        android:onClick="datum"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:onClick="ok"
+        android:text="@string/text_ok" />
 
-        />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="8dp"
+        android:onClick="cancel"
+        android:text="@string/text_cancel" />
+
 
 </RelativeLayout>

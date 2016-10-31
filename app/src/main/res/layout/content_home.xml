@@ -23,14 +23,15 @@
         <Button
             android:id="@+id/sportart_button"
             android:layout_marginRight="4dp"
-            android:text="Sportart"
+            android:layout_marginEnd="4dp"
+            android:text="@string/button_sport"
             android:elevation="4dp"
             android:onClick="sportart"
             />
 
         <Button
             android:id="@+id/einladungen_button"
-            android:text="Einladungen"
+            android:text="@string/button_invites"
             android:onClick="einladungen"
             android:elevation="0dp"
             style="@style/Widget.AppCompat.Button" />
@@ -38,13 +39,15 @@
         <Button
             android:id="@+id/msg_button"
             android:layout_marginRight="4dp"
-            android:text="Nachrichten"
+            android:layout_marginEnd="4dp"
+            android:text="@string/button_msgbutton"
             />
 
         <Button
             android:id="@+id/calendar_button"
             android:layout_marginRight="4dp"
-            android:text="Calendar"
+            android:layout_marginEnd="4dp"
+            android:text="@string/button_calendar"
             style="@style/Widget.AppCompat.Button"
             />
 

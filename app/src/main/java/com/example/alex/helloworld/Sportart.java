@@ -39,6 +39,7 @@ public class Sportart extends AppCompatActivity {
     Button lSpiel;
     RelativeLayout rangLayout;
     RelativeLayout gelaufen;
+    int sportID;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,9 @@ public class Sportart extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(Sportart.this, mySpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-                update(mySpinner.getSelectedItem().toString());
+                //update(mySpinner.getSelectedItem().toString());
+                update(position);
+                sportID = position;
             }
 
             @Override
@@ -75,23 +78,38 @@ public class Sportart extends AppCompatActivity {
             }
         });
         training = (Button) findViewById(R.id.button_training);
-        fSpiel = (Button) findViewById(R.id.button_fSpiel);
+        fSpiel = (Button) findViewById(R.id.button_funGame);
         lSpiel = (Button) findViewById(R.id.button_lSpiel);
         rangLayout = (RelativeLayout) findViewById(R.id.layout_top);
         gelaufen = (RelativeLayout) findViewById(R.id.layout_laufen);
     }
 
-    public void freund(View v) {
+    public void funGame(View v) {
+        Bundle b = new Bundle();
+        b.putInt("sportID",sportID);
+        b.putBoolean("liga",false);
         Intent intent = new Intent(this, Pop.class);
         startActivity(intent);
     }
 
-    private void update(String string) {
+    public void ligaGame(View v){
+        Bundle b = new Bundle();
+        b.putInt("sportID",sportID);
+        b.putBoolean("liga",true);
+        Intent intent = new Intent(this, Pop.class);
+        startActivity(intent);
+    }
+    public void training(View v){
+        Bundle b = new Bundle();
+        b.putInt("sportID",sportID);
+    }
+
+    private void update(int sID) {
         TextView siege = (TextView) findViewById(R.id.textview_siege);
         TextView niederlage = (TextView) findViewById(R.id.textiview_niederlage);
         TextView rang = (TextView) findViewById(R.id.textview_rang2);
         TextView weltweit = (TextView) findViewById(R.id.textview_weltweit);
-        if (string.equals("Beachen")) {
+        if (sID==0) {
             training.setVisibility(View.GONE);
             fSpiel.setVisibility(View.VISIBLE);
             lSpiel.setVisibility(View.VISIBLE);
@@ -102,7 +120,7 @@ public class Sportart extends AppCompatActivity {
             rangLayout.setVisibility(RelativeLayout.VISIBLE);
 
             gelaufen.setVisibility(RelativeLayout.GONE);
-        } else if (string.equals("Fußball")) {
+        } else if (sID==1) {
             training.setVisibility(View.GONE);
             fSpiel.setVisibility(View.VISIBLE);
             lSpiel.setVisibility(View.VISIBLE);
@@ -113,7 +131,7 @@ public class Sportart extends AppCompatActivity {
             gelaufen.setVisibility(RelativeLayout.GONE);
             rangLayout.setVisibility(RelativeLayout.VISIBLE);
 
-        } else if (string.equals("Laufen")) {
+        } else if (sID==2) {
             training.setVisibility(View.VISIBLE);
             fSpiel.setVisibility(View.GONE);
             lSpiel.setVisibility(View.GONE);

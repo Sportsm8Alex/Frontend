@@ -14,17 +14,17 @@
     tools:showIn="@layout/activity_sportart">
 
     <RelativeLayout
+        android:id="@+id/layout_laufen"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
-        android:visibility="visible"
-        android:id="@+id/layout_laufen">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textview_heute"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Gelaufen heute: " />
+            android:text="@string/text_distance" />
 
         <TextView
             android:id="@+id/textview_heute2"
@@ -32,7 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/textview_heute"
+            android:layout_toRightOf="@+id/textview_heute"
             android:text="182" />
 
         <TextView
@@ -40,8 +42,8 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_heute"
-            android:text="Gelaufen insgesamt: "
             android:layout_marginBottom="16dp"
+            android:text="@string/text_distance_whole"
             android:textSize="14sp" />
 
         <TextView
@@ -50,15 +52,17 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_heute"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/textview_gelaufGesamt"
             android:text="2"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_toRightOf="@+id/textview_gelaufGesamt" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
             android:layout_below="@+id/textview_gelaufenGesamt"
+            android:layout_marginTop="8dp"
             android:background="@android:color/darker_gray" />
 
     </RelativeLayout>
@@ -71,13 +75,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/image_pokal"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="1dp"
@@ -89,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/image_pokal"
             android:layout_toRightOf="@+id/image_pokal"
             android:text="2"
@@ -99,8 +105,10 @@
             android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/textview_siege"
-            android:text="Rang: " />
+            android:layout_toRightOf="@id/textview_siege"
+            android:text="@string/text_rank" />
 
         <TextView
             android:id="@+id/textview_rang2"
@@ -108,7 +116,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/textiview_rang"
+            android:layout_toRightOf="@+id/textiview_rang"
             android:text="182" />
 
 
@@ -117,6 +127,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/image_pokal"
             android:layout_marginTop="1dp"
             android:src="@drawable/rotesx" />
@@ -127,6 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_siege"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/image_iks"
             android:layout_toRightOf="@+id/image_iks"
             android:text="2"
@@ -138,9 +150,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_siege"
             android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/textiview_niederlage"
             android:layout_toRightOf="@+id/textiview_niederlage"
-            android:text="Weltweit: "
+            android:text="@string/text_worldwide"
             android:textSize="14sp" />
 
         <TextView
@@ -149,6 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_rang2"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/textview_weltw"
             android:layout_toRightOf="@+id/textview_weltw"
             android:text="2"
@@ -171,30 +185,31 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/button_funGame"
             android:layout_width="match_parent"
-            android:id="@+id/button_fSpiel"
             android:layout_height="56dp"
-            android:onClick="freund"
-            android:text="Freundschaftsspiel" />
+            android:onClick="funGame"
+            android:text="@string/button_title_funGame" />
 
         <Button
             android:id="@+id/button_training"
             android:layout_width="match_parent"
+            android:onClick="training"
             android:layout_height="56dp"
-            android:text="Trainingspartner \n suchen"
-            android:elevation="0dp"
-            />
+            android:text="@string/button_title_trainingsPartner"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/button_lSpiel"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Ligaspiel" />
+            android:onClick="ligaGame"
+            android:text="@string/button_title_ligaGame" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="noch ein Button"/>
+            android:text="Noch ein Button" />
 
     </LinearLayout>
 </RelativeLayout>
