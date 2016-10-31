@@ -54,29 +54,6 @@
             android:id="@+id/weekLayout"
             android:background="@color/colorAccent">
 
-            <!--
-            <LinearLayout
-                android:id="@+id/day1"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/day2"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/day3"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </LinearLayout> -->
         </LinearLayout>
 
     </RelativeLayout>

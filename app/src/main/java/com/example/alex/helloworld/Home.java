@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -55,16 +57,19 @@ public class Home extends AppCompatActivity {
         int height = size.y;
         Button sport = (Button) findViewById(R.id.sportart_button);
         Button einlad = (Button) findViewById(R.id.einladungen_button);
-        Button nachr = (Button) findViewById(R.id.nachrichten_button);
+        Button msg = (Button) findViewById(R.id.msg_button);
+        Button calendar = (Button) findViewById(R.id.calendar_button);
         sport.setWidth(widthh / 2);
         sport.setHeight(widthh / 2);
 
         einlad.setWidth(widthh / 2);
         einlad.setHeight(widthh / 2);
 
-        nachr.setWidth(widthh / 2);
-        nachr.setHeight(widthh / 2);
+        msg.setWidth(widthh / 2);
+        msg.setHeight(widthh / 2);
 
+        calendar.setWidth(widthh / 2);
+        calendar.setHeight(widthh / 2);
     }
     public void sportart(View view){
         Intent intent = new Intent(this,  Sportart.class);
@@ -92,10 +97,16 @@ public class Home extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_logout:
+                Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                startActivity(intent);
+                Home.this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

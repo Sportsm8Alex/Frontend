@@ -36,9 +36,16 @@
             style="@style/Widget.AppCompat.Button" />
 
         <Button
-            android:id="@+id/nachrichten_button"
+            android:id="@+id/msg_button"
             android:layout_marginRight="4dp"
             android:text="Nachrichten"
+            />
+
+        <Button
+            android:id="@+id/calendar_button"
+            android:layout_marginRight="4dp"
+            android:text="Calendar"
+            style="@style/Widget.AppCompat.Button"
             />
 
 
