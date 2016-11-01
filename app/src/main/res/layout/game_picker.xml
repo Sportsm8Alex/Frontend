@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button_beginn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="8dp"
+        android:onClick="beginn"
+        android:text="@string/text_beginning" />
+
+
+    <Button
+        android:id="@+id/button_ende"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="ende"
+        android:text="@string/text_end" />
+
+    <Button
+        android:id="@+id/button_datum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:onClick="datum"
+        android:text="@string/text_date" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider"
+        android:layout_below="@id/button_beginn"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:id="@+id/numberpicker_fun"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        android:layout_below="@id/divider">
+
+    </NumberPicker>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/divider"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="16dp">
+    <Button
+        android:id="@+id/button_plus"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:onClick="plus"
+        android:text="+" />
+
+    <TextView
+        android:id="@+id/textview_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0" />
+
+
+    <Button
+        android:id="@+id/button_minus"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:onClick="minus"
+        android:enabled="false"
+        android:text="-" />
+</LinearLayout>
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="cancel"
+        android:text="@string/text_cancel"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="ok"
+        android:text="@string/text_ok"
+        android:textColor="@color/colorPrimary" />
+
+
+    <EditText
+        android:id="@+id/editText_additional"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_cancel"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:cursorVisible="false"
+        android:backgroundTint="@android:color/transparent"
+        android:hint="Ort, Habe Ball etc..."
+        android:maxLines="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider2"
+        android:layout_below="@id/editText_additional"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
+
+
+
+
+
+
+</RelativeLayout>

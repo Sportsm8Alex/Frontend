@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_liga__game_picker"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <Button
-        android:id="@+id/button_datum"
+        android:id="@+id/button_datum2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -14,18 +16,8 @@
 
         />
 
-    <EditText
-        android:id="@+id/editText_additional"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_datum"
-        android:layout_margin="8dp"
-        android:hint="Ort, Habe Ball etc..."
-        android:maxLines="1" />
-
-
     <Button
-        android:id="@+id/button_beginn"
+        android:id="@+id/button_beginn2"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,8 +29,16 @@
         android:onClick="beginn"
         android:text="@string/text_beginning" />
 
+    <TextView
+        android:id="@+id/button_until"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="-" />
+
     <Button
-        android:id="@+id/button_ende"
+        android:id="@+id/button_end2"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,47 +50,6 @@
         android:onClick="ende"
         android:text="@string/text_end" />
 
-    <TextView
-        android:id="@+id/button_until"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="-" />
-
-
-    <TextView
-        android:id="@+id/textview_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_ende"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="0" />
-
-    <Button
-        android:id="@+id/button_plus"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignLeft="@id/textview_num"
-        android:layout_alignStart="@id/textview_num"
-        android:layout_below="@id/button_beginn"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:onClick="plus"
-        android:text="+" />
-
-    <Button
-        android:id="@+id/button_minus"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignEnd="@id/textview_num"
-        android:layout_alignRight="@id/textview_num"
-        android:layout_below="@id/button_beginn"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:onClick="minus"
-        android:text="-" />
 
 
     <Button
@@ -99,13 +58,13 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:onClick="ok"
         android:text="@string/text_ok" />
 
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/button_cancel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -114,6 +73,5 @@
         android:layout_margin="8dp"
         android:onClick="cancel"
         android:text="@string/text_cancel" />
-
 
 </RelativeLayout>

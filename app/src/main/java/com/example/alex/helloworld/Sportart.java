@@ -3,16 +3,12 @@ package com.example.alex.helloworld;
 /**
  * Created by alex on 10/30/2016.
  */
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,12 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Sportart extends AppCompatActivity {
 
@@ -88,7 +78,7 @@ public class Sportart extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putInt("sportID",sportID);
         b.putBoolean("liga",false);
-        Intent intent = new Intent(this, Pop.class);
+        Intent intent = new Intent(this, Gamepicker.class);
         startActivity(intent);
     }
 
@@ -96,7 +86,7 @@ public class Sportart extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putInt("sportID",sportID);
         b.putBoolean("liga",true);
-        Intent intent = new Intent(this, Pop.class);
+        Intent intent = new Intent(this, GamePickerLiga.class);
         startActivity(intent);
     }
     public void training(View v){

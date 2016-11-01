@@ -2,79 +2,44 @@ package com.example.alex.helloworld;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 
-/**
- * Created by Korbi on 22.10.2016.
- */
+public class GamePickerLiga extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-public class Pop extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     int hour_a, minute_a, day_a, month_a, year_a, numP;
     int sportart_ID = -1;
     Button b;
     Boolean start, end, date, num, ea;
-    Project project;
+    Project project=new Project();
     String extraInfo;
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.popup1);
-        project = new Project();
-        start = false;
-        end = false;
-        date = false;
-        ea = false;
-        num = false;
-        EditText extraInfos;
-        //Popup größe
+        setContentView(R.layout.game_picker_liga);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         getWindow().setLayout((int) (width * .8), (int) (width * .8));
-        //sportartID
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            sportart_ID = b.getInt("sportart");
-        }
-        project.id = sportart_ID;
+    }
 
-        extraInfos = (EditText) findViewById(R.id.editText_additional);
-        extraInfos.setSingleLine();
-        extraInfos.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void cancel(View view) {
+        finish();
+    }
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //project.extraInfo = extraInfos.getText().toString();
-
-            }
-        });
+    public void ok(View view) {
+        finish();
     }
 
     public void beginn(View v) {
@@ -114,7 +79,6 @@ public class Pop extends Activity implements DatePickerDialog.OnDateSetListener,
 
     }
 
-    @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         year_a = year;
         month_a = month;
@@ -140,50 +104,4 @@ public class Pop extends Activity implements DatePickerDialog.OnDateSetListener,
         }
         b.setText(f.format(hour_a) + ":" + f.format(minute_a));
     }
-
-    public void cancel(View v) {
-        finish();
-    }
-
-    public void plus(View v) {
-        numP++;
-        String s = String.valueOf(numP);
-        TextView textView = (TextView) findViewById(R.id.textview_num);
-        textView.setText(s);
-        project.numParti = numP;
-    }
-
-    public void minus(View v) {
-        if (numP > 0) {
-            numP--;
-        }
-        String s = String.valueOf(numP);
-        project.numParti = numP;
-        TextView textView = (TextView) findViewById(R.id.textview_num);
-        textView.setText(s);
-
-    }
-
-    public void ok(View v) {
-        int tempBe = project.begin_h * 60 + project.begin_m;
-        int tempEn = project.end_h * 60 + project.end_m;
-        Toast.makeText(this, project.extraInfo, Toast.LENGTH_SHORT).show();
-
-        if (date && start && end && project.numParti > 0) {
-            if (tempBe - tempEn < 0) {
-
-                //fertiges Projekt in Datenbank übertragen
-                //pushProject(project);
-                finish();
-
-            } else {
-                Toast.makeText(this, "Zeit falsch eingestellt", Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
 }
