@@ -95,7 +95,7 @@ public class LoginScreen extends AppCompatActivity{
         @Override
         protected String doInBackground(String... params){
             try{
-                url = new URL("http://10.0.2.2/android_user_api/Backend/index.php");
+                url = new URL("http://10.0.2.2:8080/android_user_api/Backend/index.php");
             }
             catch(MalformedURLException e){
                 e.printStackTrace();
