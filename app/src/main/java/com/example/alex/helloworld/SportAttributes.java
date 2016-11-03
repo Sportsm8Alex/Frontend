@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
  */
 
 public class SportAttributes {
+    String name;
     Integer draw;
     Boolean funGame;
     Boolean ligaGame;

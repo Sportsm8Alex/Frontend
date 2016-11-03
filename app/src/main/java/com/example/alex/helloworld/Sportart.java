@@ -8,13 +8,19 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +56,12 @@ public class Sportart extends AppCompatActivity {
     RelativeLayout gelaufen;
     int sportID;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+    NavigationView mNavigationView;
+    TextView header;
+
+
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -55,12 +70,15 @@ public class Sportart extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        createList();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Ich bin ein Nutzloser Button", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(Sportart.this, AddSportart.class);
+                startActivity(intent);
             }
         });
 
@@ -91,7 +109,58 @@ public class Sportart extends AppCompatActivity {
         rangLayout = (RelativeLayout) findViewById(R.id.layout_top);
         gelaufen = (RelativeLayout) findViewById(R.id.layout_laufen);
 
-        createList();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout2);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                switch (id) {
+
+                    case R.id.nav_account:
+                        mDrawerLayout.openDrawer(GravityCompat.START);
+                        return true;
+
+                    case R.id.nav_logout:
+                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        Sportart.this.finish();
+                        return true;
+                }
+
+                return Sportart.super.onOptionsItemSelected(item);
+            }
+        });
+
+
+
+    }
+    public void onBackPressed(){
+        if (isNavDrawerOpen()) {
+            closeNavDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    protected boolean isNavDrawerOpen() {
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START);
+    }
+
+    protected void closeNavDrawer() {
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
     }
 
     public void funGame(View v) {
@@ -148,6 +217,7 @@ public class Sportart extends AppCompatActivity {
     private void createList(){
         attributes=new ArrayList<SportAttributes>();
         SportAttributes beachen=new SportAttributes();
+        beachen.name="Beachvolleyball";
         beachen.funGame=true;
         beachen.ligaGame=true;
         beachen.training=false;
@@ -156,6 +226,7 @@ public class Sportart extends AppCompatActivity {
         attributes.add(beachen);
 
         SportAttributes soccer=new SportAttributes();
+        beachen.name="Fußball";
         soccer.funGame=true;
         soccer.ligaGame=true;
         soccer.training=false;
@@ -164,6 +235,7 @@ public class Sportart extends AppCompatActivity {
         attributes.add(soccer);
 
         SportAttributes run=new SportAttributes();
+        beachen.name="Laufen";
         run.funGame=false;
         run.ligaGame=false;
         run.training=true;
@@ -171,6 +243,31 @@ public class Sportart extends AppCompatActivity {
         run.draw=R.drawable.run;
         attributes.add(run);
 
+        String file_name = "save_local";
+
+        try {
+            FileOutputStream fileOutputStream = openFileOutput(file_name,MODE_PRIVATE);
+            fileOutputStream.write(beachen.name.getBytes());
+            fileOutputStream.close();
+            Toast.makeText(Sportart.this,"fertig", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return false;
     }
 
 
