@@ -14,4 +14,14 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_sportart2">Sportart2</string>
     <string name="title_activity_einladungen">Einladungen</string>
+
+
+    <string name="button_showWeekActivity">Show week!</string>
+    <string name="button_monday">Mo</string>
+    <string name="button_tuesday">Tu</string>
+    <string name="button_wednesday">We</string>
+    <string name="button_thursday">Th</string>
+    <string name="button_friday">Fr</string>
+    <string name="button_saturday">Sa</string>
+    <string name="button_sunday">Su</string>
 </resources>

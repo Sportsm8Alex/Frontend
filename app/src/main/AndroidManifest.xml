@@ -42,6 +42,9 @@
         <activity android:name=".Pop"
             android:theme="@style/AppTheme.Custom1">
         </activity>
+        <activity android:name=".DisplayWeekActivity">
+        </activity>
+
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
