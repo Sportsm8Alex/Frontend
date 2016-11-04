@@ -17,8 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="2"
-        >
+        android:rowCount="2" >
 
         <Button
             android:id="@+id/sportart_button"
@@ -45,6 +44,7 @@
             android:id="@+id/calendar_button"
             android:layout_marginRight="4dp"
             android:text="Calendar"
+            android:onClick="buttonClick"
             style="@style/Widget.AppCompat.Button"
             />
 
