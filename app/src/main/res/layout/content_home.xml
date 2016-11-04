@@ -42,6 +42,10 @@
         <Button
             android:id="@+id/calendar_button"
             android:layout_marginRight="4dp"
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
             android:layout_marginEnd="4dp"
             android:text="@string/button_calendar"
             android:onClick="buttonClick"
