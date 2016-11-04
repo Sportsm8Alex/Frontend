@@ -26,7 +26,6 @@
     <string name="title_activity_sportart2">Sportart2</string>
     <string name="title_activity_einladungen">Einladungen</string>
 
-<<<<<<< HEAD
     <string name="button_title_funGame">Freundschaftsspiel</string>
     <string name="button_title_trainingsPartner">Trainingspartner suchen</string>
     <string name="button_title_ligaGame">Ligaspiel</string>
@@ -47,7 +46,6 @@
 
     <string name="open">Open navigation drawer</string>
     <string name="close">Close navigation drawer</string>
-=======
 
     <string name="button_showWeekActivity">Show week!</string>
     <string name="button_monday">Mo</string>
@@ -57,5 +55,4 @@
     <string name="button_friday">Fr</string>
     <string name="button_saturday">Sa</string>
     <string name="button_sunday">Su</string>
->>>>>>> master
 </resources>
