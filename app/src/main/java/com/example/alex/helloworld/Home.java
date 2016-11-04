@@ -98,6 +98,7 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(this, Einladungen.class);
         startActivity(intent);
 
+
     }
 
     @Override

@@ -29,6 +29,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
+        
         <activity
             android:name=".Einladungen"
             android:label="@string/title_activity_einladungen"
