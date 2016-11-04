@@ -11,10 +11,43 @@
         <item>Laufen</item>
 
     </string-array>
+
+    <string-array name="sportarten">
+        <item>Beachen</item>
+        <item>Fußball</item>
+        <item>Laufen</item>
+        <item>Minigolf</item>
+        <item>Baumstamm werfen</item>
+        <item>Murmeln</item>
+
+    </string-array>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_sportart2">Sportart2</string>
     <string name="title_activity_einladungen">Einladungen</string>
 
+<<<<<<< HEAD
+    <string name="button_title_funGame">Freundschaftsspiel</string>
+    <string name="button_title_trainingsPartner">Trainingspartner suchen</string>
+    <string name="button_title_ligaGame">Ligaspiel</string>
+    <string name="text_worldwide">Weltweit: </string>
+    <string name="text_rank">Rang: </string>
+    <string name="text_distance">Gelaufen:</string>
+    <string name="text_distance_whole">Gelaufen gesamt:</string>
+    <string name="text_beginning">Beginn</string>
+    <string name="text_end">Ende</string>
+    <string name="text_ok">OK</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_date">Datum</string>
+    <string name="button_sport">Sportart</string>
+    <string name="button_invites">Einladungen</string>
+    <string name="button_calendar">Kalender</string>
+    <string name="button_msgbutton">Nachricht</string>
+    <string name="title_activity_navigationdrawer">Navigationdrawer</string>
+
+    <string name="open">Open navigation drawer</string>
+    <string name="close">Close navigation drawer</string>
+=======
 
     <string name="button_showWeekActivity">Show week!</string>
     <string name="button_monday">Mo</string>
@@ -24,4 +57,5 @@
     <string name="button_friday">Fr</string>
     <string name="button_saturday">Sa</string>
     <string name="button_sunday">Su</string>
+>>>>>>> master
 </resources>
