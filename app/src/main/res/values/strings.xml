@@ -25,10 +25,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_sportart2">Sportart2</string>
     <string name="title_activity_einladungen">Einladungen</string>
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
     <string name="button_title_funGame">Freundschaftsspiel</string>
     <string name="button_title_trainingsPartner">Trainingspartner suchen</string>
     <string name="button_title_ligaGame">Ligaspiel</string>
