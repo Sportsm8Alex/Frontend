@@ -40,6 +40,9 @@
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
 <<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         <activity
             android:name=".GamePickerLiga"
             android:theme="@style/AppTheme.Custom1"></activity>
@@ -49,17 +52,21 @@
         <activity
             android:name=".Gamepicker"
             android:theme="@style/AppTheme.Custom1"></activity>
-    </application>
 
-</manifest>
-=======
-        <activity android:name=".Pop"
-            android:theme="@style/AppTheme.Custom1">
-        </activity>
+<<<<<<< HEAD
         <activity android:name=".DisplayWeekActivity">
         </activity>
 
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.INTERNET"/>
+
+=======
+
+    <activity android:name=".DisplayWeekActivity">
+    </activity>
+
+</application>
+<uses-permission android:name="android.permission.INTERNET"/>
+>>>>>>> origin/master
 </manifest>
->>>>>>> master
+
