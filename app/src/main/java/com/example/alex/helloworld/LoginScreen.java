@@ -147,9 +147,8 @@ public class LoginScreen extends AppCompatActivity{
                 try {
                     JSONParser parser = new JSONParser();
                     JSONObject json = (JSONObject) parser.parse(successString.toString());
-
-                    //the json.get seems to be causing the trouble
                     success = Long.toString((Long) json.get("success"));
+                    System.out.println("SUCCESS: "+success);
                 }
                 catch (ParseException e) {
                     e.printStackTrace();
