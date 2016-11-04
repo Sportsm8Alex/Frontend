@@ -38,6 +38,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".GamePickerLiga"
             android:theme="@style/AppTheme.Custom1"></activity>
@@ -50,3 +51,14 @@
     </application>
 
 </manifest>
+=======
+        <activity android:name=".Pop"
+            android:theme="@style/AppTheme.Custom1">
+        </activity>
+        <activity android:name=".DisplayWeekActivity">
+        </activity>
+
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>
+>>>>>>> master
