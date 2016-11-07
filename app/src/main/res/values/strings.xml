@@ -22,6 +22,20 @@
 
     </string-array>
 
+    <string-array name="testsportID">
+        <item>Beachen</item>
+        <item>Fußball</item>
+        <item>Tennis</item>
+        <item>Laufen</item>
+        <item>Basketball</item>
+        <item>Leichtathletik</item>
+        <item>Tricking</item>
+        <item>Fitnessstudio</item>
+        <item>Handball</item>
+        <item>Minigolf</item>
+
+    </string-array>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_sportart2">Sportart2</string>
     <string name="title_activity_einladungen">Einladungen</string>
