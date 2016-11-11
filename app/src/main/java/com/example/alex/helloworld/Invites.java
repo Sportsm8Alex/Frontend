@@ -13,7 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class Einladungen extends AppCompatActivity {
+public class Invites extends AppCompatActivity {
 
     RecyclerView recyclerView;
     MyCustomAdapter adapter;
