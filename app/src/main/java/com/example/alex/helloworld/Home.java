@@ -87,6 +87,30 @@ public class Home extends AppCompatActivity {
         calendar.setWidth(widthh / 2);
         calendar.setHeight(widthh / 2);
     }
+    
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.sportart_button:
+                Intent intent = new Intent(this, Sport.class);
+                startActivity(intent);
+                break;
+            case R.id.einladungen_button:
+                Intent intent1 = new Intent(this, Invites.class);
+                startActivity(intent1);
+                break;
+            case R.id.msg_button:
+                Intent intent2 = new Intent(this, AccountPage.class);
+                startActivity(intent2);
+                break;
+            case R.id.calendar_button:
+                Intent intent3 = new Intent(this, DisplayWeekActivity.class);
+                startActivity(intent3);
+                break;
+            default:
+                finish();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
