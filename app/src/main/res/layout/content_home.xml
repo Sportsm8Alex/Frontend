@@ -41,11 +41,7 @@
         <Button
             android:id="@+id/calendar_button"
             android:text="@string/button_calendar"
-<<<<<<< HEAD
             android:onClick="onClick"
-=======
-            android:onClick="calender"
->>>>>>> master
             style="@style/Widget.AppCompat.Button"
             />
     </GridLayout>
