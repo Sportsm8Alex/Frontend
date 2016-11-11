@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.DisplayWeekActivity;
 
 /**
  * Created by agemcipe on 31.10.16.
@@ -8,10 +8,16 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.alex.helloworld.Data;
+import com.example.alex.helloworld.MyCustomAdapter;
+import com.example.alex.helloworld.R;
 
 import java.util.Calendar;
 
@@ -26,6 +32,8 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     Button[] weekDayButtons = new Button[7];
     final static String DEBUG_TAG = "Yolo: ";
     private float x1, x2;
+    RecyclerView recyclerView;
+    MyCustomAdapter adapter;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -46,6 +54,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         weekDayButtons[6] = (Button) findViewById(R.id.sundayButton);
 
         initButtons(weekDayButtons);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycleView);
+        adapter = new MyCustomAdapter(this, Data.getCalendar());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 

@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +23,62 @@ import java.util.List;
  * parent class for all database connections
  */
 
-public class DatabaseConnection extends AsyncTask<String, Void, String>{
+public class DBconnection extends AsyncTask<String, Void, String>{
     public static final int CONNECTION_TIMEOUT=10000;
     public static final int READ_TIMEOUT=15000;
     public static final String BASE_URL = "10.0.2.2";
     public static final String DEBUG_TAG = "some clever Debug tag:";
 
-    private InputStream is;
     private HttpURLConnection conn;
 
     //this method will be implemented in the subclasses of DatabaseConnection
+    public void getConnection(URL url){
+        try {
+            //request data from server via http get request
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(READ_TIMEOUT);
+            conn.setConnectTimeout(CONNECTION_TIMEOUT);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.connect();
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+    }
+
+    private String getInput() {
+        InputStream is = null;
+        try {
+            is = conn.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder successString = new StringBuilder();
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                successString.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(successString.toString());
+
+        return successString.toString();
+    }
+
     @Override
     protected String doInBackground(String... params) {
-
         //depending on request use reader, writer with params
         return null;
     }
@@ -58,10 +102,6 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
                 //question: HOW TO DO THIS DYNAMICALLY?!
                 .build();
 
-        for(int i = 0; i<(params.length/2); i+=2){
-            loadUri.buildUpon().appendQueryParameter(params[i], params[i+1])
-        }
-
         try {
             //form URL
             Log.d(DEBUG_TAG, loadUri.toString());
@@ -82,7 +122,8 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
             //the InputStream of the data send back from the server
             is = conn.getInputStream();
 
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e) {
             e.printStackTrace();
         }
         finally {
@@ -100,27 +141,5 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
      */
     protected boolean write(String... args){
         return false;
-    }
-
-    /**
-     * method for converting an inputstream into a String
-     * @param is the InputStream
-     * @return String
-     */
-    private String inputReader(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder successString = new StringBuilder();
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                successString.append(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(successString.toString());
-
-        return successString.toString();
     }
 }
