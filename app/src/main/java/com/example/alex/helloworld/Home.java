@@ -88,20 +88,6 @@ public class Home extends AppCompatActivity {
         calendar.setHeight(widthh / 2);
     }
 
-    public void sportart(View view) {
-        Intent intent = new Intent(this, Sportart.class);
-        startActivity(intent);
-    }
-
-    public void einladungen(View view) {
-        Intent intent = new Intent(this, Einladungen.class);
-        startActivity(intent);
-    }
-    public void calendar(View view){
-        Intent intent = new Intent(this, DisplayWeekActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
