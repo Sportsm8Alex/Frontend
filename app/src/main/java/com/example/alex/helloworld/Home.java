@@ -91,14 +91,15 @@ public class Home extends AppCompatActivity {
     public void sportart(View view) {
         Intent intent = new Intent(this, Sportart.class);
         startActivity(intent);
-
     }
 
     public void einladungen(View view) {
         Intent intent = new Intent(this, Einladungen.class);
         startActivity(intent);
-
-
+    }
+    public void calendar(View view){
+        Intent intent = new Intent(this, DisplayWeekActivity.class);
+        startActivity(intent);
     }
 
     @Override
