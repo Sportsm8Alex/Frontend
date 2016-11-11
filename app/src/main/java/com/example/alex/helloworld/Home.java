@@ -46,10 +46,9 @@ public class Home extends AppCompatActivity {
         navigationView();
         buttons();
     }
-
+    
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.sportart_button:
                 Intent intent = new Intent(this, Sport.class);
                 startActivity(intent);
@@ -70,7 +69,6 @@ public class Home extends AppCompatActivity {
                 finish();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,7 +102,6 @@ public class Home extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
     //Implements Navigation View
     private void navigationView() {
 
