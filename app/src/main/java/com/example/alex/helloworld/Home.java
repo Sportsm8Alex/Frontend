@@ -98,7 +98,11 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(this, Einladungen.class);
         startActivity(intent);
 
+    }
 
+    public void calender(View view){
+        Intent intent = new Intent(this, DisplayWeekActivity.class);
+        startActivity(intent);
     }
 
     @Override

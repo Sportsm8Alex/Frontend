@@ -44,7 +44,7 @@
             android:layout_marginRight="4dp"
             android:layout_marginEnd="4dp"
             android:text="@string/button_calendar"
-            android:onClick="buttonClick"
+            android:onClick="calender"
             style="@style/Widget.AppCompat.Button"
             />
     </GridLayout>
