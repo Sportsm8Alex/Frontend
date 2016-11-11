@@ -6,24 +6,19 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Korbi on 02.11.2016.
  */
 
-public class AddSportart extends Activity{
+public class AddSport extends Activity{
 
     String[] sportarten;
 
@@ -72,7 +67,7 @@ public class AddSportart extends Activity{
                 String selected = (String) listView.getItemAtPosition(i);
 
 
-                Toast.makeText(AddSportart.this, selected, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddSport.this, selected, Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
