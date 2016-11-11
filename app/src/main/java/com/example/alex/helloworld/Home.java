@@ -102,8 +102,6 @@ public class Home extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-<<<<<<< HEAD
-
     //Implements Navigation View
     private void navigationView() {
 
@@ -204,6 +202,3 @@ public class Home extends AppCompatActivity {
 
 }
 
-=======
-}
->>>>>>> 4138319ffd23d27b15d83e9d30f2212730e71f76
