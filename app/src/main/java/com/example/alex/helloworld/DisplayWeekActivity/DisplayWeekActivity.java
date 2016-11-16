@@ -5,6 +5,7 @@ package com.example.alex.helloworld.DisplayWeekActivity;
  */
 
 import android.icu.text.IDNA;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +32,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 
 import junit.framework.Assert;
 
@@ -42,6 +44,7 @@ import org.json.simple.parser.ParseException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -95,8 +98,8 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
             @Override
             public void processFinish(String output) throws ParseException, JSONException {
-                data = Data.getCalendar(output);
-                jsonToArrayList(output);
+                //data = Data.getCalendar(output);
+                data = jsonToArrayList(output);
                 adapter = new MyCustomAdapter(DisplayWeekActivity.this, data);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(DisplayWeekActivity.this));
@@ -107,23 +110,25 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private ArrayList<Information> jsonToArrayList(String jsonSring) throws JSONException, ParseException {
+    private ArrayList<Information> jsonToArrayList(String jsonObjectSring) throws JSONException, ParseException {
 
-        String s = jsonSring;
+        ArrayList<Information> data = new ArrayList<>();
 
-        Gson gson = new Gson();
-      /*  Meeting[] array = gson.fromJson(jsonSring,Meeting[].class);
+        JSONObject jsonObject = new JSONObject(jsonObjectSring);
 
+        for (int i = 0; i < 1; i++) {
+            String meetingString = jsonObject.get(""+i).toString();
+            Gson gson = new Gson();
+            Information current = gson.fromJson(meetingString,Information.class);
+            data.add(current);
+        }
 
-        Toast.makeText(DisplayWeekActivity.this, s, Toast.LENGTH_LONG).show();
-        */
-
-        return null;
+        return data;
 
     }
 
 
-      /**
+    /**
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
@@ -256,7 +261,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * AsyncResponse needs this, but doesnt use it here...
      *
      * @param output
-     * */
+     */
     @Override
     public void processFinish(String output) {
 
