@@ -3,11 +3,22 @@ package com.example.alex.helloworld.databaseConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Display;
+import android.widget.Toast;
+
+import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
+import com.example.alex.helloworld.Sport;
+
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -23,37 +34,36 @@ import java.util.List;
  * parent class for all database connections
  */
 
-public class DBconnection extends AsyncTask<String, Void, String>{
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
-    public static final String BASE_URL = "10.0.2.2";
+public class DBconnection extends AsyncTask<String, String, String> {
+    private static final int CONNECTION_TIMEOUT = 10000;
+    private static final int READ_TIMEOUT = 15000;
+    private static final String BASE_URL = "10.0.2.2:8080/android_user_api/Backend/include";
     public static final String DEBUG_TAG = "some clever Debug tag:";
+    private AsyncResponse delegate=null;
 
     private HttpURLConnection conn;
+    private String result;
 
-    //this method will be implemented in the subclasses of DatabaseConnection
-    public void getConnection(URL url){
+    public DBconnection(AsyncResponse asyncResponse){
+        delegate=asyncResponse;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        //this method will be running on the UI thread
+
+    }
+
+
+    protected void onPostExecute(String success) {
         try {
-            //request data from server via http get request
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(READ_TIMEOUT);
-            conn.setConnectTimeout(CONNECTION_TIMEOUT);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-            conn.connect();
-        }
-        catch (MalformedURLException e) {
+            delegate.processFinish(result);
+        } catch (ParseException | JSONException e) {
             e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            conn.disconnect();
         }
     }
 
-    private String getInput() {
+    private void getInput() {
         InputStream is = null;
         try {
             is = conn.getInputStream();
@@ -72,74 +82,64 @@ public class DBconnection extends AsyncTask<String, Void, String>{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(successString.toString());
-
-        return successString.toString();
+        result = successString.toString();
     }
+
+
 
     @Override
     protected String doInBackground(String... params) {
-        //depending on request use reader, writer with params
-        return null;
-    }
-
-    /**
-     * loadData method to download the data from the server that is requested via
-     * http get
-     *
-     * @param params
-     * @return InputStream
-     * @throws IOException
-     */
-    private String read(String... params) throws IOException {
-        //create the URL that will be requested from the Server
-        Uri loadUri = new Uri.Builder()
-                .scheme("http")
-                //use encodedAuthority here because the BASE_URL is already encoded
-                .encodedAuthority(BASE_URL)
-                .path("IndexMeetings.html")
-                //here we add the query parameters for our get request
-                //question: HOW TO DO THIS DYNAMICALLY?!
-                .build();
 
         try {
-            //form URL
-            Log.d(DEBUG_TAG, loadUri.toString());
-            URL url = new URL(loadUri.toString());
-
             //request data from server via http get request
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            URL url = new URL(buildFinalURL(params[0]));
+            System.out.print(params[0]);
+            conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            //Append parameters so they can be written
+
+
+            Uri.Builder builder = new Uri.Builder();
+
+            for(int i =1;i<params.length;i+=2) {
+                builder.appendQueryParameter(params[i],params[i+1]);
+            }
+            String query = builder.build().getEncodedQuery();
+
+            //Open connection for sending data
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
             conn.connect();
-
-            //the response code from the server
-            int response = conn.getResponseCode();
-            Log.d("SOME DEBUG TAG", "The response is: "+ response);
-
-            //the InputStream of the data send back from the server
-            is = conn.getInputStream();
-
-        }
-        catch (MalformedURLException e) {
+            getInput();
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             conn.disconnect();
         }
-        return inputReader(is);
+        return null;
     }
 
     /**
-     * method to send Data to the database
      *
-     * NOT IMPLEMENTED YET
-     * @param args
-     * @return a boolean value indicating success or not
+     * @param urlPath
+     * @return
      */
-    protected boolean write(String... args){
-        return false;
+    private String buildFinalURL(String urlPath){
+        Uri loadUri = new Uri.Builder()
+                .scheme("http")
+                .encodedAuthority(BASE_URL)
+                .path(urlPath)
+                .build();
+        return loadUri.toString();
     }
 }

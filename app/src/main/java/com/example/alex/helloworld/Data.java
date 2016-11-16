@@ -35,12 +35,12 @@ public class Data {
 
         return data;
     }
-    public static ArrayList<Information> getCalendar() {
+    public static ArrayList<Information> getCalendar(String x) {
         //get an arrayList from Loader.json
 
         ArrayList<Information> data = new ArrayList<>();
 
-        String[] Categories = {"Beachvolleyball", "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball"};
+        String[] Categories = {x, "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball", "Laufen", "Beachvolleyball","Fußball"};
         String[] Start = {"12:00","11:00","17:00","19:00","11:00","17:00","19:00","11:00","17:00","19:00","11:00","17:00","19:00","11:00","17:00","19:00"};
         String[] Stop = {"11:00","12:00","19:00","17:00","19:00","17:00","19:00","17:00","19:00","17:00","19:00","17:00","19:00","17:00","19:00","17:00"};
         String[] Datum = {"5.7","4.8","10.9","4.4","4.8","10.9","4.4","4.8","10.9","4.4","4.8","10.9","4.4","4.8","10.9","4.4","4.8","10.9","4.4","4.8","10.9","4.4"};

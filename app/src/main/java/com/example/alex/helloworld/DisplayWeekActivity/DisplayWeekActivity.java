@@ -4,6 +4,8 @@ package com.example.alex.helloworld.DisplayWeekActivity;
  * Created by agemcipe on 31.10.16.
  */
 
+import android.icu.text.IDNA;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -14,26 +16,56 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.alex.helloworld.Data;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.Meeting;
 import com.example.alex.helloworld.MyCustomAdapter;
 import com.example.alex.helloworld.R;
+import com.example.alex.helloworld.Sport;
+import com.example.alex.helloworld.databaseConnection.AsyncResponse;
+import com.example.alex.helloworld.databaseConnection.DBconnection;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import junit.framework.Assert;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by agemcipe on 21.10.16.
  */
-public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener {
+
+public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, AsyncResponse {
     private int daySelected;
-    private int colorPrimary ;
-    private int colorAccent ;
+    private int colorPrimary;
+    private int colorAccent;
 
     Button[] weekDayButtons = new Button[7];
     final static String DEBUG_TAG = "Yolo: ";
     private float x1, x2;
     RecyclerView recyclerView;
     MyCustomAdapter adapter;
+    DBconnection dBconnection;
+
+    ArrayList<Information> data = new ArrayList<>();
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -44,7 +76,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_week);
         colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
-        colorAccent =  ContextCompat.getColor(getApplicationContext(), R.color.colorAccent);
+        colorAccent = ContextCompat.getColor(getApplicationContext(), R.color.colorAccent);
         weekDayButtons[0] = (Button) findViewById(R.id.mondayButton);
         weekDayButtons[1] = (Button) findViewById(R.id.tuesdayButton);
         weekDayButtons[2] = (Button) findViewById(R.id.wednesdayButton);
@@ -54,24 +86,80 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         weekDayButtons[6] = (Button) findViewById(R.id.sundayButton);
 
         initButtons(weekDayButtons);
+    }
 
+    private void update() throws ExecutionException, InterruptedException, MalformedURLException {
         recyclerView = (RecyclerView) findViewById(R.id.recycleView);
-        adapter = new MyCustomAdapter(this, Data.getCalendar());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        String meetingID = "1";   //Value from somewhere
+        String[] params = {"/IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) throws ParseException, JSONException {
+                data = Data.getCalendar(output);
+                jsonToArrayList(output);
+                adapter = new MyCustomAdapter(DisplayWeekActivity.this, data);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(DisplayWeekActivity.this));
+
+            }
+        }).execute(params);
+
+
+    }
+
+    private ArrayList<Information> jsonToArrayList(String jsonSring) throws JSONException, ParseException {
+
+        String s = jsonSring;
+
+        Gson gson = new Gson();
+      /*  Meeting[] array = gson.fromJson(jsonSring,Meeting[].class);
+
+
+        Toast.makeText(DisplayWeekActivity.this, s, Toast.LENGTH_LONG).show();
+        */
+
+        return null;
+
+    }
+
+
+    private URL buildURI(String... params) {
+        Uri loadUri = new Uri.Builder()
+                .scheme("http")
+                //use encodedAuthority here because the BASE_URL is already encoded
+                .encodedAuthority("10.0.2.2:8080")
+                .path("/android_user_api/Backend/include/IndexMeetings.php")
+                //here we add the query parameters for our get request
+                //question: HOW TO DO THIS DYNAMICALLY?!
+                .appendQueryParameter(params[0], params[1])
+                .appendQueryParameter(params[2], params[3])
+                .build();
+        /*for (int i = 0; i < (params.length / 2); i += 2) {
+            loadUri.buildUpon().appendQueryParameter(params[i], params[i + 1]);
+        }*/
+        Log.d(DEBUG_TAG, loadUri.toString());
+        URL url = null;
+        try {
+            url = new URL(loadUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+
     }
 
 
     /**
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
+     *
      * @param Buttons the array of Buttons
-     * @param j the index {@code int} of the button that does not change the background color
-     * @param k the int value of the color
+     * @param j       the index {@code int} of the button that does not change the background color
+     * @param k       the int value of the color
      */
-    private void setBackground(Button[] Buttons, int j, int k ){
-        for(int i = 0; i < Buttons.length; i++){
-            if(i != j){
+    private void setBackground(Button[] Buttons, int j, int k) {
+        for (int i = 0; i < Buttons.length; i++) {
+            if (i != j) {
                 Buttons[i].setBackgroundColor(k);
             }
         }
@@ -79,12 +167,13 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
     /**
      * function to initialize Buttons with onClickListener
+     *
      * @param Buttons the array of Buttons
      */
-    private void initButtons(Button[] Buttons){
+    private void initButtons(Button[] Buttons) {
         Calendar c = Calendar.getInstance();
-        daySelected = ((c.get(Calendar.DAY_OF_WEEK)-2)%7+7)%7;
-        for(int i = 0; i < Buttons.length; i++) {
+        daySelected = ((c.get(Calendar.DAY_OF_WEEK) - 2) % 7 + 7) % 7;
+        for (int i = 0; i < Buttons.length; i++) {
             Buttons[i].setOnClickListener(this);
             Buttons[i].setBackgroundColor(colorPrimary);
         }
@@ -94,10 +183,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
     /**
      * overriden onClick Method for weekDayButtons
+     *
      * @param v
      */
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.mondayButton:
@@ -110,6 +200,13 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.wednesdayButton:
                 daySelected = 2;
+                try {
+                    update();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.thursdayButton:
@@ -137,49 +234,57 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
     /**
      * overriden onTouchEvent function for swipe detection
+     *
      * @param event
      * @return
      */
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
 
         int action = MotionEventCompat.getActionMasked(event);
 
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
-                Log.d(DEBUG_TAG,"Action was DOWN");
+        switch (action) {
+            case (MotionEvent.ACTION_DOWN):
+                Log.d(DEBUG_TAG, "Action was DOWN");
                 x1 = event.getX();
                 return true;
-            case (MotionEvent.ACTION_MOVE) :
-                Log.d(DEBUG_TAG,"Action was MOVE");
+            case (MotionEvent.ACTION_MOVE):
+                Log.d(DEBUG_TAG, "Action was MOVE");
                 return true;
-            case (MotionEvent.ACTION_UP) :
+            case (MotionEvent.ACTION_UP):
                 x2 = event.getX();
 
 
-                if(x1 < x2){
+                if (x1 < x2) {
                     //left to right swipe
                     daySelected--;
-                    if(daySelected < 0) daySelected = 0;
+                    if (daySelected < 0) daySelected = 0;
                     Log.d(DEBUG_TAG, "Left to Right Swipe detected");
 
-                } else if( x1 > x2){
+                } else if (x1 > x2) {
                     //right to left swipe
                     daySelected++;
-                    if(daySelected > 6) daySelected = 6;
+                    if (daySelected > 6) daySelected = 6;
                     Log.d(DEBUG_TAG, "Right to Left Swipe detected");
                 }
                 weekDayButtons[daySelected].setBackgroundColor(colorAccent);
                 setBackground(weekDayButtons, daySelected, colorPrimary);
 
-                Log.d(DEBUG_TAG,"Action was UP");
+                Log.d(DEBUG_TAG, "Action was UP");
 
                 return true;
-            default :
+            default:
                 return super.onTouchEvent(event);
         }
     }
 
+    /**
+     * AsyncResponse needs this, but doesnt use it here...
+     *
+     * @param output
+     * */
+    @Override
+    public void processFinish(String output) {
 
-
+    }
 }

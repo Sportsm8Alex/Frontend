@@ -22,6 +22,8 @@ import java.util.List;
  * parent class for all database connections
  */
 
+//Benutz ich nicht
+
 public class DatabaseConnection extends AsyncTask<String, Void, String>{
     public static final int CONNECTION_TIMEOUT=10000;
     public static final int READ_TIMEOUT=15000;
@@ -59,7 +61,7 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
                 .build();
 
         for(int i = 0; i<(params.length/2); i+=2){
-            loadUri.buildUpon().appendQueryParameter(params[i], params[i+1])
+            loadUri.buildUpon().appendQueryParameter(params[i], params[i+1]);
         }
 
         try {

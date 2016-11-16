@@ -12,10 +12,16 @@ import java.net.URL;
  * Created by alex on 11/11/2016.
  */
 
-public class DBcalendar extends DBconnection {
+//Benutz ich auch nicht
+
+public class DBcalendar{
+
+}
+
+/*public class DBcalendar extends DBconnection {
     /*public String readCalendar() {
         super.read();
-    }*/
+    }
 
     @Override
     protected void onPreExecute(){
@@ -32,7 +38,7 @@ public class DBcalendar extends DBconnection {
                 //question: HOW TO DO THIS DYNAMICALLY?!
                 .build();
         for (int i = 0; i < (params.length / 2); i += 2) {
-            loadUri.buildUpon().appendQueryParameter(params[i], params[i + 1])
+            loadUri.buildUpon().appendQueryParameter(params[i], params[i + 1]);
         }
         Log.d(DEBUG_TAG, loadUri.toString());
         URL url = null;
@@ -49,3 +55,4 @@ public class DBcalendar extends DBconnection {
     protected void onPostExecute(String success){
     }
 }
+*/
