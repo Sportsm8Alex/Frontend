@@ -123,33 +123,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    private URL buildURI(String... params) {
-        Uri loadUri = new Uri.Builder()
-                .scheme("http")
-                //use encodedAuthority here because the BASE_URL is already encoded
-                .encodedAuthority("10.0.2.2:8080")
-                .path("/android_user_api/Backend/include/IndexMeetings.php")
-                //here we add the query parameters for our get request
-                //question: HOW TO DO THIS DYNAMICALLY?!
-                .appendQueryParameter(params[0], params[1])
-                .appendQueryParameter(params[2], params[3])
-                .build();
-        /*for (int i = 0; i < (params.length / 2); i += 2) {
-            loadUri.buildUpon().appendQueryParameter(params[i], params[i + 1]);
-        }*/
-        Log.d(DEBUG_TAG, loadUri.toString());
-        URL url = null;
-        try {
-            url = new URL(loadUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
-
-    }
-
-
-    /**
+      /**
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
