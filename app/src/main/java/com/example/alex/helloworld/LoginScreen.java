@@ -53,6 +53,7 @@ public class LoginScreen extends AppCompatActivity{
         Button loginButton = (Button)findViewById(R.id.loginButton);
         Button registerButton = (Button)findViewById(R.id.registerButton);
     }
+
     public void buttonClick(View v){
         switch (v.getId()){
             case R.id.loginButton: {
