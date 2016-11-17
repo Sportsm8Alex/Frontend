@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sportDrawables">
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+        <item>@drawable/beachen</item>
+        <item>@drawable/soccer</item>
+        <item>@drawable/run</item>
+    </array>
+
+
+</resources>

@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 public class SportAttributes {
     String name;
     Integer draw;
+    int ID;
+    int team;
     Boolean funGame;
     Boolean ligaGame;
     Boolean training;

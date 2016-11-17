@@ -114,7 +114,7 @@ public class LoginScreen extends AppCompatActivity{
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                //Append parameters to URL
+                //Append parameters so they can be written
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", params[0])
                         .appendQueryParameter("password", params[1]);
