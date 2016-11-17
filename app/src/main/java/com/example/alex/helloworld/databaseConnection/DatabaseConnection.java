@@ -22,21 +22,24 @@ import java.util.List;
  * parent class for all database connections
  */
 
+//Benutz ich nicht
+
 public class DatabaseConnection extends AsyncTask<String, Void, String>{
     public static final int CONNECTION_TIMEOUT=10000;
     public static final int READ_TIMEOUT=15000;
     public static final String BASE_URL = "10.0.2.2";
     public static final String DEBUG_TAG = "some clever Debug tag:";
 
-    InputStream is;
-    HttpURLConnection conn;
+    private InputStream is;
+    private HttpURLConnection conn;
 
     //this method will be implemented in the subclasses of DatabaseConnection
     @Override
     protected String doInBackground(String... params) {
+
+        //depending on request use reader, writer with params
         return null;
     }
-
 
     /**
      * loadData method to download the data from the server that is requested via
@@ -46,17 +49,21 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
      * @return InputStream
      * @throws IOException
      */
-    private String loadData(String... params) throws IOException {
+    private String read(String... params) throws IOException {
         //create the URL that will be requested from the Server
         Uri loadUri = new Uri.Builder()
                 .scheme("http")
                 //use encodedAuthority here because the BASE_URL is already encoded
                 .encodedAuthority(BASE_URL)
-                .path("some_php_file.html")
+                .path("IndexMeetings.html")
                 //here we add the query parameters for our get request
                 //question: HOW TO DO THIS DYNAMICALLY?!
-                .appendQueryParameter("someParameter", params[0])
                 .build();
+
+        for(int i = 0; i<(params.length/2); i+=2){
+            loadUri.buildUpon().appendQueryParameter(params[i], params[i+1]);
+        }
+
         try {
             //form URL
             Log.d(DEBUG_TAG, loadUri.toString());
@@ -66,7 +73,7 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.connect();
 
@@ -76,7 +83,6 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
 
             //the InputStream of the data send back from the server
             is = conn.getInputStream();
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -94,10 +100,9 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
      * @param args
      * @return a boolean value indicating success or not
      */
-    protected boolean sendData(String... args){
+    protected boolean write(String... args){
         return false;
     }
-
 
     /**
      * method for converting an inputstream into a String
@@ -120,6 +125,4 @@ public class DatabaseConnection extends AsyncTask<String, Void, String>{
 
         return successString.toString();
     }
-
-
 }

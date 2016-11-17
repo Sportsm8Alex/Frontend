@@ -4,7 +4,15 @@ package com.example.alex.helloworld;
  * Created by alex on 10/30/2016.
  */
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.net.http.HttpResponseCache;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +22,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,22 +31,40 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONTokener;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class Sport extends AppCompatActivity {
 
     ArrayList<SportAttributes> attributes;
-
+    String JSON_STRING;
     Spinner mySpinner;
     int sportID;
-
+    String[] sportArten;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,9 +84,16 @@ public class Sport extends AppCompatActivity {
             }
         });
 
-        createList();
+        try {
+            createList();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         navigationView();
-        initSpinner();
+
+
     }
 
 
@@ -82,10 +117,12 @@ public class Sport extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putInt("sportID", sportID);
     }
-    private void initSpinner(){
+
+
+    private void initSpinner() {
         mySpinner = (Spinner) findViewById(R.id.spinner2);
 
-        ArrayAdapter<String> myAdapater = new ArrayAdapter<String>(Sport.this, R.layout.custom_spinner_item, getResources().getStringArray(R.array.names));
+        ArrayAdapter<String> myAdapater = new ArrayAdapter<String>(Sport.this, R.layout.custom_spinner_item, sportArten);
         myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(myAdapater);
 
@@ -113,71 +150,31 @@ public class Sport extends AppCompatActivity {
         ImageView iV = (ImageView) findViewById(R.id.imageView_sportart);
 
         SportAttributes temp = attributes.get(sID);
-        iV.setImageResource(temp.draw);
+        Resources res = getResources();
+        TypedArray draws = res.obtainTypedArray(R.array.sportDrawables);
+        iV.setImageDrawable(draws.getDrawable(temp.ID));
 
         fSpiel.setVisibility(View.GONE);
         lSpiel.setVisibility(View.GONE);
         training.setVisibility(View.GONE);
 
-        if (temp.funGame)
+        if (temp.team == 1) {
             fSpiel.setVisibility(View.VISIBLE);
-        else
-            fSpiel.setVisibility(View.GONE);
-
-        if (temp.ligaGame)
             lSpiel.setVisibility(View.VISIBLE);
-        else
-            lSpiel.setVisibility(View.GONE);
-
-        if (temp.training)
-            training.setVisibility(View.VISIBLE);
-        else
             training.setVisibility(View.GONE);
+        } else {
+            fSpiel.setVisibility(View.GONE);
+            lSpiel.setVisibility(View.GONE);
+            training.setVisibility(View.VISIBLE);
+        }
 
     }
 
-    private void createList() {
-        attributes = new ArrayList<SportAttributes>();
-        SportAttributes beachen = new SportAttributes();
-        beachen.name = "Beachvolleyball";
-        beachen.funGame = true;
-        beachen.ligaGame = true;
-        beachen.training = false;
-        beachen.nochEinButton = true;
-        beachen.draw = R.drawable.beachen;
-        attributes.add(beachen);
+    private void createList() throws ExecutionException, InterruptedException {
 
-        SportAttributes soccer = new SportAttributes();
-        beachen.name = "Fußball";
-        soccer.funGame = true;
-        soccer.ligaGame = true;
-        soccer.training = false;
-        soccer.nochEinButton = true;
-        soccer.draw = R.drawable.soccer;
-        attributes.add(soccer);
-
-        SportAttributes run = new SportAttributes();
-        beachen.name = "Laufen";
-        run.funGame = false;
-        run.ligaGame = false;
-        run.training = true;
-        run.nochEinButton = true;
-        run.draw = R.drawable.run;
-        attributes.add(run);
-
-        String file_name = "save_local";
-
-        try {
-            FileOutputStream fileOutputStream = openFileOutput(file_name, MODE_PRIVATE);
-            fileOutputStream.write(beachen.name.getBytes());
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
+        SportID backgroundWorker = new SportID();
+        backgroundWorker.execute("number");
+        attributes = new ArrayList<>();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -261,6 +258,91 @@ public class Sport extends AppCompatActivity {
     protected void closeNavDrawer() {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    private class SportID extends AsyncTask<String, String, String> {
+        HttpURLConnection conn;
+        URL url = null;
+        URL url2 = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //this method will be running on the UI thread
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                url = new URL("http://10.0.2.2:8080/android_user_api/Backend/include/getSport.php");
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                System.out.println("URL not found");
+                return "exception";
+            }
+
+            try {
+
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout((15000));
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+                //setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                InputStream input = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+                StringBuilder successString = new StringBuilder();
+                String line;
+                String success;
+
+                while ((JSON_STRING = reader.readLine()) != null) {
+                    successString.append(JSON_STRING);
+                    System.out.println(successString.toString());
+                }
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(successString.toString());
+                JSONArray jArr = (JSONArray) json.get("sports");
+                sportArten = new String[jArr.size()];
+                for (int i = 0; i < jArr.size(); i++) {
+                    JSONObject jSonO = (JSONObject) jArr.get(i);
+                    Object name = jSonO.get("sportname");
+                    Object team = jSonO.get("team");
+                    Object sID = jSonO.get("sportID");
+                    SportAttributes temp = new SportAttributes();
+                    temp.name = name.toString();
+                    temp.team = Integer.valueOf(team.toString());
+                    temp.ID = Integer.valueOf(sID.toString());
+                    attributes.add(temp);
+                    sportArten[i] = name.toString();
+                }
+
+                initSpinner();
+                return successString.toString().trim();
+
+
+            } catch (IOException e2) {
+                e2.printStackTrace();
+                return "exception";
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "expection";
+            } finally {
+                conn.disconnect();
+
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String success) {
+
+            Toast.makeText(Sport.this, "add", Toast.LENGTH_LONG).show();
+
+
         }
     }
 

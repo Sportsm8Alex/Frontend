@@ -36,7 +36,7 @@ public class Invites extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycleView);
-        adapter = new MyCustomAdapter(this,Data.getData());
+        adapter = new MyCustomAdapter(this,Data.getInvites());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

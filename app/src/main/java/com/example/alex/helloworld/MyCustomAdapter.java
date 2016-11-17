@@ -48,9 +48,9 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
-        myViewHolder.textview.setText(data.get(position).title);
-        myViewHolder.start.setText(data.get(position).start);
-        myViewHolder.stopp.setText(data.get(position).stop);
+        myViewHolder.textview.setText(data.get(position).MeetingID);
+        myViewHolder.start.setText(data.get(position).startTime);
+        myViewHolder.stopp.setText(data.get(position).endTime);
 
         final int currentPosition = position;
         final Information infoData = data.get(position);
