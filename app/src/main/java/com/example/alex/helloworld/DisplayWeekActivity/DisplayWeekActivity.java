@@ -4,9 +4,6 @@ package com.example.alex.helloworld.DisplayWeekActivity;
  * Created by agemcipe on 31.10.16.
  */
 
-import android.icu.text.IDNA;
-import android.icu.text.SimpleDateFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -17,45 +14,30 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.alex.helloworld.Data;
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.Meeting;
 import com.example.alex.helloworld.MyCustomAdapter;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Sport;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
-import junit.framework.Assert;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by agemcipe on 21.10.16.
  */
 
-public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, AsyncResponse {
+public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, UIthread {
     private int daySelected;
     private int colorPrimary;
     private int colorAccent;
@@ -94,39 +76,36 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     private void update() throws ExecutionException, InterruptedException, MalformedURLException {
         recyclerView = (RecyclerView) findViewById(R.id.recycleView);
         String meetingID = "1";   //Value from somewhere
-        String[] params = {"/IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
         dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
             @Override
-            public void processFinish(String output) throws ParseException, JSONException {
-                //data = Data.getCalendar(output);
-                data = jsonToArrayList(output);
+            public void processFinish(String result) throws ParseException, JSONException {
+                //data = Data.getCalendar(result);
+                data = jsonToArrayList(result);
                 adapter = new MyCustomAdapter(DisplayWeekActivity.this, data);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(DisplayWeekActivity.this));
 
             }
         }).execute(params);
-
-
     }
 
-    private ArrayList<Information> jsonToArrayList(String jsonObjectSring) throws JSONException, ParseException {
+    private ArrayList<Information> jsonToArrayList(String stringFromJson) throws JSONException, ParseException {
 
         ArrayList<Information> data = new ArrayList<>();
 
-        JSONObject jsonObject = new JSONObject(jsonObjectSring);
+        JSONObject jsonObject = new JSONObject(stringFromJson);
 
-        for (int i = 0; i < 1; i++) {
+        int i=0;
+        while(jsonObject.has(""+i)) {
             String meetingString = jsonObject.get(""+i).toString();
             Gson gson = new Gson();
             Information current = gson.fromJson(meetingString,Information.class);
             data.add(current);
+            i++;
         }
-
         return data;
-
     }
-
 
     /**
      * function that changes the BackgroundResource of an array of Buttons expect the
@@ -159,6 +138,27 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         Buttons[daySelected].setBackgroundColor(colorAccent);
     }
 
+    /**
+     * function for testing Database class on tuesday-button
+     */
+    public void getMeetings() throws InterruptedException, ExecutionException, ParseException, JSONException {
+        String meetingID = "1";
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        Database db = new Database(this);
+        //data is ArrayList<Information>
+        db.execute(params);
+        //data = db.jsonToArrayList(db.execute(params).get());
+        //updateView();
+    }
+
+    @Override
+    public void updateUI(ArrayList<Information> data){
+        recyclerView = (RecyclerView)findViewById(R.id.recycleView);
+        adapter = new MyCustomAdapter(this, data);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        System.out.println("Database Class initialized, layout updated");
+    }
 
     /**
      * overriden onClick Method for weekDayButtons
@@ -175,6 +175,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.tuesdayButton:
                 daySelected = 1;
+                try {
+                    getMeetings();
+                } catch (InterruptedException | ParseException | JSONException | ExecutionException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             case R.id.wednesdayButton:
@@ -262,8 +267,4 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      *
      * @param output
      */
-    @Override
-    public void processFinish(String output) {
-
-    }
 }
