@@ -115,13 +115,15 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         ArrayList<Information> data = new ArrayList<>();
 
         JSONObject jsonObject = new JSONObject(jsonObjectSring);
-
-        for (int i = 0; i < 1; i++) {
-            String meetingString = jsonObject.get(""+i).toString();
+        int i = 0;
+        while (jsonObject.has("" + i)) {
+            String meetingString = jsonObject.get("" + i).toString();
             Gson gson = new Gson();
-            Information current = gson.fromJson(meetingString,Information.class);
+            Information current = gson.fromJson(meetingString, Information.class);
             data.add(current);
+            i++;
         }
+
 
         return data;
 

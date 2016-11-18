@@ -16,7 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Korbi on 22.10.2016.
@@ -48,10 +51,9 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
-        myViewHolder.textview.setText(data.get(position).MeetingID);
-        myViewHolder.start.setText(data.get(position).startTime);
-        myViewHolder.stopp.setText(data.get(position).endTime);
-
+        myViewHolder.textview.setText(data.get(position).names);
+        myViewHolder.start.setText(data.get(position).startTime.substring(11,16));
+        myViewHolder.stopp.setText(data.get(position).endTime.substring(11,16));
         final int currentPosition = position;
         final Information infoData = data.get(position);
 

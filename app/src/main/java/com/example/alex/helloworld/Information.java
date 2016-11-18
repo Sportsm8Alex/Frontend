@@ -10,7 +10,8 @@ public class Information {
     public String stop;
     public String datum;
     public String title;
-    public String MeetingID,startTime,endTime;
+    public String names;
+    public String MeetingID,endTime,startTime;
 
 
 }
