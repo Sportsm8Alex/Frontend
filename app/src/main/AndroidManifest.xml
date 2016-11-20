@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alex.helloworld">
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -51,8 +49,6 @@
             android:theme="@style/AppTheme.Custom1" />
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
 
-        <uses-permission android:name="android.permission.INTERNET" />
-
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
         <activity
             android:name=".AccountPage"
@@ -64,5 +60,4 @@
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
     </application>
-
 </manifest>

@@ -1,5 +1,7 @@
 package com.example.alex.helloworld.databaseConnection;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -25,14 +27,20 @@ import java.util.ArrayList;
  * Created by alex on 11/18/2016.
  */
 
+/**
+ * Contains same fundamental function as DBconnnection; Provides functionality for activities to access database
+ * dynamically through the UIthread interface
+ */
 public class Database extends AsyncTask<String, String, String>{
 
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=10000;
+    public static final int CONNECTION_TIMEOUT=5000;
+    public static final int READ_TIMEOUT=5000;
     private UIthread uiThread;
+    private Context context;
 
-    public Database(UIthread thread){
+    public Database(UIthread thread, Context context){
         uiThread = thread;
+        this.context = context;
     }
 
     @Override
@@ -53,7 +61,7 @@ public class Database extends AsyncTask<String, String, String>{
 
         try {
             //http://10.0.2.2:8080/android_user_api/Backend/
-            URL url = new URL("http://sportsm8.bplaced.net/MySQLadmin/include/"+params[0]);
+            URL url = new URL("http://sportsm8.bplaced.net:80/MySQLadmin/include/"+params[0]);
             System.out.println(url.toString());
 
             conn = (HttpURLConnection) url.openConnection();
@@ -90,21 +98,20 @@ public class Database extends AsyncTask<String, String, String>{
         }
         return success;
     }
-    protected void onPostExecute(String success){
-        try {
-            uiThread.updateUI(jsonToArrayList(success));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    protected void onPostExecute(String success) {
+        //save database information locally
+        SharedPreferences sharedPrefs = context.getSharedPreferences("meetingInformation", context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("meetingJSON", success);
+        editor.apply();
+        int daySelected = 0;
+        uiThread.updateUI(daySelected);
     }
 
-    public ArrayList<Information> jsonToArrayList(String stringFromJson) throws JSONException, ParseException {
+    public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {
 
         ArrayList<Information> data = new ArrayList<>();
-
-        JSONObject jsonObject = new JSONObject(stringFromJson);
+        JSONObject jsonObject = new JSONObject(json);
 
         int i=0;
         while(jsonObject.has(""+i)) {
