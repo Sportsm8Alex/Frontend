@@ -11,6 +11,7 @@ public class Information {
     public String datum;
     public String title;
     public String names;
+    public String friend;
     public String MeetingID,endTime,startTime;
 
 

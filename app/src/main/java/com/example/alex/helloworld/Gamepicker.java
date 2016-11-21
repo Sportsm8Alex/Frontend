@@ -2,7 +2,9 @@ package com.example.alex.helloworld;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.IntentService;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +17,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.alex.helloworld.Friends.Friends;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -193,7 +197,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
                 //fertiges Projekt in Datenbank übertragen
                 //pushProject(project);
-                finish();
+                Intent intent = new Intent(this, Friends.class);
+                startActivity(intent);
 
             } else {
                 Toast.makeText(this, "Zeit falsch eingestellt", Toast.LENGTH_SHORT).show();

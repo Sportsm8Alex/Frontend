@@ -55,7 +55,7 @@ import java.util.concurrent.ExecutionException;
  * Created by agemcipe on 21.10.16.
  */
 
-public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, AsyncResponse {
+public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener {
     private int daySelected;
     private int colorPrimary;
     private int colorAccent;
@@ -106,14 +106,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
             }
         }).execute(params);
-
-
     }
 
     private ArrayList<Information> jsonToArrayList(String jsonObjectSring) throws JSONException, ParseException {
 
         ArrayList<Information> data = new ArrayList<>();
-
         JSONObject jsonObject = new JSONObject(jsonObjectSring);
         int i = 0;
         while (jsonObject.has("" + i)) {
@@ -259,13 +256,5 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    /**
-     * AsyncResponse needs this, but doesnt use it here...
-     *
-     * @param output
-     */
-    @Override
-    public void processFinish(String output) {
-
-    }
+    
 }

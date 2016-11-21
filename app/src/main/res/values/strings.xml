@@ -70,4 +70,6 @@
     <string name="button_sunday">Su</string>
     <string name="title_activity_account_page">AccountPage</string>
     <string name="title_activity_test">test</string>
+    <string name="title_activity_friends">Friends</string>
+    <string name="button_friends">Freunde</string>
 </resources>

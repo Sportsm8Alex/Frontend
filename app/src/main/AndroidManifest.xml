@@ -63,6 +63,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
+        <activity
+            android:name=".Friends.Friends"
+            android:label="@string/title_activity_friends"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

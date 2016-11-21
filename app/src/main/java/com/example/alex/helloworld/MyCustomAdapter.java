@@ -1,7 +1,7 @@
 package com.example.alex.helloworld;
 
 /**
- * Created by alex on 10/30/2016.
+ * Created by Korbi on 10/30/2016.
  */
 
 import android.content.Context;
