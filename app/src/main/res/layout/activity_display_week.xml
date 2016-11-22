@@ -11,8 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:weightSum="7"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/buttonLayout">
 
+
+        <!--
         <Button
             android:text="Mo"
             android:layout_width="wrap_content"
@@ -68,6 +71,8 @@
             android:id="@+id/sundayButton"
             android:layout_weight="1"
             />
+        -->
+
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -77,7 +82,15 @@
         android:layout_height="0dp"
         android:layout_weight="9">
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycleView">
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
+
+
 
 </LinearLayout>
 

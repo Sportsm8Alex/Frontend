@@ -8,7 +8,8 @@ public class Information {
 
     public String start;
     public String stop;
-    public String datum;
     public String title;
+    public String MeetingID,startTime,endTime;
+
 
 }

@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alex.helloworld">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".LoginScreen" />
+        <activity
+            android:name=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <uses-permission android:name="android.permission.INTERNET" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity
+            android:name=".Sport"
+            android:label="@string/title_activity_sportart"
+            android:parentActivityName=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.alex.helloworld.Home" />
+        </activity>
+        <activity
+            android:name=".Invites"
+            android:label="@string/title_activity_einladungen"
+            android:parentActivityName=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.alex.helloworld.Home" />
+        </activity>
+        <activity
+            android:name=".GamePickerLiga"
+            android:theme="@style/AppTheme.Custom1" />
+        <activity
+            android:name=".AddSport"
+            android:theme="@style/AppTheme.Custom1" />
+        <activity
+            android:name=".Gamepicker"
+            android:theme="@style/AppTheme.Custom1" />
+        <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
 
-        <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme">
-            <activity android:name=".LoginScreen"></activity>
-            <activity android:name=".Home">
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-                    <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>
-            </activity>
-            <activity android:name=".MainActivity" />
-            <activity android:name=".RegisterActivity" />
-            <activity
-                android:name=".Sportart"
-                android:label="@string/title_activity_sportart"
-                android:parentActivityName=".Home"
-                android:theme="@style/AppTheme.NoActionBar">
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.example.alex.helloworld.Home" />
-            </activity>
-
-            <activity
-                android:name=".Einladungen"
-                android:label="@string/title_activity_einladungen"
-                android:parentActivityName=".Home"
-                android:theme="@style/AppTheme.NoActionBar">
-                <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.example.alex.helloworld.Home" />
-            </activity>
-            <activity
-                android:name=".GamePickerLiga"
-                android:theme="@style/AppTheme.Custom1"></activity>
-            <activity
-                android:name=".AddSportart"
-                android:theme="@style/AppTheme.Custom1"></activity>
-            <activity
-                android:name=".Gamepicker"
-                android:theme="@style/AppTheme.Custom1"></activity>
-            <activity android:name=".DisplayWeekActivity">
-            </activity>
-            <uses-permission android:name="android.permission.INTERNET"/>
-
-            <activity android:name=".DisplayWeekActivity">
-            </activity>
-
+        <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
+        <activity
+            android:name=".AccountPage"
+            android:label="@string/title_activity_account_page"
+            android:parentActivityName=".Home"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.alex.helloworld.Home" />
+        </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
-

@@ -53,6 +53,7 @@ public class LoginScreen extends AppCompatActivity{
         Button loginButton = (Button)findViewById(R.id.loginButton);
         Button registerButton = (Button)findViewById(R.id.registerButton);
     }
+
     public void buttonClick(View v){
         switch (v.getId()){
             case R.id.loginButton: {
@@ -95,7 +96,7 @@ public class LoginScreen extends AppCompatActivity{
         @Override
         protected String doInBackground(String... params){
             try{
-                url = new URL("http://10.0.2.2:8080/android_user" +
+                url = new URL("http://10.0.2.2/android_user" +
                         "_api/Backend/index.php");
             }
             catch(MalformedURLException e){
@@ -113,7 +114,7 @@ public class LoginScreen extends AppCompatActivity{
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
 
-                //Append parameters to URL
+                //Append parameters so they can be written
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", params[0])
                         .appendQueryParameter("password", params[1]);

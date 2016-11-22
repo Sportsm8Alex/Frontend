@@ -33,6 +33,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     Project project;
     String extraInfo;
     NumberPicker noPicker = null;
+    EditText extraInfos;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,6 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         date = false;
         ea = false;
         num = false;
-        EditText extraInfos;
 
         //NumPicker
         noPicker = (NumberPicker)findViewById(R.id.numberpicker_fun);
@@ -63,25 +63,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
             sportart_ID = b.getInt("sportart");
         }
         project.id = sportart_ID;
+        additionalInfos();
 
-        extraInfos = (EditText) findViewById(R.id.editText_additional);
-        extraInfos.setSingleLine();
-        extraInfos.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //project.extraInfo = extraInfos.getText().toString();
-
-            }
-        });
     }
 
     public void beginn(View v) {
@@ -119,6 +102,29 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         date = true;
         b = (Button) v;
 
+    }
+
+    private void additionalInfos(){
+        extraInfos = (EditText) findViewById(R.id.editText_additional);
+        extraInfos.setSingleLine();
+        extraInfos.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                String extra = extraInfos.getText().toString();
+               // /project.extraInfo = extraInfos.getText().toString();
+
+            }
+        });
     }
 
     @Override

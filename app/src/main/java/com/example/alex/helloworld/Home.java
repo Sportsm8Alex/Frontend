@@ -1,14 +1,14 @@
 package com.example.alex.helloworld;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,16 +16,9 @@ import android.view.Display;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.text.NumberFormat;
+import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
 
 /**
  * Created by alex on 10/30/2016.
@@ -33,7 +26,6 @@ import java.text.NumberFormat;
 
 public class Home extends AppCompatActivity {
 
-    int anzahl = 2;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
@@ -42,6 +34,8 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,17 +45,137 @@ public class Home extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        navigationView();
         buttons();
+    }
+    
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sportart_button:
+                Intent intent = new Intent(this, Sport.class);
+                startActivity(intent);
+                break;
+            case R.id.einladungen_button:
+                Intent intent1 = new Intent(this, Invites.class);
+                startActivity(intent1);
+                break;
+            case R.id.msg_button:
+                Intent intent2 = new Intent(this, AccountPage.class);
+                startActivity(intent2);
+                break;
+            case R.id.calendar_button:
+                Intent intent3 = new Intent(this, DisplayWeekActivity.class);
+                startActivity(intent3);
+                break;
+            default:
+                finish();
+        }
+    }
 
-       mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-       mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-       mDrawerLayout.addDrawerListener(mToggle);
-       mToggle.syncState();
-
-       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_logout:
+                Intent intent = new Intent(getApplicationContext(), Home.class);
+                startActivity(intent);
+                Home.this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    //Implements Navigation View
+    private void navigationView() {
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mNavigationView.getMenu().getItem(1).setChecked(true);
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                Intent intent;
+                switch (id) {
+
+                    case R.id.nav_account:
+                        intent = new Intent(getApplicationContext(), AccountPage.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+
+                    case R.id.nav_logout:
+                        intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+                    case R.id.nav_invite:
+                        intent = new Intent(getApplicationContext(), Invites.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+                    case R.id.nav_sportart:
+                        intent = new Intent(getApplicationContext(), Sport.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+                    case R.id.nav_home:
+                        intent = new Intent(getApplicationContext(), Home.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+
+                }
+
+                return Home.super.onOptionsItemSelected(item);
+            }
+        });
+    }
+
+    public void onBackPressed() {
+        if (isNavDrawerOpen()) {
+            closeNavDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    protected boolean isNavDrawerOpen() {
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START);
+    }
+
+    protected void closeNavDrawer() {
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
 
     private void buttons() {
         Display display = getWindowManager().getDefaultDisplay();
@@ -88,53 +202,5 @@ public class Home extends AppCompatActivity {
         calendar.setHeight(widthh / 2);
     }
 
-    public void sportart(View view) {
-        Intent intent = new Intent(this, Sportart.class);
-        startActivity(intent);
-
-    }
-
-    public void einladungen(View view) {
-        Intent intent = new Intent(this, Einladungen.class);
-        startActivity(intent);
-
-    }
-
-    public void calender(View view){
-        Intent intent = new Intent(this, DisplayWeekActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if(mToggle.onOptionsItemSelected(item)){
-            return true;
-        }
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_logout:
-                Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
-                startActivity(intent);
-                Home.this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }
+

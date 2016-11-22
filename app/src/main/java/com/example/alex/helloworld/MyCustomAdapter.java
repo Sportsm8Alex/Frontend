@@ -5,16 +5,12 @@ package com.example.alex.helloworld;
  */
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,9 +44,9 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
-        myViewHolder.textview.setText(data.get(position).title);
-        myViewHolder.start.setText(data.get(position).start);
-        myViewHolder.stopp.setText(data.get(position).stop);
+        myViewHolder.textview.setText(data.get(position).MeetingID);
+        myViewHolder.start.setText(data.get(position).startTime.substring(11, 16));
+        myViewHolder.stopp.setText(data.get(position).endTime.substring(11, 16));
 
         final int currentPosition = position;
         final Information infoData = data.get(position);
@@ -60,8 +56,6 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
             public void onClick(View v) {
                 removeItem(infoData);
             }
-
-
         });
 
         myViewHolder.habZ.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +64,6 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
                 removeItem(infoData);
             }
         });
-
-
     }
 
     private void removeItem(Information infoData) {
