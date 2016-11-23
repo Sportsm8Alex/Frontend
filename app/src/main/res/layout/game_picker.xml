@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="8dp"
-        android:onClick="beginn"
+        android:onClick="timeButtons"
         android:text="@string/text_beginning" />
 
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_centerHorizontal="true"
-        android:onClick="ende"
+        android:onClick="timeButtons"
         android:text="@string/text_end" />
 
     <Button
@@ -34,8 +34,9 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_alignParentRight="true"
         android:layout_margin="8dp"
-        android:onClick="datum"
+        android:onClick="dateButton"
         android:text="@string/text_date" />
+
 
     <View
         android:layout_width="match_parent"
@@ -45,16 +46,19 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/darker_gray" />
-
-    <NumberPicker
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:id="@+id/numberpicker_fun"
-        android:layout_margin="8dp"
-        android:visibility="gone"
-        android:layout_below="@id/divider">
+        android:layout_height="wrap_content"
+        android:text="@string/add_friends"
+        android:layout_below="@+id/divider"
+        android:layout_alignParentEnd="true"
+        android:onClick="addPartiMembers"
+        android:id="@+id/add_participants_button"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"/>
 
-    </NumberPicker>
+
+
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -66,7 +70,7 @@
         android:id="@+id/button_plus"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:onClick="plus"
+        android:onClick="memberCount"
         android:text="+" />
 
     <TextView
@@ -80,7 +84,7 @@
         android:id="@+id/button_minus"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:onClick="minus"
+        android:onClick="memberCount"
         android:enabled="false"
         android:text="-" />
 </LinearLayout>
@@ -109,7 +113,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="4dp"
-        android:onClick="ok"
+        android:onClick="okButton"
         android:text="@string/text_ok"
         android:textColor="@color/colorPrimary" />
 

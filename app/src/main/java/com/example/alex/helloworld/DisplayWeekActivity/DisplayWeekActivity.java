@@ -4,9 +4,6 @@ package com.example.alex.helloworld.DisplayWeekActivity;
  * Created by agemcipe on 31.10.16.
  */
 
-import android.icu.text.IDNA;
-import android.icu.text.SimpleDateFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -17,38 +14,20 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.alex.helloworld.Data;
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.Meeting;
-import com.example.alex.helloworld.MyCustomAdapter;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Sport;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
-import junit.framework.Assert;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -92,7 +71,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void update() throws ExecutionException, InterruptedException, MalformedURLException {
-        recyclerView = (RecyclerView) findViewById(R.id.recycleView);
+        recyclerView = (RecyclerView) findViewById(R.id.inviteView);
         String meetingID = "1";   //Value from somewhere
         String[] params = {"/IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
         dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {

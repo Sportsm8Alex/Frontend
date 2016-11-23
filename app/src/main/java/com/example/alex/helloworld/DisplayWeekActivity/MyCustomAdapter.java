@@ -1,25 +1,21 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.DisplayWeekActivity;
 
 /**
  * Created by Korbi on 10/30/2016.
  */
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.R;
+
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Korbi on 22.10.2016.
@@ -43,9 +39,7 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
 
         View view = inflater.inflate(R.layout.einladungen_item, parent, false);
 
-        MyViewHolder holder = new MyViewHolder(view);
-
-        return holder;
+        return new MyViewHolder(view);
     }
 
     @Override

@@ -72,4 +72,7 @@
     <string name="title_activity_test">test</string>
     <string name="title_activity_friends">Friends</string>
     <string name="button_friends">Freunde</string>
+    <string name="add_friends">Add Friends</string>
+    <string name="setTimeWrong">Zeit falsch eingestellt</string>
+    <string name="text_empty_fields">Nicht alle Felder ausgefüllt</string>
 </resources>

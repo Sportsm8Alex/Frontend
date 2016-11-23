@@ -2,7 +2,6 @@ package com.example.alex.helloworld;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.IntentService;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,195 +18,193 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.databaseConnection.AsyncResponse;
+import com.example.alex.helloworld.databaseConnection.DBconnection;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.MutableDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.ArrayList;
 
 /**
  * Created by Korbi on 22.10.2016.
  */
 
-public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    int hour_a, minute_a, day_a, month_a, year_a, numP;
+public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher{
+    int numP;
+    Button SelectedButton;
+
     int sportart_ID = -1;
-    Button b;
-    Boolean start, end, date, num, ea;
-    Project project;
-    String extraInfo;
-    NumberPicker noPicker = null;
-    EditText extraInfos;
+    ArrayList<Information> Selection=new ArrayList<>();
+    private EditText additionalInfos;
+    private Boolean endOrStart;
+    private MutableDateTime startTime, endTime;
+    private DateTime datetime;
+    private DateTimeFormatter formatter;
+    private String extraInfoString;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_picker);
-        project = new Project();
-        start = false;
-        end = false;
-        date = false;
-        ea = false;
-        num = false;
-
-        //NumPicker
-        noPicker = (NumberPicker)findViewById(R.id.numberpicker_fun);
-        noPicker.setMaxValue(100);
-        noPicker.setMinValue(0);
-        noPicker.setWrapSelectorWheel(false);
+        endOrStart = false;
 
         //Popup größe
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
-        int height = dm.heightPixels;
         getWindow().setLayout((int) (width * .8), (int) (width * .8));
+
         //sportartID
         Bundle b = getIntent().getExtras();
         if (b != null) {
-            sportart_ID = b.getInt("sportart");
+            sportart_ID = b.getInt("sportID");
         }
-        project.id = sportart_ID;
-        additionalInfos();
+        formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
+        datetime = new DateTime();
+        startTime = new MutableDateTime();
+        startTime.set(DateTimeFieldType.secondOfMinute(), 0);
+        startTime.set(DateTimeFieldType.millisOfSecond(),1);
+        startTime.set(DateTimeFieldType.year(),0);
+        endTime = new MutableDateTime();
+        endTime.set(DateTimeFieldType.secondOfMinute(), 0);
+        endTime.set(DateTimeFieldType.millisOfSecond(),1);
+        endTime.set(DateTimeFieldType.year(),0);
+        additionalInfos = (EditText)findViewById(R.id.editText_additional);
+        additionalInfos.setSingleLine();
+        additionalInfos.addTextChangedListener(this);
 
     }
 
-    public void beginn(View v) {
-
-        Calendar c = Calendar.getInstance();
-        hour_a = c.get(Calendar.HOUR_OF_DAY);
-        minute_a = c.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, hour_a, minute_a, true);
+    public void timeButtons(View view) {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, datetime.getHourOfDay(), datetime.getMinuteOfHour(), true);
         timePickerDialog.show();
-        b = (Button) v;
-        ea = true;
-        start = true;
+        SelectedButton = (Button) view;
+        switch (view.getId()){
+            case R.id.button_ende:
+                endOrStart = false;
+                break;
+            case R.id.button_beginn:
+                endOrStart = true;
+                break;
+        }
+
     }
 
-    public void ende(View v) {
-
-        Calendar c = Calendar.getInstance();
-        hour_a = c.get(Calendar.HOUR_OF_DAY);
-        minute_a = c.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, hour_a, minute_a, true);
-        timePickerDialog.show();
-        ea = false;
-        end = true;
-        b = (Button) v;
-    }
-
-    public void datum(View v) {
-
-        Calendar c = Calendar.getInstance();
-        year_a = c.get(Calendar.YEAR);
-        month_a = c.get(Calendar.MONTH);
-        day_a = c.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, year_a, month_a, day_a);
+    public void dateButton(View view) {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, datetime.getYear(), datetime.getMonthOfYear(), datetime.getDayOfMonth());
         datePickerDialog.show();
-        date = true;
-        b = (Button) v;
+        SelectedButton = (Button) view;
 
-    }
-
-    private void additionalInfos(){
-        extraInfos = (EditText) findViewById(R.id.editText_additional);
-        extraInfos.setSingleLine();
-        extraInfos.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                String extra = extraInfos.getText().toString();
-               // /project.extraInfo = extraInfos.getText().toString();
-
-            }
-        });
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        year_a = year;
-        month_a = month;
-        day_a = dayOfMonth;
-        project.day = day_a;
-        project.month = month_a;
-        project.year = year_a;
-        b.setText(day_a + "." + month_a + "." + year_a);
+        startTime.setDate(year, month, dayOfMonth);
+        endTime.setDate(year, month, dayOfMonth);
+        SelectedButton.setText(dayOfMonth + "." + month + "." + year);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
         NumberFormat f = new DecimalFormat("00");
-        hour_a = hourOfDay;
-        minute_a = minute;
-        if (ea) {
-            project.begin_m = minute_a;
-            project.begin_h = hour_a;
+        if (endOrStart) {
+            startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+            startTime.set(DateTimeFieldType.minuteOfHour(), minute);
+            startTime.set(DateTimeFieldType.millisOfSecond(),0);
+
         } else {
-            project.end_m = minute_a;
-            project.end_h = hour_a;
+            endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+            endTime.set(DateTimeFieldType.minuteOfHour(), minute);
+            endTime.set(DateTimeFieldType.millisOfSecond(),0);
         }
-        b.setText(f.format(hour_a) + ":" + f.format(minute_a));
+        SelectedButton.setText(f.format(hourOfDay) + ":" + f.format(minute));
     }
 
     public void cancel(View v) {
         finish();
     }
 
-    public void plus(View v) {
-        numP++;
-        String s = String.valueOf(numP);
+    public void memberCount(View view){
         TextView textView = (TextView) findViewById(R.id.textview_num);
-        textView.setText(s);
-        Button temp = (Button) findViewById(R.id.button_minus);
-        temp.setEnabled(true);
-        project.numParti = numP;
-    }
-
-    public void minus(View v) {
-        if (numP > 0) {
-            numP--;
-            if(numP==0){
-                Button temp = (Button) findViewById(R.id.button_minus);
-                temp.setEnabled(false);
-            }
+        Button minus = (Button) findViewById(R.id.button_minus);
+        switch (view.getId()) {
+            case R.id.button_plus:
+                numP++;
+                textView.setText(""+numP);
+                minus.setEnabled(true);
+                break;
+            case R.id.button_minus:
+                if (numP > 0) {
+                    numP--;
+                    if (numP == 0) {
+                        minus.setEnabled(false);
+                    }
+                }
+                textView.setText(""+numP);
+                break;
         }
-        String s = String.valueOf(numP);
-        project.numParti = numP;
-        TextView textView = (TextView) findViewById(R.id.textview_num);
-        textView.setText(s);
-
     }
 
-    public void ok(View v) {
-        int tempBe = project.begin_h * 60 + project.begin_m;
-        int tempEn = project.end_h * 60 + project.end_m;
-        Toast.makeText(this, project.extraInfo, Toast.LENGTH_SHORT).show();
 
-        if (date && start && end && project.numParti > 0) {
-            if (tempBe - tempEn < 0) {
+    public void okButton(View v) {
 
-                //fertiges Projekt in Datenbank übertragen
-                //pushProject(project);
-                Intent intent = new Intent(this, Friends.class);
-                startActivity(intent);
+        if (startTime.get(DateTimeFieldType.millisOfSecond())==0 &&endTime.get(DateTimeFieldType.millisOfSecond())==0 &&startTime.get(DateTimeFieldType.year())!=0&&numP!=0) {
+            if (startTime.isBefore(endTime)) {
+                String[] params = {"/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime)};
+                new DBconnection(new AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) throws ParseException, JSONException {
+
+                    }
+                }).execute(params);
+                finish();
 
             } else {
-                Toast.makeText(this, "Zeit falsch eingestellt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
             }
 
         } else {
-            Toast.makeText(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
         }
 
     }
 
+    public void addPartiMembers(View view) {
+        Intent intent = new Intent(this, Friends.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
+
+
+            }
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        extraInfoString = additionalInfos.getText().toString();
+        Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
+    }
 }

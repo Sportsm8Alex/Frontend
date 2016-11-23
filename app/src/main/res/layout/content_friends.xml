@@ -5,10 +5,6 @@
     android:id="@+id/content_friends"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.alex.helloworld.Friends.Friends"
     tools:showIn="@layout/activity_friends">
@@ -16,10 +12,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/search_friends"
+    android:layout_margin="8dp"
+    android:hint="Search"
+    android:cursorVisible="false"
+    android:maxLines="1"
     android:layout_alignParentTop="true"/>
-    <ListView
+
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/search_friends"
-        android:id="@+id/friends_listview" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_friends"
+        android:id="@+id/friendsRview"        />
+
+
 </RelativeLayout>

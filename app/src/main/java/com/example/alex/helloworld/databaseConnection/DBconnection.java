@@ -35,8 +35,8 @@ import java.util.List;
  */
 
 public class DBconnection extends AsyncTask<String, String, String> {
-    private static final int CONNECTION_TIMEOUT = 10000;
-    private static final int READ_TIMEOUT = 15000;
+    private static final int CONNECTION_TIMEOUT = 100000;
+    private static final int READ_TIMEOUT = 150000;
     private static final String BASE_URL = "sportsm8.bplaced.net/MySQLadmin/include";
     public static final String DEBUG_TAG = "some clever Debug tag:";
     private AsyncResponse delegate=null;

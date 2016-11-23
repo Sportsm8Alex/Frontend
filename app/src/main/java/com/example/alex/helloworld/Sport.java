@@ -47,9 +47,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -86,9 +83,7 @@ public class Sport extends AppCompatActivity {
 
         try {
             createList();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         navigationView();
@@ -263,8 +258,7 @@ public class Sport extends AppCompatActivity {
 
     private class SportID extends AsyncTask<String, String, String> {
         HttpURLConnection conn;
-        URL url = null;
-        URL url2 = null;
+        URL url = null;;
 
         @Override
         protected void onPreExecute() {
@@ -340,7 +334,7 @@ public class Sport extends AppCompatActivity {
         @Override
         protected void onPostExecute(String success) {
 
-            Toast.makeText(Sport.this, "add", Toast.LENGTH_LONG).show();
+
 
 
         }
