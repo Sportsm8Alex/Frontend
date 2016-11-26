@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.GamePicker;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -12,12 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 
@@ -28,11 +29,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Korbi on 22.10.2016.
@@ -71,11 +72,9 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         datetime = new DateTime();
         startTime = new MutableDateTime();
         startTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        startTime.set(DateTimeFieldType.millisOfSecond(),1);
         startTime.set(DateTimeFieldType.year(),0);
         endTime = new MutableDateTime();
         endTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        endTime.set(DateTimeFieldType.millisOfSecond(),1);
         endTime.set(DateTimeFieldType.year(),0);
         additionalInfos = (EditText)findViewById(R.id.editText_additional);
         additionalInfos.setSingleLine();
@@ -158,13 +157,29 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
         if (startTime.get(DateTimeFieldType.millisOfSecond())==0 &&endTime.get(DateTimeFieldType.millisOfSecond())==0 &&startTime.get(DateTimeFieldType.year())!=0&&numP!=0) {
             if (startTime.isBefore(endTime)) {
-                String[] params = {"/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime)};
+                ArrayList<String> paramsArrayList = new ArrayList<>(
+                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
+                );
+                for(int i = 0;i<Selection.size();i++){
+                    paramsArrayList.add("member"+i);
+                    paramsArrayList.add(Selection.get(i).email);
+                }
+                String[] params = new String[paramsArrayList.size()];
+                params = paramsArrayList.toArray(params);
+
+            System.out.print("ha");
+
                 new DBconnection(new AsyncResponse() {
                     @Override
                     public void processFinish(String output) throws ParseException, JSONException {
 
                     }
                 }).execute(params);
+
+
+
+
+
                 finish();
 
             } else {
@@ -186,10 +201,11 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
+
+                String[] params = {"/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime)};
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
-
-
+                System.out.print("hallo");
             }
         }
     }

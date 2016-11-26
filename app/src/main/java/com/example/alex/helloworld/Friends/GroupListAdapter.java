@@ -14,7 +14,7 @@ import com.example.alex.helloworld.R;
 import java.util.ArrayList;
 
 
-public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
+public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<Information> data;
@@ -22,7 +22,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     LayoutInflater inflater;
     String email;
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data) {
+    public GroupListAdapter(Context context, ArrayList<Information> data) {
         this.context = context;
         this.data = data;
         backup = data;
@@ -32,27 +32,26 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = inflater.inflate(R.layout.item_friends_view, parent, false);
+        View view = inflater.inflate(R.layout.item_group_view, parent, false);
         return new MyViewHolder(view, context, data);
     }
     private final static int FADE_DURATION = 300;
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.username.setText(data.get(position).username);
-        holder.email.setText(data.get(position).email);
+        holder.groupname.setText(data.get(position).GroupName);
         setScaleAnimation(holder.itemView);
     }
 
     public int search(String search){
-       int posi=0;
-       for(int i=0;i<getItemCount();i++){
-           if(data.get(i).getUsername().toLowerCase().startsWith(search.toLowerCase())){
-               posi = i;
-           }
-       }
+        int posi=0;
+        for(int i=0;i<getItemCount();i++){
+            if(data.get(i).getUsername().toLowerCase().startsWith(search.toLowerCase())){
+                posi = i;
+            }
+        }
 
-       return posi;
+        return posi;
     }
     private void setScaleAnimation(View view) {
         ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -71,10 +70,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView username;
+        TextView groupname;
         TextView email;
         ArrayList<Information> informations = new ArrayList<>();
-        ArrayList<Information> selected = new ArrayList<>();
         Context contxt;
 
 
@@ -84,8 +82,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             this.contxt = ctx;
             itemView.setOnClickListener(this);
             itemView.setSelected(false);
-            username = (TextView) itemView.findViewById(R.id.username_text);
-            email = (TextView) itemView.findViewById(R.id.user_email);
+            groupname = (TextView) itemView.findViewById(R.id.group_name);
 
 
         }

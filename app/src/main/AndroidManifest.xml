@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Unused_Inactive.MainActivity" />
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".Sport"
@@ -41,13 +41,13 @@
                 android:value="com.example.alex.helloworld.Home" />
         </activity>
         <activity
-            android:name=".GamePickerLiga"
+            android:name=".Unused_Inactive.GamePickerLiga"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".AddSport"
+            android:name=".Unused_Inactive.AddSport"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".Gamepicker"
+            android:name=".GamePicker.Gamepicker"
             android:theme="@style/AppTheme.Custom1" />
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
 

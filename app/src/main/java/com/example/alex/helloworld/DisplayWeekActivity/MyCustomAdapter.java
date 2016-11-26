@@ -37,7 +37,7 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int position) {
 
-        View view = inflater.inflate(R.layout.einladungen_item, parent, false);
+        View view = inflater.inflate(R.layout.item_invites, parent, false);
 
         return new MyViewHolder(view);
     }
@@ -45,7 +45,7 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
-        myViewHolder.textview.setText(data.get(position).names);
+        myViewHolder.textview.setText(data.get(position).MeetingID);
         myViewHolder.start.setText(data.get(position).startTime.substring(11,16));
         myViewHolder.stopp.setText(data.get(position).endTime.substring(11,16));
         final int currentPosition = position;

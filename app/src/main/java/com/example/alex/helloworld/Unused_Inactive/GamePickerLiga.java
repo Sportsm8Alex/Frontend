@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Unused_Inactive;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
+
+import com.example.alex.helloworld.R;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
