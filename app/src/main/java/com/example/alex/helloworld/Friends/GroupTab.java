@@ -34,6 +34,11 @@ public class GroupTab extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
         friends = new ArrayList<>();
         updateFriendsList("Korbi@Korbi.de");
+
+        adapter = new GroupListAdapter(getContext(), friends);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         return v;
     }
 

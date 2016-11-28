@@ -14,9 +14,10 @@ public class Information implements Serializable{
     public String title;
     public String names;
     public String friend;
-    public String username;
+    public String username,PPpath;
     public String email,GroupID,GroupName;
     public String MeetingID,endTime,startTime;
+    public Boolean selected=false;
 
     public String getUsername() {
         return username;

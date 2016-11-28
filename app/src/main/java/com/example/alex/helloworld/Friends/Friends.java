@@ -1,5 +1,6 @@
 package com.example.alex.helloworld.Friends;
 
+import android.content.Context;
 import android.content.Intent;
 import android.icu.text.IDNA;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.LoginScreen;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
@@ -99,55 +102,31 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateFriendsList(String email) {
-        String[] params = {"/IndexFriendship.php", "callID", "3", "email", email};
-        dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) throws ParseException, JSONException {
-                parseToArrayList(output);
-            }
-        }).execute(params);
 
-
-    }
-
-    private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
-        ArrayList<Information> data = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(jsonObjectSring);
-
-        int i = 0;
-        while (jsonObject.has("" + i)) {
-            String meetingString = jsonObject.get("" + i).toString();
-            Gson gson = new Gson();
-            Information current = gson.fromJson(meetingString, Information.class);
-            data.add(current);
-            i++;
-        }
-        adapter = new FriendsListAdapter(Friends.this, data);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(Friends.this));
-        friends = data;
-        return data;
-
-    }
 
     private void finishSelection() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.friends_recycler_view);
-        for (int i = 0; i < friends.size()-1; i++) {
+       /* recyclerView = (RecyclerView) findViewById(R.id.friends_recycler_view);
+        for (int i = 0; i < recyclerView.getAdapter().getItemCount(); i++) {
             if (recyclerView.getChildAt(i).isSelected()) {
                 selected.add(friends.get(i));
             }
+        }*/
+        for(int i = 0;i<friends.size();i++){
+            if(!friends.get(i).selected){
+                friends.remove(i);
+            }
         }
+
         Bundle bundle = new Bundle();
-        bundle.putSerializable("partyList", selected);
+        bundle.putSerializable("partyList", friends);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
         finish();
     }
 
-    public void setData(ArrayList<Information> data){
+    public void setData(ArrayList<Information> data) {
         friends = data;
     }
 
@@ -158,9 +137,13 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        int pos = adapter.search(newText);
-        recyclerView.scrollToPosition(pos);
-        return true;
+        if (adapter != null) {
+            int pos = adapter.search(newText);
+            recyclerView.scrollToPosition(pos);
+            return true;
+        }
+        return false;
 
     }
+
 }

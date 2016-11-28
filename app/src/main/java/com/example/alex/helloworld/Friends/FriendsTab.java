@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Unused_Inactive.MainActivity;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
@@ -23,9 +22,7 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 
 public class FriendsTab extends Fragment {
-    private DBconnection dBconnection;
     private ArrayList<Information> friends;
-
     RecyclerView recyclerView;
     FriendsListAdapter adapter;
 
@@ -34,14 +31,26 @@ public class FriendsTab extends Fragment {
         View v =inflater.inflate(R.layout.friends_tab,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.friends_recycler_view);
         friends = new ArrayList<>();
-        updateFriendsList("Korbi@Korbi.de");
+        updateFriendsList("Korbi@Korbi.de"); //Email from Shared Prefernces?
+
+        //Sets empty adapter to prevent Errors
+        adapter = new FriendsListAdapter(getContext(), friends,this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return v;
     }
 
+    public void toggle(int pos){
+        friends.get(pos).selected ^= true;
+        Friends activity = (Friends) getActivity();
+        activity.setData(friends);
+    }
+
+    //Needs to be adapted to Alex DatabaseConnection
     private void updateFriendsList(String email) {
-        String[] params = {"/IndexFriendship.php", "callID", "3", "email", email};
-        dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
+        String[] params = {"/IndexFriendship.php", "function", "getFriends", "email", email};
+       new DBconnection(new AsyncResponse() {
             @Override
             public void processFinish(String output) throws ParseException, JSONException {
                 parseToArrayList(output);
@@ -50,6 +59,8 @@ public class FriendsTab extends Fragment {
 
 
     }
+
+    //Not need for Alex Database Connection
     private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
         ArrayList<Information> data = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(jsonObjectSring);
@@ -62,7 +73,7 @@ public class FriendsTab extends Fragment {
             data.add(current);
             i++;
         }
-        adapter = new FriendsListAdapter(getContext(), data);
+        adapter = new FriendsListAdapter(getContext(), data,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
@@ -71,4 +82,6 @@ public class FriendsTab extends Fragment {
         return data;
 
     }
+
+
 }
