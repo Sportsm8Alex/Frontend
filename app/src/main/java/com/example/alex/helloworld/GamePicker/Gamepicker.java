@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ import java.util.Arrays;
  */
 
 public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher{
-    int numP;
+    int numP=4,minHours=2;
     Button SelectedButton;
 
     int sportart_ID = -1;
@@ -51,6 +52,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     private DateTime datetime;
     private DateTimeFormatter formatter;
     private String extraInfoString;
+    private TextView text_minHour;
+    private TextView text_minParti;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +82,11 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         additionalInfos = (EditText)findViewById(R.id.editText_additional);
         additionalInfos.setSingleLine();
         additionalInfos.addTextChangedListener(this);
+        text_minHour = (TextView) findViewById(R.id.textview_num_hour);
+        text_minHour.setText(minHours+"");
+        text_minParti = (TextView) findViewById(R.id.textview_num);
+        text_minParti.setText(numP+"");
+
 
     }
 
@@ -104,6 +112,91 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     }
 
+    public void memberCountButton(View view){
+        Button minus = (Button) findViewById(R.id.button_minus);
+        switch (view.getId()) {
+            case R.id.button_plus:
+                numP++;
+                text_minParti.setText(""+numP);
+                minus.setEnabled(true);
+                break;
+            case R.id.button_minus:
+                if (numP > 0) {
+                    numP--;
+                    if (numP == 0) {
+                        minus.setEnabled(false);
+                    }
+                }
+                text_minParti.setText(""+numP);
+                break;
+        }
+    }
+
+    public void cancelButton(View v) {
+        finish();
+    }
+
+    public void okButton(View v) {
+
+        if (startTime.get(DateTimeFieldType.millisOfSecond())==0 &&endTime.get(DateTimeFieldType.millisOfSecond())==0 &&startTime.get(DateTimeFieldType.year())!=0&&numP!=0) {
+            if (startTime.isBefore(endTime)) {
+                ArrayList<String> paramsArrayList = new ArrayList<>(
+                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
+                );
+                for(int i = 0;i<Selection.size();i++){
+                    paramsArrayList.add("member"+i);
+                    paramsArrayList.add(Selection.get(i).email);
+                }
+                String[] params = new String[paramsArrayList.size()];
+                params = paramsArrayList.toArray(params);
+
+                System.out.print("ha");
+
+                new DBconnection(new AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) throws ParseException, JSONException {
+
+                    }
+                }).execute(params);
+                finish();
+
+            } else {
+                Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void addPartiMembersButton(View view) {
+        Intent intent = new Intent(this, Friends.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void minTimeButton(View view) {
+        Button minus = (Button) findViewById(R.id.button_minus_hour);
+        switch (view.getId()) {
+            case R.id.button_plus_hour:
+                minHours++;
+                text_minHour.setText(""+minHours);
+                minus.setEnabled(true);
+                break;
+            case R.id.button_minus_hour:
+                if (minHours > 0) {
+                    minHours--;
+                    if (minHours == 0) {
+                        minus.setEnabled(false);
+                    }
+                }
+                text_minHour.setText(""+minHours);
+                break;
+        }
+    }
+}
+
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         startTime.setDate(year, month, dayOfMonth);
@@ -127,75 +220,6 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         SelectedButton.setText(f.format(hourOfDay) + ":" + f.format(minute));
     }
 
-    public void cancel(View v) {
-        finish();
-    }
-
-    public void memberCount(View view){
-        TextView textView = (TextView) findViewById(R.id.textview_num);
-        Button minus = (Button) findViewById(R.id.button_minus);
-        switch (view.getId()) {
-            case R.id.button_plus:
-                numP++;
-                textView.setText(""+numP);
-                minus.setEnabled(true);
-                break;
-            case R.id.button_minus:
-                if (numP > 0) {
-                    numP--;
-                    if (numP == 0) {
-                        minus.setEnabled(false);
-                    }
-                }
-                textView.setText(""+numP);
-                break;
-        }
-    }
-
-
-    public void okButton(View v) {
-
-        if (startTime.get(DateTimeFieldType.millisOfSecond())==0 &&endTime.get(DateTimeFieldType.millisOfSecond())==0 &&startTime.get(DateTimeFieldType.year())!=0&&numP!=0) {
-            if (startTime.isBefore(endTime)) {
-                ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
-                );
-                for(int i = 0;i<Selection.size();i++){
-                    paramsArrayList.add("member"+i);
-                    paramsArrayList.add(Selection.get(i).email);
-                }
-                String[] params = new String[paramsArrayList.size()];
-                params = paramsArrayList.toArray(params);
-
-            System.out.print("ha");
-
-                new DBconnection(new AsyncResponse() {
-                    @Override
-                    public void processFinish(String output) throws ParseException, JSONException {
-
-                    }
-                }).execute(params);
-
-
-
-
-
-                finish();
-
-            } else {
-                Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    public void addPartiMembers(View view) {
-        Intent intent = new Intent(this, Friends.class);
-        startActivityForResult(intent, 1);
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -205,7 +229,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 String[] params = {"/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime)};
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
-                System.out.print("hallo");
+                TextView textView = (TextView) findViewById(R.id.number_added);
+                textView.setText(Selection.size()+" Teilnehmer");
             }
         }
     }
@@ -223,4 +248,4 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         extraInfoString = additionalInfos.getText().toString();
         Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
-}
+

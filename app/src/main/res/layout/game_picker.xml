@@ -21,17 +21,17 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
         android:onClick="timeButtons"
         android:text="@string/text_end" />
 
     <Button
         android:id="@+id/button_datum"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_alignParentRight="true"
         android:layout_margin="8dp"
         android:onClick="dateButton"
@@ -39,55 +39,123 @@
 
 
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/divider"
         android:layout_below="@id/button_beginn"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/darker_gray" />
-    <Button
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_friends"
-        android:layout_below="@+id/divider"
-        android:layout_alignParentEnd="true"
-        android:onClick="addPartiMembers"
-        android:id="@+id/add_participants_button"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_below="@id/divider"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Teilnemer:"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/button_plus"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:onClick="memberCountButton"
+                android:text="+" />
+
+            <TextView
+                android:id="@+id/textview_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
 
 
-
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/divider"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_margin="16dp">
-    <Button
-        android:id="@+id/button_plus"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:onClick="memberCount"
-        android:text="+" />
-
-    <TextView
-        android:id="@+id/textview_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0" />
+            <Button
+                android:id="@+id/button_minus"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:onClick="memberCountButton"
+                android:text="-" />
 
 
-    <Button
-        android:id="@+id/button_minus"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:onClick="memberCount"
-        android:enabled="false"
-        android:text="-" />
-</LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/add_participants_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="addPartiMembersButton"
+                android:text="@string/add_friends" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 Teilnehmer"
+                android:id="@+id/number_added"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stunden"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/button_plus_hour"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:onClick="minTimeButton"
+                android:text="+" />
+
+            <TextView
+                android:id="@+id/textview_num_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+
+
+            <Button
+                android:id="@+id/button_minus_hour"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:onClick="minTimeButton"
+                android:text="-" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/button_cancel"
@@ -97,9 +165,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="4dp"
-        android:onClick="cancel"
+        android:layout_marginLeft="8dp"
+        android:onClick="cancelButton"
         android:text="@string/text_cancel"
         android:textColor="@color/colorPrimary" />
 
@@ -111,8 +179,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="4dp"
+        android:layout_marginRight="8dp"
         android:onClick="okButton"
         android:text="@string/text_ok"
         android:textColor="@color/colorPrimary" />
@@ -126,23 +194,19 @@
         android:layout_above="@id/button_cancel"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:cursorVisible="false"
         android:backgroundTint="@android:color/transparent"
+        android:cursorVisible="false"
         android:hint="Ort, Habe Ball etc..."
         android:maxLines="1" />
 
     <View
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/divider2"
         android:layout_below="@id/editText_additional"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/darker_gray" />
-
-
-
-
 
 
 </RelativeLayout>

@@ -34,6 +34,7 @@ import org.json.simple.parser.ParseException;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Friends extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private DBconnection dBconnection;
@@ -105,16 +106,11 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
 
     private void finishSelection() {
-
-       /* recyclerView = (RecyclerView) findViewById(R.id.friends_recycler_view);
-        for (int i = 0; i < recyclerView.getAdapter().getItemCount(); i++) {
-            if (recyclerView.getChildAt(i).isSelected()) {
-                selected.add(friends.get(i));
-            }
-        }*/
-        for(int i = 0;i<friends.size();i++){
-            if(!friends.get(i).selected){
-                friends.remove(i);
+        for (Iterator<Information> iterator = friends.iterator(); iterator.hasNext();) {
+            Information info = iterator.next();
+            if (!info.selected) {
+                // Remove the current element from the iterator and the list.
+                iterator.remove();
             }
         }
 
