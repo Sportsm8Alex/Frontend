@@ -40,12 +40,12 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher{
-    int numP=4,minHours=2;
+public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
+    int numP = 4, minHours = 2;
     Button SelectedButton;
 
     int sportart_ID = -1;
-    ArrayList<Information> Selection=new ArrayList<>();
+    ArrayList<Information> Selection = new ArrayList<>();
     private EditText additionalInfos;
     private Boolean endOrStart;
     private MutableDateTime startTime, endTime;
@@ -75,17 +75,17 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         datetime = new DateTime();
         startTime = new MutableDateTime();
         startTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        startTime.set(DateTimeFieldType.year(),0);
+        startTime.set(DateTimeFieldType.year(), 0);
         endTime = new MutableDateTime();
         endTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        endTime.set(DateTimeFieldType.year(),0);
-        additionalInfos = (EditText)findViewById(R.id.editText_additional);
+        endTime.set(DateTimeFieldType.year(), 0);
+        additionalInfos = (EditText) findViewById(R.id.editText_additional);
         additionalInfos.setSingleLine();
         additionalInfos.addTextChangedListener(this);
         text_minHour = (TextView) findViewById(R.id.textview_num_hour);
-        text_minHour.setText(minHours+"");
+        text_minHour.setText(minHours + "");
         text_minParti = (TextView) findViewById(R.id.textview_num);
-        text_minParti.setText(numP+"");
+        text_minParti.setText(numP + "");
 
 
     }
@@ -94,7 +94,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, datetime.getHourOfDay(), datetime.getMinuteOfHour(), true);
         timePickerDialog.show();
         SelectedButton = (Button) view;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.button_ende:
                 endOrStart = false;
                 break;
@@ -112,12 +112,12 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     }
 
-    public void memberCountButton(View view){
+    public void memberCountButton(View view) {
         Button minus = (Button) findViewById(R.id.button_minus);
         switch (view.getId()) {
             case R.id.button_plus:
                 numP++;
-                text_minParti.setText(""+numP);
+                text_minParti.setText("" + numP);
                 minus.setEnabled(true);
                 break;
             case R.id.button_minus:
@@ -127,7 +127,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                         minus.setEnabled(false);
                     }
                 }
-                text_minParti.setText(""+numP);
+                text_minParti.setText("" + numP);
                 break;
         }
     }
@@ -138,13 +138,13 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     public void okButton(View v) {
 
-        if (startTime.get(DateTimeFieldType.millisOfSecond())==0 &&endTime.get(DateTimeFieldType.millisOfSecond())==0 &&startTime.get(DateTimeFieldType.year())!=0&&numP!=0) {
+        if (startTime.get(DateTimeFieldType.millisOfSecond()) == 0 && endTime.get(DateTimeFieldType.millisOfSecond()) == 0 && startTime.get(DateTimeFieldType.year()) != 0 && numP != 0) {
             if (startTime.isBefore(endTime)) {
                 ArrayList<String> paramsArrayList = new ArrayList<>(
                         Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
                 );
-                for(int i = 0;i<Selection.size();i++){
-                    paramsArrayList.add("member"+i);
+                for (int i = 0; i < Selection.size(); i++) {
+                    paramsArrayList.add("member" + i);
                     paramsArrayList.add(Selection.get(i).email);
                 }
                 String[] params = new String[paramsArrayList.size()];
@@ -180,7 +180,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         switch (view.getId()) {
             case R.id.button_plus_hour:
                 minHours++;
-                text_minHour.setText(""+minHours);
+                text_minHour.setText("" + minHours);
                 minus.setEnabled(true);
                 break;
             case R.id.button_minus_hour:
@@ -190,11 +190,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                         minus.setEnabled(false);
                     }
                 }
-                text_minHour.setText(""+minHours);
+                text_minHour.setText("" + minHours);
                 break;
         }
     }
-}
 
 
     @Override
@@ -210,12 +209,12 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         if (endOrStart) {
             startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             startTime.set(DateTimeFieldType.minuteOfHour(), minute);
-            startTime.set(DateTimeFieldType.millisOfSecond(),0);
+            startTime.set(DateTimeFieldType.millisOfSecond(), 0);
 
         } else {
             endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             endTime.set(DateTimeFieldType.minuteOfHour(), minute);
-            endTime.set(DateTimeFieldType.millisOfSecond(),0);
+            endTime.set(DateTimeFieldType.millisOfSecond(), 0);
         }
         SelectedButton.setText(f.format(hourOfDay) + ":" + f.format(minute));
     }
@@ -230,7 +229,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
                 TextView textView = (TextView) findViewById(R.id.number_added);
-                textView.setText(Selection.size()+" Teilnehmer");
+                textView.setText(Selection.size() + " Teilnehmer");
             }
         }
     }
@@ -249,3 +248,4 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
 
+}
