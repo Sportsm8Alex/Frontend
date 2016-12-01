@@ -62,24 +62,27 @@ public class FriendsTab extends Fragment {
 
     //Not need for Alex Database Connection
     private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
-        ArrayList<Information> data = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(jsonObjectSring);
+        if(jsonObjectSring!=null) {
+            ArrayList<Information> data = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(jsonObjectSring);
 
-        int i = 0;
-        while (jsonObject.has("" + i)) {
-            String meetingString = jsonObject.get("" + i).toString();
-            Gson gson = new Gson();
-            Information current = gson.fromJson(meetingString, Information.class);
-            data.add(current);
-            i++;
-        }
-        adapter = new FriendsListAdapter(getContext(), data,this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Friends activity = (Friends) getActivity();
-        activity.setData(data);
-        friends = data;
-        return data;
+            int i = 0;
+            while (jsonObject.has("" + i)) {
+                String meetingString = jsonObject.get("" + i).toString();
+                Gson gson = new Gson();
+                Information current = gson.fromJson(meetingString, Information.class);
+                data.add(current);
+                i++;
+            }
+            adapter = new FriendsListAdapter(getContext(), data, this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            Friends activity = (Friends) getActivity();
+            activity.setData(data);
+            friends = data;
+            return data;
+        }else
+            return null;
 
     }
 

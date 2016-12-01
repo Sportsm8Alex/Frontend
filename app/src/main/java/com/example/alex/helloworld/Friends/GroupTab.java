@@ -54,22 +54,25 @@ public class GroupTab extends Fragment {
 
     }
     private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
-        ArrayList<Information> data = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(jsonObjectSring);
+       if(jsonObjectSring!=null) {
+           ArrayList<Information> data = new ArrayList<>();
+           JSONObject jsonObject = new JSONObject(jsonObjectSring);
 
-        int i = 0;
-        while (jsonObject.has("" + i)) {
-            String meetingString = jsonObject.get("" + i).toString();
-            Gson gson = new Gson();
-            Information current = gson.fromJson(meetingString, Information.class);
-            data.add(current);
-            i++;
-        }
-        adapter = new GroupListAdapter(getContext(), data);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        friends = data;
-        return data;
+           int i = 0;
+           while (jsonObject.has("" + i)) {
+               String meetingString = jsonObject.get("" + i).toString();
+               Gson gson = new Gson();
+               Information current = gson.fromJson(meetingString, Information.class);
+               data.add(current);
+               i++;
+           }
+           adapter = new GroupListAdapter(getContext(), data);
+           recyclerView.setAdapter(adapter);
+           recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+           friends = data;
+           return data;
+       }else
+           return null;
 
     }
 }

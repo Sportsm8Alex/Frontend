@@ -15,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,16 +25,30 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Friends.FriendsListAdapter;
 import com.example.alex.helloworld.Unused_Inactive.AddSport;
 import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
 import com.example.alex.helloworld.GamePicker.Gamepicker;
 import com.example.alex.helloworld.Unused_Inactive.SportAttributes;
+import com.example.alex.helloworld.databaseConnection.AsyncResponse;
+import com.example.alex.helloworld.databaseConnection.DBconnection;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Sport extends AppCompatActivity {
 
+
+    ArrayList<Information> sportIDs;
     ArrayList<SportAttributes> attributes;
     Spinner mySpinner;
     int sportID;
@@ -94,8 +109,7 @@ public class Sport extends AppCompatActivity {
 
     private void initSpinner() {
         mySpinner = (Spinner) findViewById(R.id.spinner2);
-
-        ArrayAdapter<String> myAdapater = new ArrayAdapter<String>(Sport.this, R.layout.item_custom_spinner, sportArten);
+        ArrayAdapter<String> myAdapater = new ArrayAdapter<>(Sport.this, R.layout.item_custom_spinner, sportArten);
         myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(myAdapater);
 
@@ -122,16 +136,16 @@ public class Sport extends AppCompatActivity {
         Button nochEinButton = (Button) findViewById(R.id.nochEinButton);
         ImageView iV = (ImageView) findViewById(R.id.imageView_sportart);
 
-        SportAttributes temp = attributes.get(sID);
+        Information temp = sportIDs.get(sID);
         Resources res = getResources();
         TypedArray draws = res.obtainTypedArray(R.array.sportDrawables);
-        //iV.setImageDrawable(draws.getDrawable(temp.ID));
+        iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
 
         fSpiel.setVisibility(View.GONE);
         lSpiel.setVisibility(View.GONE);
         training.setVisibility(View.GONE);
 
-        if (1== 1) {
+        if (Integer.valueOf(sportIDs.get(sID).team) == 1) {
             fSpiel.setVisibility(View.VISIBLE);
             lSpiel.setVisibility(View.VISIBLE);
             training.setVisibility(View.GONE);
@@ -144,7 +158,38 @@ public class Sport extends AppCompatActivity {
     }
 
     private void createList() throws ExecutionException, InterruptedException {
+        String[] params = {"/IndexSports.php", "function", "getData"};
+        new DBconnection(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) throws ParseException, JSONException {
+                parseToArrayList(output);
+            }
+        }).execute(params);
 
+
+    }
+
+    private void parseToArrayList(String jsonObjectSring) throws JSONException {
+       if (jsonObjectSring!=null) {
+           ArrayList<Information> data = new ArrayList<>();
+           JSONObject jsonObject = new JSONObject(jsonObjectSring);
+
+           int i = 0;
+           while (jsonObject.has("" + i)) {
+               String meetingString = jsonObject.get("" + i).toString();
+               Gson gson = new Gson();
+               Information current = gson.fromJson(meetingString, Information.class);
+               data.add(current);
+               i++;
+           }
+
+           sportArten = new String[data.size()];
+           for (int j = 0; j < data.size(); j++) {
+               sportArten[j] = data.get(j).sportname;
+           }
+           sportIDs = data;
+           initSpinner();
+       }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

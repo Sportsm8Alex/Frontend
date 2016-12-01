@@ -1,6 +1,8 @@
 package com.example.alex.helloworld.Friends;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.ImageFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +19,12 @@ import android.widget.TextView;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.Transform;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +37,6 @@ import java.util.List;
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
 
 
-
     private final static int FADE_DURATION = 300;
     private Context context;
     private ArrayList<Information> data;
@@ -37,11 +44,12 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private FriendsTab friendsTab;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data,FriendsTab friendsTab) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsTab friendsTab) {
         this.context = context;
         this.data = data;
         this.friendsTab = friendsTab;
         inflater = LayoutInflater.from(context);
+
     }
 
     @Override
@@ -55,18 +63,33 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-    //Loads profile Picture with Ion Library in an AsyncTask
+
+        //Loads profile Picture with Ion Library in an AsyncTask
+        Picasso.with(context)
+                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
+                .placeholder(R.drawable.dickbutt)
+                .error(R.drawable.dickbutt)
+                .into(holder.profileP);
+        /* Ion.with(context)
+                .load("http://sportsm8.bplaceds.net" + data.get(position).PPpath)
+                .noCache()
+                .withBitmap()
+                .placeholder(R.drawable.dickbutt)
+                .error(R.drawable.dickbutt)
+                .intoImageView(holder.profileP);
+
+
         Ion.with(holder.profileP)
                 .placeholder(R.drawable.dickbutt)
                 .error(R.drawable.dickbutt)
-                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath);
+                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath);*/
 
         holder.username.setText(data.get(position).username);
         holder.email.setText(data.get(position).email);
         setScaleAnimation(holder.itemView);
     }
 
-        //search is not working right now
+    //search is not working right now
     public int search(String search) {
         int posi = 0;
         for (int i = 0; i < getItemCount(); i++) {

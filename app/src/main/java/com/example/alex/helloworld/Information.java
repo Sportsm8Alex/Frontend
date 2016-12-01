@@ -18,6 +18,7 @@ public class Information implements Serializable{
     public String email,GroupID,GroupName;
     public String MeetingID,endTime,startTime;
     public Boolean selected=false;
+    public String team,sportname,sportID;
 
     public String getUsername() {
         return username;
