@@ -5,11 +5,14 @@ package com.example.alex.helloworld;
  */
 
 public class Information {
-
+    //
     public String start;
     public String stop;
     public String title;
+    public int success;
+    //
     public String MeetingID,startTime,endTime;
+    public String username, password;
 
 
 }

@@ -2,6 +2,7 @@ package com.example.alex.helloworld;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 
 import java.io.BufferedReader;
@@ -25,21 +27,27 @@ import java.io.InputStreamReader;
 import android.app.ProgressDialog;
 import android.net.Uri;
 
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
+
 import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LoginScreen extends AppCompatActivity{
+public class LoginScreen extends AppCompatActivity implements UIthread {
 
     protected EditText username;
     private EditText password;
     protected String enteredUsername;
+    private String dbReturn;
     public static final int CONNECTION_TIMEOUT=10000;
     public static final int READ_TIMEOUT=15000;
 
@@ -54,7 +62,7 @@ public class LoginScreen extends AppCompatActivity{
         Button registerButton = (Button)findViewById(R.id.registerButton);
     }
 
-    public void buttonClick(View v){
+    public void buttonClick(View v) throws ExecutionException, InterruptedException {
         switch (v.getId()){
             case R.id.loginButton: {
                 enteredUsername = username.getText().toString();
@@ -65,7 +73,14 @@ public class LoginScreen extends AppCompatActivity{
                     return;
                 }
                 //request server authentification
-                new AsyncLogin().execute(enteredUsername, enteredPassword);
+                //new AsyncLogin().execute(enteredUsername, enteredPassword);
+                String[] params = {"IndexAccounts.php", "function", "loginAccount", "username", enteredUsername, "password", enteredPassword};
+                Database db = new Database(this, this.getApplicationContext());
+                dbReturn = db.execute(params).get();
+                System.out.println("CONNECTED TO DB");
+                //
+                //Getting nonsense from db currently
+                //
                 break;
             }
             case R.id.registerButton: {
@@ -77,6 +92,20 @@ public class LoginScreen extends AppCompatActivity{
             default: {
                 break;
             }
+        }
+    }
+    @Override
+    public void updateUI(){
+        try {
+            ArrayList<Information> info = Database.jsonToArrayList(dbReturn);
+            System.out.println("UPDATING UI");
+            if(info.get(0).success == 0){
+                Intent intent = new Intent(LoginScreen.this, Home.class);
+                startActivity(intent);
+                LoginScreen.this.finish();
+            }
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -96,8 +125,8 @@ public class LoginScreen extends AppCompatActivity{
         @Override
         protected String doInBackground(String... params){
             try{
-                url = new URL("http://10.0.2.2/android_user" +
-                        "_api/Backend/index.php");
+                //"http://10.0.2.2/android_user_api/Backend/index.php"
+                url = new URL("http://sportsm8.bplaced.net:80/MySQLadmin/include/IndexAccounts.php");
             }
             catch(MalformedURLException e){
                 e.printStackTrace();
@@ -151,11 +180,7 @@ public class LoginScreen extends AppCompatActivity{
                     JSONObject json = (JSONObject) parser.parse(successString.toString());
                     success = Long.toString((Long) json.get("success"));
                     System.out.println("SUCCESS: "+success);
-                }
-                catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return success;

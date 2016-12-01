@@ -9,5 +9,5 @@ import java.util.ArrayList;
  */
 
 public interface UIthread {
-    void updateUI(int daySelected);
+    void updateUI();
 }

@@ -109,7 +109,6 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
 
         initButtons(weekDayButtons);
 
-
         //Loading of Meetings from database
         try {
             System.out.println("GETTING MEETINGS");
@@ -131,7 +130,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void updateUI(int daySelected){
+    public void updateUI(){
         //get local Information
 
         SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
@@ -296,7 +295,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         }
         weekDayButtons[daySelected].setBackgroundColor(colorAccent);
         setBackground(weekDayButtons, daySelected, colorPrimary);
-        updateUI(daySelected);
+        updateUI();
     }
 
     /**
@@ -334,7 +333,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
                 }
                 weekDayButtons[daySelected].setBackgroundColor(colorAccent);
                 setBackground(weekDayButtons, daySelected, colorPrimary);
-                updateUI(daySelected); // day as parameter!
+                updateUI(); // day as parameter!
 
                 Log.d(DEBUG_TAG, "Action was UP");
 
