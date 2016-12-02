@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 
@@ -46,8 +45,9 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
         myViewHolder.textview.setText(data.get(position).MeetingID);
-        myViewHolder.start.setText(data.get(position).startTime.substring(11,16));
-        myViewHolder.stopp.setText(data.get(position).endTime.substring(11,16));
+        myViewHolder.start.setText(data.get(position).startTime.substring(11, 16));
+        myViewHolder.stopp.setText(data.get(position).endTime.substring(11, 16));
+
         final int currentPosition = position;
         final Information infoData = data.get(position);
 
@@ -56,8 +56,6 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
             public void onClick(View v) {
                 removeItem(infoData);
             }
-
-
         });
 
         myViewHolder.habZ.setOnClickListener(new View.OnClickListener() {
@@ -66,8 +64,6 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
                 removeItem(infoData);
             }
         });
-
-
     }
 
     private void removeItem(Information infoData) {

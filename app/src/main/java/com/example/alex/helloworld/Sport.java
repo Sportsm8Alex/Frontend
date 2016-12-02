@@ -7,6 +7,7 @@ package com.example.alex.helloworld;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-
 import com.example.alex.helloworld.Friends.Friends;
 import com.example.alex.helloworld.Friends.FriendsListAdapter;
 import com.example.alex.helloworld.Unused_Inactive.AddSport;
@@ -37,11 +37,21 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.example.alex.helloworld.activities.AccountPage;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -73,7 +83,6 @@ public class Sport extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         try {
             createList();
         } catch (ExecutionException | InterruptedException e) {
@@ -275,6 +284,4 @@ public class Sport extends AppCompatActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
-
-
 }
