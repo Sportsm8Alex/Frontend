@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Unused_Inactive;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.example.alex.helloworld.R;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
@@ -17,11 +19,8 @@ import java.util.Calendar;
 public class GamePickerLiga extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     int hour_a, minute_a, day_a, month_a, year_a, numP;
-    int sportart_ID = -1;
     Button b;
     Boolean start, end, date, num, ea;
-    Project project=new Project();
-    String extraInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +82,6 @@ public class GamePickerLiga extends Activity implements DatePickerDialog.OnDateS
         year_a = year;
         month_a = month;
         day_a = dayOfMonth;
-        project.day = day_a;
-        project.month = month_a;
-        project.year = year_a;
         b.setText(day_a + "." + month_a + "." + year_a);
     }
 
@@ -96,11 +92,7 @@ public class GamePickerLiga extends Activity implements DatePickerDialog.OnDateS
         hour_a = hourOfDay;
         minute_a = minute;
         if (ea) {
-            project.begin_m = minute_a;
-            project.begin_h = hour_a;
         } else {
-            project.end_m = minute_a;
-            project.end_h = hour_a;
         }
         b.setText(f.format(hour_a) + ":" + f.format(minute_a));
     }

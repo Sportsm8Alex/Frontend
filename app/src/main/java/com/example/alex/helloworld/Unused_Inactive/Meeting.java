@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Unused_Inactive;
 
 /**
  * Created by Korbi on 14.11.2016.

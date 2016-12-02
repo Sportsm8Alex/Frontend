@@ -4,6 +4,7 @@ package com.example.alex.helloworld.DisplayWeekActivity;
  * Created by agemcipe on 31.10.16.
  */
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -19,17 +20,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.MyCustomAdapter;
+import com.example.alex.helloworld.DisplayWeekActivity.MyCustomAdapter;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.SportAttributes;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.google.gson.Gson;
-
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -53,6 +53,7 @@ import static java.lang.String.valueOf;
  */
 
 public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, UIthread {
+
     private int daySelected;
     private int colorPrimary;
     private int colorAccent;
@@ -161,7 +162,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void update() throws ExecutionException, InterruptedException, MalformedURLException {
-        recyclerView = (RecyclerView) findViewById(R.id.recycleView);
+        recyclerView = (RecyclerView) findViewById(R.id.inviteView);
         String meetingID = "1";   //Value from somewhere
         String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
         dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
@@ -186,8 +187,9 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         int i=0;
         while(jsonObject.has(""+i)) {
             String meetingString = jsonObject.get(""+i).toString();
+
             Gson gson = new Gson();
-            Information current = gson.fromJson(meetingString,Information.class);
+            Information current = gson.fromJson(meetingString, Information.class);
             data.add(current);
             i++;
         }
@@ -198,7 +200,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
-     * @param Buttons the array of Buttons
+     * @param buttons the array of Buttons
      * @param j       the index {@code int} of the button that does not change the background color
      * @param k       the int value of the color
      */
@@ -213,7 +215,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     /**
      * function to initialize Buttons with onClickListener
      *
-     * @param Buttons the array of Buttons
+     * @param buttons the array of Buttons
      */
     private void initButtons(Button[] buttons) {
         //daySelected = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2) % 7 + 7) % 7;

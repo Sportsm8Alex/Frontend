@@ -1,8 +1,10 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Unused_Inactive;
 
 /**
  * Created by alex on 10/30/2016.
  */
+
+import com.example.alex.helloworld.Information;
 
 import java.util.ArrayList;
 

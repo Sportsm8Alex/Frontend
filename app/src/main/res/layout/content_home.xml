@@ -44,5 +44,11 @@
             android:onClick="onClick"
             style="@style/Widget.AppCompat.Button"
             />
+        <Button
+            android:id="@+id/friends_button"
+            android:text="@string/button_friends"
+            android:onClick="onClick"
+            style="@style/Widget.AppCompat.Button"
+            />
     </GridLayout>
 </RelativeLayout>
