@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Unused_Inactive;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.alex.helloworld.R;
 
 import java.util.Arrays;
 

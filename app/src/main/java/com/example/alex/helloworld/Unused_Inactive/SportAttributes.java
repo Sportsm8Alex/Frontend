@@ -1,6 +1,4 @@
-package com.example.alex.helloworld;
-
-import android.graphics.drawable.Drawable;
+package com.example.alex.helloworld.Unused_Inactive;
 
 /**
  * Created by Korbi on 02.11.2016.

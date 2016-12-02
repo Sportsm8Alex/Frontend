@@ -1,20 +1,19 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.DisplayWeekActivity;
 
 /**
- * Created by alex on 10/30/2016.
+ * Created by Korbi on 10/30/2016.
  */
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.R;
 
 import java.util.ArrayList;
 
@@ -38,20 +37,17 @@ public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int position) {
 
-        View view = inflater.inflate(R.layout.einladungen_item, parent, false);
+        View view = inflater.inflate(R.layout.item_invites, parent, false);
 
-        MyViewHolder holder = new MyViewHolder(view);
-
-        return holder;
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
 
         myViewHolder.textview.setText(data.get(position).MeetingID);
-        myViewHolder.start.setText(data.get(position).startTime);
-        myViewHolder.stopp.setText(data.get(position).endTime);
-
+        myViewHolder.start.setText(data.get(position).startTime.substring(11,16));
+        myViewHolder.stopp.setText(data.get(position).endTime.substring(11,16));
         final int currentPosition = position;
         final Information infoData = data.get(position);
 
