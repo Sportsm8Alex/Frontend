@@ -154,7 +154,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
             }
         }
 
-        recyclerView = (RecyclerView)findViewById(R.id.recycleView);
+        recyclerView = (RecyclerView)findViewById(id.inviteView);
         adapter = new MyCustomAdapter(this, meetingsOnDay);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
