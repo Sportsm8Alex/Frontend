@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.example.alex.helloworld.R;
 
 public class AccountPage extends AppCompatActivity {
 
