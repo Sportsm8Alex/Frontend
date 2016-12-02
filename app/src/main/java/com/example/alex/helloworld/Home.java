@@ -1,6 +1,8 @@
 package com.example.alex.helloworld;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
+import com.example.alex.helloworld.activities.AccountPage;
 
 /**
  * Created by alex on 10/30/2016.
@@ -131,6 +134,12 @@ public class Home extends AppCompatActivity {
                         return true;
 
                     case R.id.nav_logout:
+                        //delete locally saved userinformation
+                        SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor =  sharedPrefs.edit();
+                        editor.clear();
+                        editor.apply();
+
                         intent = new Intent(getApplicationContext(), LoginScreen.class);
                         startActivity(intent);
                         closeNavDrawer();

@@ -5,8 +5,9 @@
     android:id="@+id/content_account_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alex.helloworld.AccountPage"
+    tools:context="com.example.alex.helloworld.activities.AccountPage"
     tools:showIn="@layout/activity_account_page">
 
 
@@ -14,12 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:elevation="8dp">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/accountbanner"
-            android:scaleType="centerCrop"
-            />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="60dp"
@@ -28,15 +23,62 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"/>
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Max Mustermann"
-    android:textSize="20sp"
-    android:textColor="@color/whiteText"
-    android:layout_alignParentBottom="true"
-    android:layout_margin="8dp"/>
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="8dp"/>
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/email"
+                android:text="someEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+            <TextView
+                android:id="@+id/birthday"
+                android:text="someBirthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+            <Button
+                android:id="@+id/edit_userinformation"
+                android:text="Edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Einstellungen"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 
 

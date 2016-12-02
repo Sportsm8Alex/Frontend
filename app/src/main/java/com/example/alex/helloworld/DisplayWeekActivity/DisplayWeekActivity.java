@@ -131,7 +131,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void updateUI(int daySelected){
+    public void updateUI(){
         //get local Information
 
         SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
@@ -159,6 +159,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         System.out.println("Database Class initialized, layout updated");
+    }
+
+    @Override
+    public void updateUI(String sucess) {
+
     }
 
     private void update() throws ExecutionException, InterruptedException, MalformedURLException {
@@ -199,7 +204,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
-     * @param Buttons the array of Buttons
+     *  the array of Buttons
      * @param j       the index {@code int} of the button that does not change the background color
      * @param k       the int value of the color
      */
@@ -214,7 +219,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     /**
      * function to initialize Buttons with onClickListener
      *
-     * @param Buttons the array of Buttons
+     *
      */
     private void initButtons(Button[] buttons) {
         //daySelected = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2) % 7 + 7) % 7;
@@ -296,7 +301,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         }
         weekDayButtons[daySelected].setBackgroundColor(colorAccent);
         setBackground(weekDayButtons, daySelected, colorPrimary);
-        updateUI(daySelected);
+        updateUI();
     }
 
     /**
@@ -334,7 +339,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
                 }
                 weekDayButtons[daySelected].setBackgroundColor(colorAccent);
                 setBackground(weekDayButtons, daySelected, colorPrimary);
-                updateUI(daySelected); // day as parameter!
+                updateUI(); // day as parameter!
 
                 Log.d(DEBUG_TAG, "Action was UP");
 
