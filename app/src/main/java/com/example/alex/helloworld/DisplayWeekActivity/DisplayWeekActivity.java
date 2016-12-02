@@ -161,6 +161,11 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         System.out.println("Database Class initialized, layout updated");
     }
 
+    @Override
+    public void updateUI(String sucess) {
+
+    }
+
     private void update() throws ExecutionException, InterruptedException, MalformedURLException {
         recyclerView = (RecyclerView) findViewById(R.id.inviteView);
         String meetingID = "1";   //Value from somewhere
@@ -200,6 +205,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
+     * the array of Buttons
      * @param buttons the array of Buttons
      * @param j       the index {@code int} of the button that does not change the background color
      * @param k       the int value of the color

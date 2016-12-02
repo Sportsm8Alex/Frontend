@@ -105,12 +105,16 @@ public class Database extends AsyncTask<String, String, String>{
     }
     protected void onPostExecute(String success) {
         //save database information locally
+        // updateUI(success)
+
         SharedPreferences sharedPrefs = context.getSharedPreferences("meetingInformation", context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString("meetingJSON", success);
         editor.apply();
-        int daySelected = 0;
-        uiThread.updateUI();
+
+        uiThread.updateUI(success);
+        //int daySelected = 0;
+        //uiThread.updateUI();
     }
 
     public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {

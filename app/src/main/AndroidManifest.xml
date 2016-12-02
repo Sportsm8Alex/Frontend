@@ -8,15 +8,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginScreen" />
+        <activity android:name=".LoginScreen" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".Home"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Unused_Inactive.MainActivity" />
         <activity android:name=".RegisterActivity" />
@@ -48,9 +50,8 @@
             android:name=".GamePicker.Gamepicker"
             android:theme="@style/AppTheme.Custom1" />
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
-
         <activity
-            android:name=".AccountPage"
+            android:name=".activities.AccountPage"
             android:label="@string/title_activity_account_page"
             android:parentActivityName=".Home"
             android:theme="@style/AppTheme.NoActionBar">
