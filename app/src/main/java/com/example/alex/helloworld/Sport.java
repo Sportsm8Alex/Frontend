@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.alex.helloworld.activities.AccountPage;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -70,7 +71,6 @@ public class Sport extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-git 
         try {
             createList();
         } catch (ExecutionException e) {

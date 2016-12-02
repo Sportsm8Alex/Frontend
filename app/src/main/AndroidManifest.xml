@@ -50,8 +50,6 @@
             android:name=".Gamepicker"
             android:theme="@style/AppTheme.Custom1" />
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
-
-        <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
         <activity
             android:name=".activities.AccountPage"
             android:label="@string/title_activity_account_page"
