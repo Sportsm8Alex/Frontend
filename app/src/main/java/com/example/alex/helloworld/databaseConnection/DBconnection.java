@@ -35,8 +35,8 @@ import java.util.List;
  */
 
 public class DBconnection extends AsyncTask<String, String, String> {
-    private static final int CONNECTION_TIMEOUT = 100000;
-    private static final int READ_TIMEOUT = 150000;
+    private static final int CONNECTION_TIMEOUT = 10000;
+    private static final int READ_TIMEOUT = 15000;
     private static final String BASE_URL = "sportsm8.bplaced.net/MySQLadmin/include";
     public static final String DEBUG_TAG = "some clever Debug tag:";
     private AsyncResponse delegate=null;
@@ -46,21 +46,6 @@ public class DBconnection extends AsyncTask<String, String, String> {
 
     public DBconnection(AsyncResponse asyncResponse){
         delegate=asyncResponse;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        //this method will be running on the UI thread
-
-    }
-
-
-    protected void onPostExecute(String success) {
-        try {
-            delegate.processFinish(result);
-        } catch (ParseException | JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void getInput() {
@@ -85,7 +70,10 @@ public class DBconnection extends AsyncTask<String, String, String> {
         result = successString.toString();
     }
 
-
+    @Override
+    protected void onPreExecute() {
+        //this method will be running on the UI thread
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -93,7 +81,7 @@ public class DBconnection extends AsyncTask<String, String, String> {
         try {
             //request data from server via http get request
             URL url = new URL(buildFinalURL(params[0]));
-            System.out.print(params[0]);
+            System.out.println(params[0]);
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
@@ -102,7 +90,6 @@ public class DBconnection extends AsyncTask<String, String, String> {
             conn.setDoOutput(true);
 
             //Append parameters so they can be written
-
 
             Uri.Builder builder = new Uri.Builder();
 
@@ -127,6 +114,14 @@ public class DBconnection extends AsyncTask<String, String, String> {
             conn.disconnect();
         }
         return null;
+    }
+
+    protected void onPostExecute(String success) {
+        try {
+            delegate.processFinish(result);
+        } catch (ParseException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
