@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public interface UIthread {
     void updateUI();
-
     //update the user interface according to the answer from the server
     void updateUI(String answer);
 }

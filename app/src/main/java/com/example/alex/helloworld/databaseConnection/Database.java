@@ -48,6 +48,11 @@ public class Database extends AsyncTask<String, String, String>{
         super.onPreExecute();
     }
 
+    /**
+     * params[1] = xyz.php, params[2] and params[3] and the rest are pairs of key & value
+     * @param params
+     * @return
+     */
     protected String doInBackground(String... params){
 
         String success = "";
@@ -106,7 +111,10 @@ public class Database extends AsyncTask<String, String, String>{
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString("meetingJSON", success);
         editor.apply();
+
         uiThread.updateUI(success);
+        //int daySelected = 0;
+        //uiThread.updateUI();
     }
 
     public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {

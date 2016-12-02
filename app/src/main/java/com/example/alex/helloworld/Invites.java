@@ -13,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.alex.helloworld.DisplayWeekActivity.MyCustomAdapter;
+import com.example.alex.helloworld.Unused_Inactive.Data;
+
 public class Invites extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -35,8 +38,8 @@ public class Invites extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycleView);
-        adapter = new MyCustomAdapter(this,Data.getInvites());
+        recyclerView = (RecyclerView) findViewById(R.id.inviteView);
+        adapter = new MyCustomAdapter(this, Data.getInvites());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

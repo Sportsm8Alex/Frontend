@@ -22,6 +22,7 @@ import android.widget.Button;
 
 import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
 import com.example.alex.helloworld.activities.AccountPage;
+import com.example.alex.helloworld.Friends.Friends;
 
 /**
  * Created by alex on 10/30/2016.
@@ -39,7 +40,6 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,22 +53,27 @@ public class Home extends AppCompatActivity {
     }
     
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
             case R.id.sportart_button:
-                Intent intent = new Intent(this, Sport.class);
+                intent = new Intent(this, Sport.class);
                 startActivity(intent);
                 break;
             case R.id.einladungen_button:
-                Intent intent1 = new Intent(this, Invites.class);
-                startActivity(intent1);
+                intent = new Intent(this, Invites.class);
+                startActivity(intent);
                 break;
             case R.id.msg_button:
-                Intent intent2 = new Intent(this, AccountPage.class);
-                startActivity(intent2);
+                intent = new Intent(this, AccountPage.class);
+                startActivity(intent);
                 break;
             case R.id.calendar_button:
-                Intent intent3 = new Intent(this, DisplayWeekActivity.class);
-                startActivity(intent3);
+                intent= new Intent(this, DisplayWeekActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.friends_button:
+                intent = new Intent(this,Friends.class);
+                startActivity(intent);
                 break;
             default:
                 finish();
@@ -116,7 +121,6 @@ public class Home extends AppCompatActivity {
         mToggle.syncState();
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mNavigationView.getMenu().getItem(1).setChecked(true);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -132,7 +136,6 @@ public class Home extends AppCompatActivity {
                         startActivity(intent);
                         closeNavDrawer();
                         return true;
-
                     case R.id.nav_logout:
                         //delete locally saved userinformation
                         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
@@ -159,6 +162,7 @@ public class Home extends AppCompatActivity {
                         startActivity(intent);
                         closeNavDrawer();
                         return true;
+
 
                 }
 
