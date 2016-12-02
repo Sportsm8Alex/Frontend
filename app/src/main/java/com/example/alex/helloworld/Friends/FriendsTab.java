@@ -34,7 +34,7 @@ public class FriendsTab extends Fragment {
         updateFriendsList("Korbi@Korbi.de"); //Email from Shared Prefernces?
 
         //Sets empty adapter to prevent Errors
-        adapter = new FriendsListAdapter(getContext(), friends,this);
+        adapter = new FriendsListAdapter(getContext(), friends, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -60,7 +60,7 @@ public class FriendsTab extends Fragment {
 
     }
 
-    //Not need for Alex Database Connection
+    //Not needed for Alex Database Connection
     private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
         if(jsonObjectSring!=null) {
             ArrayList<Information> data = new ArrayList<>();

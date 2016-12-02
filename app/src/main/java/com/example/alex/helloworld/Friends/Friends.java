@@ -24,7 +24,6 @@ import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.LoginScreen;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
 
