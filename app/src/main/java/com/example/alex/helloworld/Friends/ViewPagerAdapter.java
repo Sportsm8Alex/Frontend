@@ -29,6 +29,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             return new GroupTab();
 
     }
+    public int getPosition(){
+        return getPosition();
+    }
 
     // This method return the titles for the Tabs in the Tab Strip
 

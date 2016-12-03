@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/meeting_card"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    card_view:cardCornerRadius="5dp"
-     >
+    android:layout_marginTop="8dp"
+    card_view:cardCornerRadius="10dp">
 
 
     <RelativeLayout
@@ -16,65 +15,91 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:id="@+id/indicator_view"
+            android:background="@color/red" />
+
         <TextView
-            android:id="@+id/txv_row"
+            android:id="@+id/date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp"
-            android:text="Hello How Are you" />
+            android:layout_margin="16dp"
+            android:text="DD.MM.YYYY" />
 
         <TextView
             android:id="@+id/startzeit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="8dp"
-            android:layout_below="@+id/txv_row"
+            android:layout_below="@+id/date_textview"
             android:layout_marginLeft="64dp"
+            android:text="HH:MM"
             android:textSize="28sp" />
 
         <TextView
             android:id="@+id/stoppzeit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/txv_row"
+            android:layout_below="@+id/date_textview"
             android:layout_marginRight="64dp"
+            android:text="HH:MM"
             android:textSize="28sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txv_row"
+            android:layout_below="@+id/date_textview"
             android:layout_centerHorizontal="true"
             android:text="-"
             android:textSize="28sp" />
 
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_below="@+id/startzeit"
-            android:id="@+id/decline_meeting_button"
-            android:text="Keine Zeit"/>
+            android:layout_below="@id/startzeit"
+            android:layout_margin="8dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/decline_meeting_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/startzeit"
+                android:text="Keine Zeit"
+                android:layout_weight="1"/>
 
 
-        <Button
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/accept_meeting_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/startzeit"
+                android:text="Hab Zeit"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_below="@+id/startzeit"
-            android:id="@+id/accept_meeting_button"
-            android:text="Hab Zeit"
-            />
+            android:layout_below="@id/startzeit"
+            >
 
+            <Button
+                android:id="@+id/decline_meeting_button_2"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:visibility="gone"
+                android:text="Doch keine Zeit"
+                android:layout_weight="1"
+                android:layout_width="match_parent" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>

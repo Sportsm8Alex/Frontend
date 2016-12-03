@@ -75,4 +75,8 @@
     <string name="add_friends">Add Friends</string>
     <string name="setTimeWrong">Zeit falsch eingestellt</string>
     <string name="text_empty_fields">Nicht alle Felder ausgefüllt</string>
+    <string name="private_group">Private Gruppe</string>
+    <string name="invitation_mode">Einladungen privat</string>
+    <string name="new_group_name">Gruppenname</string>
+    <string name="create_group">Gruppe erstellen</string>
 </resources>

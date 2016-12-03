@@ -40,7 +40,7 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
+public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TextWatcher {
     int numP = 4, minHours = 2;
     Button SelectedButton;
 
@@ -171,7 +171,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     }
 
     public void addPartiMembersButton(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("SelectionMode", true);
         Intent intent = new Intent(this, Friends.class);
+        intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
 

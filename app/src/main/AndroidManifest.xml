@@ -47,6 +47,9 @@
             android:name=".Unused_Inactive.AddSport"
             android:theme="@style/AppTheme.Custom1" />
         <activity
+            android:name=".Friends.CreateGroup"
+            android:theme="@style/AppTheme.Custom1" />
+        <activity
             android:name=".GamePicker.Gamepicker"
             android:theme="@style/AppTheme.Custom1" />
         <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
@@ -61,7 +64,7 @@
         </activity>
         <activity
             android:name=".Friends.Friends"
-            android:label="@string/title_activity_friends"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 </manifest>

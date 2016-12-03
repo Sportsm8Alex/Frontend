@@ -114,8 +114,9 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * Call to Database class to update the UI through updateUI
      */
     public void getMeetings() throws InterruptedException, ExecutionException, ParseException, JSONException {
-        String meetingID = "1";
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", email};
         Database db = new Database(this, this.getApplicationContext());
         //meetings is ArrayList<Information>
         db.execute(params);

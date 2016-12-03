@@ -1,37 +1,28 @@
 package com.example.alex.helloworld.Friends;
 
-import android.content.Context;
 import android.content.Intent;
-import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.LoginScreen;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
+import com.example.alex.helloworld.Sport;
+import com.example.alex.helloworld.Unused_Inactive.AddSport;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
-import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -41,9 +32,13 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     private ArrayList<String> members;
     private ArrayList<Information> friends;
     private ArrayList<Information> selected;
+    private FriendsTab friendsTab;
+    TextView textView_selected_count;
+    ImageButton decline_selection;
     RecyclerView recyclerView;
     FriendsListAdapter adapter;
-
+    private Boolean selectionMode;
+    FloatingActionButton fab;
     ViewPager pager;
     ViewPagerAdapter viewPagerAdapter;
     SlidingTabLayout tabs;
@@ -57,24 +52,34 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         setContentView(R.layout.activity_friends);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finishSelection();
-            }
-        });
+        Bundle bundle = getIntent().getExtras();
+        selectionMode = bundle.getBoolean("SelectionMode");
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        textView_selected_count = (TextView) findViewById(R.id.selected_friends_number);
+        decline_selection = (ImageButton) findViewById(R.id.discard_selection_button);
+         fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (selectionMode) {
+                        finishSelection();
+                    } else {
+                        createGroup();
+                    }
+                }
+            });
+        if(selectionMode) {
+            fab.setVisibility(View.VISIBLE);
+        }else{
+            fab.setVisibility(View.GONE);
+        }
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         editText = (EditText) findViewById(R.id.search_friends);
         members = new ArrayList<>();
         selected = new ArrayList<>();
         friends = new ArrayList<>();
-        //updateFriendsList("Korbi@Korbi.de");
-
-        SearchView searchView = (SearchView) findViewById(R.id.search_view_friends);
-        searchView.setOnQueryTextListener(this);
-
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumOfTabs);
         pager = (ViewPager) findViewById(R.id.pager);
@@ -89,7 +94,39 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         });
         tabs.setViewPager(pager);
 
+    }
 
+    public void setReference(FriendsTab friendsTab) {
+        this.friendsTab = friendsTab;
+    }
+
+    public void activateSelectionMode(Boolean bool, int count) {
+
+        textView_selected_count.setVisibility(View.VISIBLE);
+        textView_selected_count.setText(count + " ausgewählt");
+        decline_selection.setVisibility(View.VISIBLE);
+        if (bool) {
+            fab.setVisibility(View.VISIBLE);
+            fab.setEnabled(true);
+        } else {
+            fab.setVisibility(View.GONE);
+            fab.setEnabled(false);
+        }
+    }
+
+    public void updateCount(int count) {
+        textView_selected_count.setText(count + " ausgewählt");
+    }
+
+    public void onClick(View view) {
+        textView_selected_count.setVisibility(View.GONE);
+        decline_selection.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
+        friendsTab.declineSelection();
+    }
+
+    public boolean getSelectionMode() {
+        return selectionMode;
     }
 
     @Override
@@ -103,22 +140,37 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     }
 
 
-
     private void finishSelection() {
-        for (Iterator<Information> iterator = friends.iterator(); iterator.hasNext();) {
-            Information info = iterator.next();
-            if (!info.selected) {
-                // Remove the current element from the iterator and the list.
-                iterator.remove();
+
+        ArrayList<Information> selection = new ArrayList<>();
+        for (int i = 0;i<friends.size();i++){
+            if(friends.get(i).selected){
+               selection.add(friends.get(i)) ;
             }
         }
 
+
         Bundle bundle = new Bundle();
-        bundle.putSerializable("partyList", friends);
+        bundle.putSerializable("partyList", selection);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void createGroup() {
+
+        ArrayList<Information> selection = new ArrayList<>();
+        for (int i = 0;i<friends.size();i++){
+            if(friends.get(i).selected){
+                selection.add(friends.get(i)) ;
+            }
+        }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("GroupList", friends);
+        Intent intent = new Intent(this,CreateGroup.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void setData(ArrayList<Information> data) {
@@ -140,5 +192,6 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         return false;
 
     }
+
 
 }

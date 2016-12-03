@@ -72,7 +72,10 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.friends_button:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("SelectionMode",false);
                 intent = new Intent(this,Friends.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             default:
