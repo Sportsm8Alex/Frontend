@@ -160,6 +160,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString("username", enteredUsername);
+            editor.putString("email","Korbi@korbi.de");
             // is already clear that success == 1
             editor.putString("islogin", success);
             editor.apply();

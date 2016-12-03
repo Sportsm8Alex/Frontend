@@ -34,9 +34,6 @@ import com.example.alex.helloworld.Unused_Inactive.SportAttributes;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.example.alex.helloworld.activities.AccountPage;
 
 import org.json.JSONObject;
