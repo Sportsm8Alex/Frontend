@@ -1,9 +1,7 @@
 package com.example.alex.helloworld.Friends;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -12,11 +10,9 @@ import android.widget.EditText;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Sport;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 

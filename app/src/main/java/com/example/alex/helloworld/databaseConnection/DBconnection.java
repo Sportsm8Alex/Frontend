@@ -2,12 +2,6 @@ package com.example.alex.helloworld.databaseConnection;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.Display;
-import android.widget.Toast;
-
-import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
-import com.example.alex.helloworld.Sport;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
@@ -20,11 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by agemcipe on 09.11.16.

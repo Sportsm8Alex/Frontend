@@ -53,6 +53,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     private MutableDateTime startTime, endTime;
     private DateTime datetime;
     private DateTimeFormatter formatter;
+    private Button startTime_b,endTime_b,date_b;
     private String extraInfoString;
     private TextView text_minHour;
     private TextView text_minParti;
@@ -61,6 +62,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_picker);
         endOrStart = false;
+        extraInfoString ="";
 
         //Popup größe
         DisplayMetrics dm = new DisplayMetrics();
@@ -88,6 +90,14 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         text_minHour.setText(minHours + "");
         text_minParti = (TextView) findViewById(R.id.textview_num);
         text_minParti.setText(numP + "");
+        startTime_b = (Button) findViewById(R.id.button_beginn);
+        endTime_b = (Button) findViewById(R.id.button_ende);
+        date_b = (Button) findViewById(R.id.button_datum);
+        startTime_b.setText(startTime.toString("HH:mm"));
+        endTime_b.setText(startTime.toString("HH:mm"));
+        date_b.setText(datetime.toString("MM.dd.YY"));
+
+
 
 
     }
@@ -146,7 +156,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email)
+                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email,"activity",extraInfoString,"sportID",""+sportart_ID)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -154,8 +164,6 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 }
                 String[] params = new String[paramsArrayList.size()];
                 params = paramsArrayList.toArray(params);
-
-                System.out.print("ha");
 
                 new DBconnection(new AsyncResponse() {
                     @Override
@@ -254,7 +262,6 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     @Override
     public void afterTextChanged(Editable editable) {
         extraInfoString = additionalInfos.getText().toString();
-        Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
 
 }

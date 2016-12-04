@@ -6,6 +6,7 @@ package com.example.alex.helloworld.DisplayWeekActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,10 @@ public class DisplayWeekActivityAdapter extends RecyclerView.Adapter<DisplayWeek
         time = formatter.parseDateTime(data.get(position).endTime);
         myViewHolder.stopp.setText(time.toString("HH:mm"));
         myViewHolder.textview.setText(time.toString("dd.MM.YYYY"));
-
+        Resources res = context.getResources();
+        String[] array = res.getStringArray(R.array.sportarten);
+        int x = Integer.valueOf(data.get(position).sportID);
+        myViewHolder.meetingName.setText(array[x]);
         final Information infoData = data.get(position);
         if (Integer.valueOf(data.get(position).confirmed) == 0) {
             myViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
@@ -73,7 +77,7 @@ public class DisplayWeekActivityAdapter extends RecyclerView.Adapter<DisplayWeek
             myViewHolder.decline.setVisibility(View.GONE);
             myViewHolder.accept.setVisibility(View.GONE);
 
-        }else{
+        } else {
             myViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
             myViewHolder.decline.setVisibility(View.GONE);
             myViewHolder.accept.setVisibility(View.GONE);
@@ -155,17 +159,14 @@ public class DisplayWeekActivityAdapter extends RecyclerView.Adapter<DisplayWeek
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         View indicator;
-        TextView textview;
-        TextView start;
-        TextView stopp;
-        Button decline;
-        Button decline_2;
-        Button accept;
+        TextView textview, start, stopp, meetingName;
+        Button decline, decline_2, accept;
         CardView cardView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            indicator = (View) itemView.findViewById(R.id.indicator_view);
+            meetingName = (TextView) itemView.findViewById(R.id.meeting_name);
+            indicator = itemView.findViewById(R.id.indicator_view);
             decline_2 = (Button) itemView.findViewById(R.id.decline_meeting_button_2);
             cardView = (CardView) itemView.findViewById(R.id.meeting_card);
             textview = (TextView) itemView.findViewById(R.id.date_textview);

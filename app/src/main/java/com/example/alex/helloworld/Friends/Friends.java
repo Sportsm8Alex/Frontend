@@ -19,12 +19,9 @@ import android.widget.TextView;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
-import com.example.alex.helloworld.Sport;
-import com.example.alex.helloworld.Unused_Inactive.AddSport;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Friends extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private DBconnection dBconnection;
