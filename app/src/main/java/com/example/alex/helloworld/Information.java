@@ -13,7 +13,7 @@ public class Information implements Serializable {
     public String email, PPpath,username,friend;
 
     //meetingInformation
-    public String MeetingID, startTime, endTime;
+    public String MeetingID, startTime, endTime,status;
     public String confirmed = "0";
 
     //GroupInformation

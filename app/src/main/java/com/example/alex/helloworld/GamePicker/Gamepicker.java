@@ -3,7 +3,9 @@ package com.example.alex.helloworld.GamePicker;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -106,7 +108,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     }
 
     public void dateButton(View view) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, datetime.getYear(), datetime.getMonthOfYear(), datetime.getDayOfMonth());
+        int x = datetime.getMonthOfYear();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth());
         datePickerDialog.show();
         SelectedButton = (Button) view;
 
@@ -140,8 +143,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
         if (startTime.get(DateTimeFieldType.millisOfSecond()) == 0 && endTime.get(DateTimeFieldType.millisOfSecond()) == 0 && startTime.get(DateTimeFieldType.year()) != 0 && numP != 0) {
             if (startTime.isBefore(endTime)) {
+                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
+                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -155,7 +160,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 new DBconnection(new AsyncResponse() {
                     @Override
                     public void processFinish(String output) throws ParseException, JSONException {
-
+                        Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
                     }
                 }).execute(params);
                 finish();
@@ -201,25 +206,26 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        startTime.setDate(year, month, dayOfMonth);
-        endTime.setDate(year, month, dayOfMonth);
-        SelectedButton.setText(dayOfMonth + "." + month + "." + year);
+        startTime.setDate(year, month + 1, dayOfMonth);
+        endTime.setDate(year, month + 1, dayOfMonth);
+        SelectedButton.setText(endTime.toString("dd.MM.YYYY"));
+
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        NumberFormat f = new DecimalFormat("00");
         if (endOrStart) {
             startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             startTime.set(DateTimeFieldType.minuteOfHour(), minute);
             startTime.set(DateTimeFieldType.millisOfSecond(), 0);
+            SelectedButton.setText(startTime.toString("HH:mm"));
 
         } else {
             endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             endTime.set(DateTimeFieldType.minuteOfHour(), minute);
             endTime.set(DateTimeFieldType.millisOfSecond(), 0);
+            SelectedButton.setText(endTime.toString("HH:mm"));
         }
-        SelectedButton.setText(f.format(hourOfDay) + ":" + f.format(minute));
     }
 
 

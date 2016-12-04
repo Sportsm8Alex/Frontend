@@ -65,17 +65,25 @@ public class DisplayWeekActivityAdapter extends RecyclerView.Adapter<DisplayWeek
         myViewHolder.textview.setText(time.toString("dd.MM.YYYY"));
 
         final Information infoData = data.get(position);
-        if(Integer.valueOf(data.get(position).confirmed)==1){
+        if (Integer.valueOf(data.get(position).confirmed) == 0) {
+            myViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
+
+        } else if (Integer.valueOf(data.get(position).status) == 0) {
             myViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+            myViewHolder.decline.setVisibility(View.GONE);
+            myViewHolder.accept.setVisibility(View.GONE);
+
+        }else{
+            myViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
             myViewHolder.decline.setVisibility(View.GONE);
             myViewHolder.accept.setVisibility(View.GONE);
         }
 
-        onClickEvents(myViewHolder,position,infoData);
+        onClickEvents(myViewHolder, position, infoData);
 
     }
 
-    private void onClickEvents(final MyViewHolder myViewHolder, final int position,final Information infoData ) {
+    private void onClickEvents(final MyViewHolder myViewHolder, final int position, final Information infoData) {
         myViewHolder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +118,7 @@ public class DisplayWeekActivityAdapter extends RecyclerView.Adapter<DisplayWeek
     private void removeItem(int pos, Information infoData, View view) {
         SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexMeetings.php", "function", "declineMe", "meetingID", data.get(pos).MeetingID, "email", email};
+        String[] params = {"IndexMeetings.php", "function", "declineAtt", "meetingID", data.get(pos).MeetingID, "email", email};
         Database db = new Database(this, context);
         db.execute(params);
         int position = data.indexOf(infoData);
