@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.GamePicker;
+package com.example.alex.helloworld.CreateNewMeeting;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,7 +39,7 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
+public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
     int numP = 4, minHours = 2;
     Button SelectedButton;
 
@@ -57,7 +56,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_picker);
+        setContentView(R.layout.create_new_meeting);
         endOrStart = false;
 
         //Popup größe
@@ -195,11 +194,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         }
     }
 
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        startTime.setDate(year, month, dayOfMonth);
-        endTime.setDate(year, month, dayOfMonth);
+        startTime.setDate(year, month-1, dayOfMonth);
+        endTime.setDate(year, month-1, dayOfMonth);
         SelectedButton.setText(dayOfMonth + "." + month + "." + year);
     }
 
@@ -245,7 +243,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     @Override
     public void afterTextChanged(Editable editable) {
         extraInfoString = additionalInfos.getText().toString();
-        Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
+        Toast.makeText(CreateNewMeeting.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
 
 }

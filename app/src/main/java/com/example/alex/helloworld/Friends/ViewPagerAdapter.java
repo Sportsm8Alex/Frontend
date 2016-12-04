@@ -24,9 +24,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position==0) {
-            return new FriendsTab();
+            return new FriendsListFragment();
         }else
-            return new GroupTab();
+            return new GroupsListFragment();
 
     }
 

@@ -21,14 +21,14 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class FriendsTab extends Fragment {
+public class FriendsListFragment extends Fragment {
     private ArrayList<Information> friends;
     RecyclerView recyclerView;
     FriendsListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.friends_tab,container,false);
+        View v =inflater.inflate(R.layout.friends_fragment,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.friends_recycler_view);
         friends = new ArrayList<>();
         updateFriendsList("Korbi@Korbi.de"); //Email from Shared Prefernces?
@@ -50,7 +50,7 @@ public class FriendsTab extends Fragment {
     //Needs to be adapted to Alex DatabaseConnection
     private void updateFriendsList(String email) {
         String[] params = {"/IndexFriendship.php", "function", "getFriends", "email", email};
-       new DBconnection(new AsyncResponse() {
+        new DBconnection(new AsyncResponse() {
             @Override
             public void processFinish(String output) throws ParseException, JSONException {
                 parseToArrayList(output);

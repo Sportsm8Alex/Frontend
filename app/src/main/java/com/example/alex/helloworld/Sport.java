@@ -15,7 +15,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,18 +24,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import com.example.alex.helloworld.Friends.Friends;
-import com.example.alex.helloworld.Friends.FriendsListAdapter;
 import com.example.alex.helloworld.Unused_Inactive.AddSport;
 import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
-import com.example.alex.helloworld.GamePicker.Gamepicker;
+import com.example.alex.helloworld.CreateNewMeeting.CreateNewMeeting;
 import com.example.alex.helloworld.Unused_Inactive.SportAttributes;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +83,7 @@ public class Sport extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putInt("sportID", sportID);
         b.putBoolean("liga", false);
-        Intent intent = new Intent(this, Gamepicker.class);
+        Intent intent = new Intent(this, CreateNewMeeting.class);
         startActivity(intent);
     }
 

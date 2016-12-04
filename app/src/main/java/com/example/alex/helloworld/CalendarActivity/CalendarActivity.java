@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.DisplayWeekActivity;
+package com.example.alex.helloworld.CalendarActivity;
 
 /**
  * Created by agemcipe on 31.10.16.
@@ -7,8 +7,6 @@ package com.example.alex.helloworld.DisplayWeekActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -21,9 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.DisplayWeekActivity.MyCustomAdapter;
-import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
@@ -33,16 +28,11 @@ import com.google.gson.Gson;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimePrinter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
-
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import com.example.alex.helloworld.R.*;
 
@@ -52,7 +42,7 @@ import static java.lang.String.valueOf;
  * Created by agemcipe on 21.10.16.
  */
 
-public class DisplayWeekActivity extends AppCompatActivity implements View.OnClickListener, UIthread {
+public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, UIthread {
 
     private int daySelected;
     private int colorPrimary;
@@ -62,7 +52,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     final static String DEBUG_TAG = "Yolo: ";
     private float x1, x2;
     RecyclerView recyclerView;
-    MyCustomAdapter adapter;
+    RecyclerViewAdapter adapter;
     DBconnection dBconnection;
 
     ArrayList<Information> meetings = new ArrayList<>();
@@ -76,7 +66,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_week);
-    //######################
+
         weekDayButtons = new Button[7];
         String[] btnText = {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"};
         String[] btnTags = {"mondayButton","tuesdayButton", "wednesdayButton","thursdayButton","fridayButton", "saturdayButton","sundayButton"};
@@ -96,17 +86,8 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
             btnLayout.addView(day);
             weekDayButtons[i] = day;
         }
-    //#######################
-        //Initialization of day selection Menu
         colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         colorAccent = ContextCompat.getColor(getApplicationContext(), R.color.colorAccent);
-        /*weekDayButtons[0] = (Button) findViewById(R.id.mondayButton);
-        weekDayButtons[1] = (Button) findViewById(R.id.tuesdayButton);
-        weekDayButtons[2] = (Button) findViewById(R.id.wednesdayButton);
-        weekDayButtons[3] = (Button) findViewById(R.id.thursdayButton);
-        weekDayButtons[4] = (Button) findViewById(R.id.fridayButton);
-        weekDayButtons[5] = (Button) findViewById(R.id.saturdayButton);
-        weekDayButtons[6] = (Button) findViewById(R.id.sundayButton);*/
 
         initButtons(weekDayButtons);
 
@@ -123,17 +104,18 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * Call to Database class to update the UI through updateUI
      */
     public void getMeetings() throws InterruptedException, ExecutionException, ParseException, JSONException {
-        String meetingID = "1";
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        String meetingID = "147";
+        //String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", "alexa.reish@gmail.com"};
         Database db = new Database(this, this.getApplicationContext());
-        //meetings is ArrayList<Information>
+        //meetingsOnDay is ArrayList<Information>
         db.execute(params);
     }
 
     @Override
     public void updateUI(){
-        //get local Information
 
+        //get local Information
         SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("meetingJSON", "");
         try {
@@ -143,39 +125,22 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         }
 
         ArrayList<Information> meetingsOnDay = new ArrayList<Information>();
-        int dayOfMonday = LocalDate.now().withDayOfWeek(DateTimeConstants.MONDAY).getDayOfYear();
-        System.out.println("THIS WAS LAST MONDAY "+dayOfMonday);
+        int today = LocalDate.now().getDayOfYear();
         for(int i = 0; i< meetings.size(); i++){
-            System.out.println("MEETING "+i);
-            String date = meetings.get(i).startTime.substring(0,10); //problem if no meetings yet!?
+            //System.out.println("MEETING "+i);
+            String date = meetings.get(i).startTime.substring(0,10); //problem if no meetingsOnDay yet!?
             int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
-            if(dateOfMeeting==dayOfMonday+daySelected){
+            if(dateOfMeeting==today+daySelected){
                 meetingsOnDay.add(meetings.get(i));
+                System.out.println("Today: "+meetings.get(i).MeetingID);
             }
         }
 
         recyclerView = (RecyclerView)findViewById(id.inviteView);
-        adapter = new MyCustomAdapter(this, meetingsOnDay);
+        adapter = new RecyclerViewAdapter(this, meetingsOnDay);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         System.out.println("Database Class initialized, layout updated");
-    }
-
-    private void update() throws ExecutionException, InterruptedException, MalformedURLException {
-        recyclerView = (RecyclerView) findViewById(R.id.inviteView);
-        String meetingID = "1";   //Value from somewhere
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
-        dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
-            @Override
-            public void processFinish(String result) throws ParseException, JSONException {
-                //meetings = Data.getCalendar(result);
-                meetings = jsonToArrayList(result);
-                adapter = new MyCustomAdapter(DisplayWeekActivity.this, meetings);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(DisplayWeekActivity.this));
-
-            }
-        }).execute(params);
     }
 
     private ArrayList<Information> jsonToArrayList(String stringFromJson) throws JSONException, ParseException {
@@ -234,36 +199,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      */
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-
-            case R.id.mondayButton:
-                daySelected = 0;
-                break;
-
-            case R.id.tuesdayButton:
-                daySelected = 1;
-                break;
-
-            case R.id.wednesdayButton:
-                daySelected = 2;
-                break;
-
-            case R.id.thursdayButton:
-                daySelected = 3;
-                break;
-
-            case R.id.fridayButton:
-                daySelected = 4;
-                break;
-
-            case R.id.saturdayButton:
-                daySelected = 5;
-                break;
-
-            case R.id.sundayButton:
-                daySelected = 6;
-                break;
-        */switch (valueOf(v.getTag())) {
+        switch (valueOf(v.getTag())) {
             case "mondayButton":
                 daySelected = ((LocalDate.now().plusWeeks(1).withDayOfWeek(DateTimeConstants.MONDAY).getDayOfYear())-(LocalDate.now().getDayOfYear()))%7;
                 break;

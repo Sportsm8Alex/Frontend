@@ -17,8 +17,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-
-import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
+import com.example.alex.helloworld.CalendarActivity.CalendarActivity;
+import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
 import com.example.alex.helloworld.Friends.Friends;
 
 /**
@@ -65,7 +65,7 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.calendar_button:
-                intent= new Intent(this, DisplayWeekActivity.class);
+                intent= new Intent(this, KalendarActivity.class);
                 startActivity(intent);
                 break;
             case R.id.friends_button:

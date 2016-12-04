@@ -45,9 +45,9 @@
             android:name=".Unused_Inactive.AddSport"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".GamePicker.Gamepicker"
+            android:name=".CreateNewMeeting.CreateNewMeeting"
             android:theme="@style/AppTheme.Custom1" />
-        <activity android:name=".DisplayWeekActivity.DisplayWeekActivity" />
+        <activity android:name=".CalendarActivity.CalendarActivity" />
 
         <activity
             android:name=".AccountPage"
@@ -61,6 +61,12 @@
         <activity
             android:name=".Friends.Friends"
             android:label="@string/title_activity_friends"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".CalendarActivity.KalendarActivity"
+            android:label="@string/kalendar_activity">
+
+        </activity>
     </application>
 </manifest>
