@@ -7,8 +7,6 @@ package com.example.alex.helloworld.DisplayWeekActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -21,9 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.DisplayWeekActivity.MyCustomAdapter;
-import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
@@ -33,16 +28,12 @@ import com.google.gson.Gson;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimePrinter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import com.example.alex.helloworld.R.*;
 
@@ -62,7 +53,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
     final static String DEBUG_TAG = "Yolo: ";
     private float x1, x2;
     RecyclerView recyclerView;
-    MyCustomAdapter adapter;
+    DisplayWeekActivityAdapter adapter;
     DBconnection dBconnection;
 
     ArrayList<Information> meetings = new ArrayList<>();
@@ -123,8 +114,9 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
      * Call to Database class to update the UI through updateUI
      */
     public void getMeetings() throws InterruptedException, ExecutionException, ParseException, JSONException {
-        String meetingID = "1";
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
+        SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", email};
         Database db = new Database(this, this.getApplicationContext());
         //meetings is ArrayList<Information>
         db.execute(params);
@@ -155,7 +147,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
         }
 
         recyclerView = (RecyclerView)findViewById(id.inviteView);
-        adapter = new MyCustomAdapter(this, meetingsOnDay);
+        adapter = new DisplayWeekActivityAdapter(this, meetingsOnDay);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         System.out.println("Database Class initialized, layout updated");
@@ -175,7 +167,7 @@ public class DisplayWeekActivity extends AppCompatActivity implements View.OnCli
             public void processFinish(String result) throws ParseException, JSONException {
                 //meetings = Data.getCalendar(result);
                 meetings = jsonToArrayList(result);
-                adapter = new MyCustomAdapter(DisplayWeekActivity.this, meetings);
+                adapter = new DisplayWeekActivityAdapter(DisplayWeekActivity.this, meetings);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(DisplayWeekActivity.this));
 

@@ -1,10 +1,6 @@
 package com.example.alex.helloworld.Friends;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.ImageFormat;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,26 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.bitmap.Transform;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
@@ -42,12 +26,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private ArrayList<Information> data;
     private LayoutInflater inflater;
     private FriendsTab friendsTab;
+    private Boolean selectionMode;
+    private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsTab friendsTab) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsTab friendsTab, Boolean selectionMode) {
         this.context = context;
         this.data = data;
         this.friendsTab = friendsTab;
+        this.selectionMode = selectionMode;
         inflater = LayoutInflater.from(context);
 
     }
@@ -108,14 +95,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     }
 
-
     @Override
     public int getItemCount() {
         return data.size();
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView username;
         TextView email;
         ImageView profileP;
@@ -126,6 +112,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             super(itemView);
             this.contxt = ctx;
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
             username = (TextView) itemView.findViewById(R.id.username_text);
@@ -136,19 +123,43 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public void onClick(View view) {
+            if (selectionMode) {
+                friendsTab.toggle(getAdapterPosition());
+                if (!view.isSelected()) {
+                    count++;
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                    view.setSelected(true);
+                } else if (view.isSelected()) {
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                    view.setSelected(false);
+                    count--;
 
-            friendsTab.toggle(getAdapterPosition());
-            if (!view.isSelected()) {
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-                view.setSelected(true);
-            } else if (view.isSelected()) {
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                view.setSelected(false);
-
+                }
+                friendsTab.updateCount(count);
             }
         }
 
 
+        @Override
+        public boolean onLongClick(View view) {
+            if (!selectionMode) {
+                selectionMode = true;
+                friendsTab.toggle(getAdapterPosition());
+                if (!view.isSelected()) {
+                    count++;
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                    view.setSelected(true);
+                } else if (view.isSelected()) {
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                    view.setSelected(false);
+                    count--;
+
+                }
+                friendsTab.activateSelectionMode(true, count);
+                return true;
+            }
+            return false;
+        }
     }
 
 

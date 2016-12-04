@@ -3,7 +3,9 @@ package com.example.alex.helloworld.GamePicker;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,7 +42,7 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
+public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TextWatcher {
     int numP = 4, minHours = 2;
     Button SelectedButton;
 
@@ -51,6 +53,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     private MutableDateTime startTime, endTime;
     private DateTime datetime;
     private DateTimeFormatter formatter;
+    private Button startTime_b,endTime_b,date_b;
     private String extraInfoString;
     private TextView text_minHour;
     private TextView text_minParti;
@@ -59,6 +62,7 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_picker);
         endOrStart = false;
+        extraInfoString ="";
 
         //Popup größe
         DisplayMetrics dm = new DisplayMetrics();
@@ -86,6 +90,14 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
         text_minHour.setText(minHours + "");
         text_minParti = (TextView) findViewById(R.id.textview_num);
         text_minParti.setText(numP + "");
+        startTime_b = (Button) findViewById(R.id.button_beginn);
+        endTime_b = (Button) findViewById(R.id.button_ende);
+        date_b = (Button) findViewById(R.id.button_datum);
+        startTime_b.setText(startTime.toString("HH:mm"));
+        endTime_b.setText(startTime.toString("HH:mm"));
+        date_b.setText(datetime.toString("MM.dd.YY"));
+
+
 
 
     }
@@ -106,7 +118,8 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     }
 
     public void dateButton(View view) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, datetime.getYear(), datetime.getMonthOfYear(), datetime.getDayOfMonth());
+        int x = datetime.getMonthOfYear();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth());
         datePickerDialog.show();
         SelectedButton = (Button) view;
 
@@ -140,8 +153,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
         if (startTime.get(DateTimeFieldType.millisOfSecond()) == 0 && endTime.get(DateTimeFieldType.millisOfSecond()) == 0 && startTime.get(DateTimeFieldType.year()) != 0 && numP != 0) {
             if (startTime.isBefore(endTime)) {
+                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime))
+                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email,"activity",extraInfoString,"sportID",""+sportart_ID)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -150,12 +165,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
                 String[] params = new String[paramsArrayList.size()];
                 params = paramsArrayList.toArray(params);
 
-                System.out.print("ha");
-
                 new DBconnection(new AsyncResponse() {
                     @Override
                     public void processFinish(String output) throws ParseException, JSONException {
-
+                        Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
                     }
                 }).execute(params);
                 finish();
@@ -171,7 +184,10 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     }
 
     public void addPartiMembersButton(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("SelectionMode", true);
         Intent intent = new Intent(this, Friends.class);
+        intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
 
@@ -198,25 +214,26 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        startTime.setDate(year, month, dayOfMonth);
-        endTime.setDate(year, month, dayOfMonth);
-        SelectedButton.setText(dayOfMonth + "." + month + "." + year);
+        startTime.setDate(year, month + 1, dayOfMonth);
+        endTime.setDate(year, month + 1, dayOfMonth);
+        SelectedButton.setText(endTime.toString("dd.MM.YYYY"));
+
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        NumberFormat f = new DecimalFormat("00");
         if (endOrStart) {
             startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             startTime.set(DateTimeFieldType.minuteOfHour(), minute);
             startTime.set(DateTimeFieldType.millisOfSecond(), 0);
+            SelectedButton.setText(startTime.toString("HH:mm"));
 
         } else {
             endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             endTime.set(DateTimeFieldType.minuteOfHour(), minute);
             endTime.set(DateTimeFieldType.millisOfSecond(), 0);
+            SelectedButton.setText(endTime.toString("HH:mm"));
         }
-        SelectedButton.setText(f.format(hourOfDay) + ":" + f.format(minute));
     }
 
 
@@ -245,7 +262,6 @@ public class Gamepicker extends Activity implements DatePickerDialog.OnDateSetLi
     @Override
     public void afterTextChanged(Editable editable) {
         extraInfoString = additionalInfos.getText().toString();
-        Toast.makeText(Gamepicker.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
 
 }

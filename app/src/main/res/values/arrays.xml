@@ -4,21 +4,10 @@
         <item>@drawable/beachen</item>
         <item>@drawable/soccer</item>
         <item>@drawable/run</item>
-        <item>@drawable/beachen</item>
-        <item>@drawable/soccer</item>
-        <item>@drawable/run</item>
-        <item>@drawable/beachen</item>
-        <item>@drawable/soccer</item>
-        <item>@drawable/run</item>
-        <item>@drawable/beachen</item>
-        <item>@drawable/soccer</item>
-        <item>@drawable/run</item>
-        <item>@drawable/beachen</item>
-        <item>@drawable/soccer</item>
-        <item>@drawable/run</item>
-        <item>@drawable/beachen</item>
-        <item>@drawable/soccer</item>
-        <item>@drawable/run</item>
+        <item>@drawable/programming</item>
+        <item>@drawable/basketball</item>
+        <item>@drawable/tricking</item>
+        <item>@drawable/gym</item>
     </array>
 
 

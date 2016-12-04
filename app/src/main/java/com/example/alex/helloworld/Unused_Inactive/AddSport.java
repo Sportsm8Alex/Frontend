@@ -43,7 +43,7 @@ public class AddSport extends Activity{
         final ListView listView = (ListView)findViewById(R.id.listview_addspo);
         listView.setAdapter(adapter);
 
-        EditText search = (EditText) findViewById(R.id.editText_searchS);
+        EditText search = (EditText) findViewById(R.id.editText_new_group);
 
         search.addTextChangedListener(new TextWatcher() {
             @Override

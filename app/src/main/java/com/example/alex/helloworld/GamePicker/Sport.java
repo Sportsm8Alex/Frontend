@@ -1,57 +1,52 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.GamePicker;
 
 /**
  * Created by alex on 10/30/2016.
  */
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import com.example.alex.helloworld.Friends.Friends;
-import com.example.alex.helloworld.Friends.FriendsListAdapter;
+
+import com.example.alex.helloworld.Home;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.Invites;
+import com.example.alex.helloworld.LoginScreen;
+import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.Unused_Inactive.AddSport;
 import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
-import com.example.alex.helloworld.GamePicker.Gamepicker;
 import com.example.alex.helloworld.Unused_Inactive.SportAttributes;
 import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.example.alex.helloworld.activities.AccountPage;
 
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.json.JSONException;
-import org.json.simple.parser.ParseException;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -73,6 +68,8 @@ public class Sport extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +96,7 @@ public class Sport extends AppCompatActivity {
         b.putInt("sportID", sportID);
         b.putBoolean("liga", false);
         Intent intent = new Intent(this, Gamepicker.class);
+        intent.putExtras(b);
         startActivity(intent);
     }
 
@@ -107,6 +105,7 @@ public class Sport extends AppCompatActivity {
         b.putInt("sportID", sportID);
         b.putBoolean("liga", true);
         Intent intent = new Intent(this, GamePickerLiga.class);
+        intent.putExtras(b);
         startActivity(intent);
     }
 
@@ -141,8 +140,6 @@ public class Sport extends AppCompatActivity {
 
         Button training = (Button) findViewById(R.id.button_training);
         Button fSpiel = (Button) findViewById(R.id.button_funGame);
-        Button lSpiel = (Button) findViewById(R.id.button_lSpiel);
-        Button nochEinButton = (Button) findViewById(R.id.nochEinButton);
         ImageView iV = (ImageView) findViewById(R.id.imageView_sportart);
 
         Information temp = sportIDs.get(sID);
@@ -151,16 +148,13 @@ public class Sport extends AppCompatActivity {
         iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
 
         fSpiel.setVisibility(View.GONE);
-        lSpiel.setVisibility(View.GONE);
         training.setVisibility(View.GONE);
 
         if (Integer.valueOf(sportIDs.get(sID).team) == 1) {
             fSpiel.setVisibility(View.VISIBLE);
-            lSpiel.setVisibility(View.VISIBLE);
             training.setVisibility(View.GONE);
         } else {
             fSpiel.setVisibility(View.GONE);
-            lSpiel.setVisibility(View.GONE);
             training.setVisibility(View.VISIBLE);
         }
 

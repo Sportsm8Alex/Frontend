@@ -27,9 +27,7 @@ public class Data {
         for (int i = 0; i < Categories.length; i++) {
 
             Information current = new Information();
-            current.title = Categories[i];
-            current.start = Start[i];
-            current.stop = Stop[i];
+
             //current.datum = Datum[i];
 
             data.add(current);
@@ -50,9 +48,7 @@ public class Data {
         for (int i = 0; i < Categories.length; i++) {
 
             Information current = new Information();
-            current.title = Categories[i];
-            current.start = Start[i];
-            current.stop = Stop[i];
+
             //current.datum = Datum[i];
 
             data.add(current);
