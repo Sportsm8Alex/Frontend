@@ -37,6 +37,7 @@ public class Database extends AsyncTask<String, String, String>{
     public static final int READ_TIMEOUT=5000;
     private UIthread uiThread;
     private Context context;
+    private String filename;
 
     public Database(UIthread thread, Context context){
         uiThread = thread;
@@ -57,7 +58,7 @@ public class Database extends AsyncTask<String, String, String>{
 
         String success = "";
         HttpURLConnection conn;
-
+        filename = params[0].substring(0,params[0].length()-4);
         Uri.Builder builder = new Uri.Builder();
         for(int i=1; i<params.length; i+=2){
             builder.appendQueryParameter(params[i], params[i+1]);
@@ -107,9 +108,9 @@ public class Database extends AsyncTask<String, String, String>{
         //save database information locally
         // updateUI(success)
 
-        SharedPreferences sharedPrefs = context.getSharedPreferences("meetingInformation", context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString("meetingJSON", success);
+        editor.putString(filename+"JSON", success);
         editor.apply();
 
         uiThread.updateUI(success);

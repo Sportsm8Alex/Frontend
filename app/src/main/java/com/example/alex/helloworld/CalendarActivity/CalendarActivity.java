@@ -118,8 +118,8 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void updateUI(){
 
         //get local Information
-        SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("meetingJSON", "");
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexMeetingsJSON", "");
         try {
             meetings = Database.jsonToArrayList(meetingJson);
         } catch (JSONException | ParseException e) {

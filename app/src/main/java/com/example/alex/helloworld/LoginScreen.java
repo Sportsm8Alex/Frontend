@@ -155,9 +155,9 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
 
         if(success.equalsIgnoreCase("1")){
 
-            //save login information locally for session management
-            //should the password be saved?
-            SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                    //save login information locally for session management
+                    //should the password be saved?
+                    SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString("username", enteredUsername);
             editor.putString("email","Korbi@korbi.de");
