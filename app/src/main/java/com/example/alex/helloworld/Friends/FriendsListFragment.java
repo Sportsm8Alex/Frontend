@@ -82,7 +82,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
 
     }
 
-    //Not needed for Alex Database Connection
+    //Not needed, Database's jsonToArrayList can be used instead
     private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
         if (jsonObjectSring != null) {
             ArrayList<Information> data = new ArrayList<>();

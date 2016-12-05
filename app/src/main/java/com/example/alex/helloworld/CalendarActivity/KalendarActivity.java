@@ -25,6 +25,8 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
+import static java.security.AccessController.getContext;
+
 
 /**
  * Created by alex on 12/2/2016.
@@ -58,7 +60,9 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
         //this should happen on start of the app and then only on reopen/update
         //###################
         //String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", "alexa.reish@gmail.com"};
+        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", email};
         Database db = new Database(this, this.getApplicationContext());
         //meetingsOnDay is ArrayList<Information>
         db.execute(params);
@@ -99,7 +103,7 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
             SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
             String meetingJson = sharedPrefs.getString("meetingJSON", "");
             //
-            System.out.println("THESE ARE THE MEETINGZ "+meetingJson); // Gives me nothing but success = 0 :O
+            System.out.println("THESE ARE ALL MEETINGZ "+meetingJson); // Gives me nothing but success = 0 :O
             //
             ArrayList<Information> meetingsOnDay = new ArrayList<Information>();
 
@@ -108,7 +112,6 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
                 int today = LocalDate.now().getDayOfYear();
                 System.out.println("THIS IS TODAY "+today);
                 for(int i = 0; i< meetings.size(); i++){
-                    System.out.println("MEETING "+i);
                     String date = meetings.get(i).startTime.substring(0,10); //problem if no meetingsOnDay yet!?
                     int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
                     if(dateOfMeeting==today+position){
@@ -130,7 +133,7 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
 
             String[] btnText = {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"};
 
-            int todayInWeek = LocalDate.now().getDayOfWeek();
+            int todayInWeek = LocalDate.now().getDayOfWeek()-1;
             /*for(int i=0; i<7; i++){
                 tabLayout.addTab(tabLayout.newTab().setText(btnText[(todayInWeek+i)%7]));
             }*/
