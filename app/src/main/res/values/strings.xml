@@ -16,23 +16,20 @@
         <item>Beachen</item>
         <item>Fußball</item>
         <item>Laufen</item>
-        <item>Minigolf</item>
-        <item>Baumstamm werfen</item>
-        <item>Murmeln</item>
+        <item>Programmieren</item>
+        <item>Basketball</item>
+        <item>Tricking</item>
+        <item>FitnessStudio</item>
 
     </string-array>
 
     <string-array name="testsportID">
         <item>Beachen</item>
         <item>Fußball</item>
-        <item>Tennis</item>
+        <item>Programmieren</item>
         <item>Laufen</item>
-        <item>Basketball</item>
-        <item>Leichtathletik</item>
         <item>Tricking</item>
-        <item>Fitnessstudio</item>
-        <item>Handball</item>
-        <item>Minigolf</item>
+
 
     </string-array>
 
@@ -77,4 +74,9 @@
     <string name="add_friends">Add Friends</string>
     <string name="setTimeWrong">Zeit falsch eingestellt</string>
     <string name="text_empty_fields">Nicht alle Felder ausgefüllt</string>
+    <string name="private_group">Private Gruppe</string>
+    <string name="invitation_mode">Einladungen privat</string>
+    <string name="new_group_name">Gruppenname</string>
+    <string name="create_group">Gruppe erstellen</string>
+    <string name="next_meeting">Nächstes Meeting:</string>
 </resources>

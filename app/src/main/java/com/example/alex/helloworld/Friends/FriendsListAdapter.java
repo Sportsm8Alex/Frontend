@@ -26,12 +26,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private ArrayList<Information> data;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
+    private Boolean selectionMode;
+    private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, Boolean selectionMode) {
         this.context = context;
         this.data = data;
-        this.friendsListFragment = friendsListFragment;
+        this.friendsListFragment= friendsListFragment;
+        this.selectionMode = selectionMode;
         inflater = LayoutInflater.from(context);
 
     }
@@ -92,14 +95,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     }
 
-
     @Override
     public int getItemCount() {
         return data.size();
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView username;
         TextView email;
         ImageView profileP;
@@ -110,6 +112,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             super(itemView);
             this.contxt = ctx;
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
             username = (TextView) itemView.findViewById(R.id.username_text);
@@ -120,19 +123,43 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public void onClick(View view) {
+            if (selectionMode) {
+                friendsListFragment.toggle(getAdapterPosition());
+                if (!view.isSelected()) {
+                    count++;
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                    view.setSelected(true);
+                } else if (view.isSelected()) {
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                    view.setSelected(false);
+                    count--;
 
-            friendsListFragment.toggle(getAdapterPosition());
-            if (!view.isSelected()) {
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-                view.setSelected(true);
-            } else if (view.isSelected()) {
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                view.setSelected(false);
-
+                }
+                friendsListFragment.updateCount(count);
             }
         }
 
 
+        @Override
+        public boolean onLongClick(View view) {
+            if (!selectionMode) {
+                selectionMode = true;
+                friendsListFragment.toggle(getAdapterPosition());
+                if (!view.isSelected()) {
+                    count++;
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                    view.setSelected(true);
+                } else if (view.isSelected()) {
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                    view.setSelected(false);
+                    count--;
+
+                }
+                friendsListFragment.activateSelectionMode(true, count);
+                return true;
+            }
+            return false;
+        }
     }
 
 

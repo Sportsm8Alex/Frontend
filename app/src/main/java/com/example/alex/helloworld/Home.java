@@ -1,6 +1,8 @@
 package com.example.alex.helloworld;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import com.example.alex.helloworld.CalendarActivity.CalendarActivity;
 import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
+import com.example.alex.helloworld.GamePicker.Sport;
+import com.example.alex.helloworld.activities.AccountPage;
 import com.example.alex.helloworld.Friends.Friends;
 
 /**
@@ -69,7 +73,10 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.friends_button:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("SelectionMode",false);
                 intent = new Intent(this,Friends.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             default:
@@ -134,6 +141,12 @@ public class Home extends AppCompatActivity {
                         closeNavDrawer();
                         return true;
                     case R.id.nav_logout:
+                        //delete locally saved userinformation
+                        SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor =  sharedPrefs.edit();
+                        editor.clear();
+                        editor.apply();
+
                         intent = new Intent(getApplicationContext(), LoginScreen.class);
                         startActivity(intent);
                         closeNavDrawer();

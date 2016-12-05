@@ -7,20 +7,25 @@ import java.io.Serializable;
  */
 
 
-public class Information implements Serializable{
+public class Information implements Serializable {
 
-    public String start;
-    public String stop;
-    public String title;
+    //userInformation
+    public String email, PPpath,username,friend;
+
+    //meetingInformation
+    public String MeetingID, startTime, endTime,status, meetingActivity;
+    public String confirmed = "0";
+
+    //GroupInformation
+    public String GroupID, GroupName;
+
+    //SportInformation
+    public String team, sportname, sportID;
+
+    //Help Variables
+    public Boolean selected = false;
     public int success;
-    public String MeetingID,startTime,endTime;
-    public String username, password;
-    public String names;
-    public String friend;
-    public String PPpath;
-    public String email,GroupID,GroupName;
-    public Boolean selected=false;
-    public String team,sportname,sportID;
+
 
     public String getUsername() {
         return username;

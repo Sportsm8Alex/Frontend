@@ -104,9 +104,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
      * Call to Database class to update the UI through updateUI
      */
     public void getMeetings() throws InterruptedException, ExecutionException, ParseException, JSONException {
-        String meetingID = "147";
-        //String[] params = {"IndexMeetings.php", "function", "getMeeting", "meetingID", meetingID};
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", "alexa.reish@gmail.com"};
+
+        SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", email};
+
         Database db = new Database(this, this.getApplicationContext());
         //meetingsOnDay is ArrayList<Information>
         db.execute(params);
@@ -143,6 +145,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         System.out.println("Database Class initialized, layout updated");
     }
 
+    @Override
+    public void updateUI(String answer) {
+
+    }
+
     private ArrayList<Information> jsonToArrayList(String stringFromJson) throws JSONException, ParseException {
 
         ArrayList<Information> data = new ArrayList<>();
@@ -165,6 +172,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
      * function that changes the BackgroundResource of an array of Buttons expect the
      * the Button at index j
      *
+     * the array of Buttons
      * @param buttons the array of Buttons
      * @param j       the index {@code int} of the button that does not change the background color
      * @param k       the int value of the color

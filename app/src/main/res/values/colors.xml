@@ -8,6 +8,10 @@
     <color name="transparent">#00000000</color>
     <color name="orange">#FF9800</color>
     <color name="weiss">#FFFFFF</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="lightgrey">#E0E0E0</color>
     <color name="grey">#9E9E9E</color>
     <color name="darkgrey">#424242</color>
 </resources>

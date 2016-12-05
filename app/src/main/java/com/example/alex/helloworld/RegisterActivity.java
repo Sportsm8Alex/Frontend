@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.example.alex.helloworld.Unused_Inactive.MainActivity;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -28,7 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements UIthread {
 
     protected EditText username;
     private EditText password;
@@ -57,11 +57,61 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                //request server authentification
-                new AsyncRegistration().execute(enteredUsername, enteredPassword, enteredEmail);
+                //request server authentication
+                register();
             }
         });
     }
+
+    public void register(){
+        enteredUsername = username.getText().toString();
+        String enteredPassword = password.getText().toString();
+        String enteredEmail = email.getText().toString();
+
+        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", enteredUsername, "password", enteredPassword, "email", enteredEmail};
+        Database db = new Database(this, this.getApplicationContext());
+        db.execute(params);
+    }
+
+
+
+    @Override
+    public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
+        JSONParser parser = new JSONParser();
+        JSONObject json = null;
+        String success ="";
+        try {
+            json = (JSONObject) parser.parse(answer);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        success = Long.toString((Long) json.get("success"));
+        System.out.println("SUCCESS: "+success);
+
+        if(success.equalsIgnoreCase("1")){
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            startActivity(intent);
+            RegisterActivity.this.finish();
+
+        }
+        else if(success.equalsIgnoreCase("")){
+            Toast.makeText(RegisterActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
+
+        }
+        else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
+            Toast.makeText(RegisterActivity.this, "Connection Problem", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    /* not needed anymore
+
+
     private class AsyncRegistration extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
         HttpURLConnection conn;
@@ -172,6 +222,6 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(RegisterActivity.this, "Connection Problem", Toast.LENGTH_LONG).show();
             }
         }
-    }
+    }*/
 }
 
