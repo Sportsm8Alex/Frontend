@@ -1,5 +1,7 @@
 package com.example.alex.helloworld.Friends;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,20 +13,17 @@ import android.view.ViewGroup;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
-import com.google.gson.Gson;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class GroupsListFragment extends Fragment {
-    private DBconnection dBconnection;
-    private ArrayList<Information> friends;
-
+public class GroupsListFragment extends Fragment implements UIthread{
+    private ArrayList<Information> groups;
+    Friends activity;
     RecyclerView recyclerView;
     GroupListAdapter adapter;
 
@@ -32,47 +31,42 @@ public class GroupsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.groups_fragment,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
-        friends = new ArrayList<>();
-        updateFriendsList("Korbi@Korbi.de");
-
-        adapter = new GroupListAdapter(getContext(), friends);
+        groups = new ArrayList<>();
+        adapter = new GroupListAdapter(getContext(), groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        activity = (Friends) getActivity();
+        activity.setReferenceGroupList(this);
+        updateUI();
         return v;
     }
 
-    private void updateFriendsList(String email) {
-        String[] params = {"/IndexGroups.php", "function", "getGroups"};
-        dBconnection = (DBconnection) new DBconnection(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) throws ParseException, JSONException {
-                parseToArrayList(output);
-            }
-        }).execute(params);
-
-
+    public void updateGroupList() {
+        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexGroups.php", "function", "getGroups"};
+        Database db = new Database(this,getContext());
+        db.execute(params);
+        updateUI();
     }
-    private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
-       if(jsonObjectSring!=null) {
-           ArrayList<Information> data = new ArrayList<>();
-           JSONObject jsonObject = new JSONObject(jsonObjectSring);
 
-           int i = 0;
-           while (jsonObject.has("" + i)) {
-               String meetingString = jsonObject.get("" + i).toString();
-               Gson gson = new Gson();
-               Information current = gson.fromJson(meetingString, Information.class);
-               data.add(current);
-               i++;
-           }
-           adapter = new GroupListAdapter(getContext(), data);
-           recyclerView.setAdapter(adapter);
-           recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-           friends = data;
-           return data;
-       }else
-           return null;
+    @Override
+    public void updateUI() {
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexGroupsJSON", "");
+        try {
+            groups = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        adapter = new GroupListAdapter(getContext(), groups);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateUI(String answer) {
 
     }
 }

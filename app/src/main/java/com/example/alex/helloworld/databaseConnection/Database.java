@@ -37,7 +37,7 @@ public class Database extends AsyncTask<String, String, String>{
     public static final int READ_TIMEOUT=5000;
     private UIthread uiThread;
     private Context context;
-    private String filename;
+    private String filename,function;
 
     public Database(UIthread thread, Context context){
         uiThread = thread;
@@ -59,6 +59,7 @@ public class Database extends AsyncTask<String, String, String>{
         String success = "";
         HttpURLConnection conn;
         filename = params[0].substring(0,params[0].length()-4);
+        function = params[2];
         Uri.Builder builder = new Uri.Builder();
         for(int i=1; i<params.length; i+=2){
             builder.appendQueryParameter(params[i], params[i+1]);
@@ -110,7 +111,7 @@ public class Database extends AsyncTask<String, String, String>{
 
         SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(filename+"JSON", success);
+        editor.putString(filename+function+"JSON", success);
         editor.apply();
 
         uiThread.updateUI(success);

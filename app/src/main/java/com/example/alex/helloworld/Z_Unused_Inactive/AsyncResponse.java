@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.databaseConnection;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;

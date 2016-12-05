@@ -13,13 +13,10 @@ import android.view.ViewGroup;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
+import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
@@ -37,13 +34,11 @@ public class FriendsListFragment extends Fragment implements UIthread{
         View v =inflater.inflate(R.layout.friends_fragment,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.friends_recycler_view);
         friends = new ArrayList<>();
-        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        updateFriendsList(email); //Email from Shared Prefernces?
+
         activity = (Friends) getActivity();
         selectionMode = activity.getSelectionMode();
-        activity.setReference(this);
-
+        activity.setReferenceFriendsList(this);
+        updateUI();
         //Sets empty adapter to prevent Errors
         adapter = new FriendsListAdapter(getContext(), friends, this, selectionMode);
         recyclerView.setAdapter(adapter);
@@ -70,45 +65,14 @@ public class FriendsListFragment extends Fragment implements UIthread{
     }
 
     //Needs to be adapted to Alex DatabaseConnection
-    private void updateFriendsList(String email) {
-        String[] params = {"/IndexFriendship.php", "function", "getFriends", "email", email};
-        new DBconnection(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) throws ParseException, JSONException {
-                parseToArrayList(output);
-            }
-        }).execute(params);
-
-
+    public void updateFriendsList() {
+        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
+        Database db = new Database(this,getContext());
+        db.execute(params);
+        updateUI();
     }
-
-    //Not needed, Database's jsonToArrayList can be used instead
-    private ArrayList<Information> parseToArrayList(String jsonObjectSring) throws JSONException {
-        if (jsonObjectSring != null) {
-            ArrayList<Information> data = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(jsonObjectSring);
-
-            int i = 0;
-            while (jsonObject.has("" + i)) {
-                String meetingString = jsonObject.get("" + i).toString();
-                Gson gson = new Gson();
-                Information current = gson.fromJson(meetingString, Information.class);
-                data.add(current);
-                i++;
-            }
-            adapter = new FriendsListAdapter(getContext(), data, this, selectionMode);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            Friends activity = (Friends) getActivity();
-            activity.setData(data);
-            friends = data;
-            adapter.notifyDataSetChanged();
-            return data;
-        } else
-            return null;
-
-    }
-
 
     public void updateCount(int count) {
         activity.updateCount(count);
@@ -116,6 +80,19 @@ public class FriendsListFragment extends Fragment implements UIthread{
 
     @Override
     public void updateUI() {
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexFriendshipJSON", "");
+        try {
+            friends = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        adapter = new FriendsListAdapter(getContext(), friends, this, selectionMode);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Friends activity = (Friends) getActivity();
+        activity.setData(friends);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -123,4 +100,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
     public void updateUI(String answer) {
 
     }
+
+
+
 }

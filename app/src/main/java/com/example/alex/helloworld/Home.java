@@ -19,9 +19,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import com.example.alex.helloworld.CalendarActivity.CalendarActivity;
+
 import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
-import com.example.alex.helloworld.GamePicker.Sport;
+import com.example.alex.helloworld.CreateNewMeeting.Sport;
+import com.example.alex.helloworld.Z_Unused_Inactive.Invites;
+import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.activities.AccountPage;
 import com.example.alex.helloworld.Friends.Friends;
 

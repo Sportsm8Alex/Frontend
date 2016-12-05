@@ -1,15 +1,12 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.UserClasses;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-
-import android.os.AsyncTask;
 
 import android.widget.EditText;
 
@@ -18,26 +15,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-
-import java.io.IOException;
-
-import java.io.InputStream;
-
-import java.io.InputStreamReader;
-
-import android.app.ProgressDialog;
-import android.net.Uri;
-
+import com.example.alex.helloworld.Home;
+import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 

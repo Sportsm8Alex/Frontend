@@ -21,19 +21,15 @@ import android.widget.Toast;
 import com.example.alex.helloworld.Friends.Friends;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -41,7 +37,7 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher {
+public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher,UIthread {
 
     int numP = 4, minHours = 2;
     Button SelectedButton;
@@ -156,7 +152,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("/IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email,"activity",extraInfoString,"sportID",""+sportart_ID)
+                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email,"activity",extraInfoString,"sportID",""+sportart_ID)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -165,12 +161,9 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 String[] params = new String[paramsArrayList.size()];
                 params = paramsArrayList.toArray(params);
 
-                new DBconnection(new AsyncResponse() {
-                    @Override
-                    public void processFinish(String output) throws ParseException, JSONException {
-                        Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
-                    }
-                }).execute(params);
+                Database db = new Database(this,getBaseContext());
+                db.execute(params);
+                Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
                 finish();
 
             } else {
@@ -240,8 +233,6 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-
-                String[] params = {"/IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime)};
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
                 TextView textView = (TextView) findViewById(R.id.number_added);
@@ -264,4 +255,13 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         Toast.makeText(CreateNewMeeting.this, extraInfoString, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
+
+    }
 }

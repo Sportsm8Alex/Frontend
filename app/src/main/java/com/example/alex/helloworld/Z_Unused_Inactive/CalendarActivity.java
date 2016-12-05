@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.CalendarActivity;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 /**
  * Created by agemcipe on 31.10.16.
@@ -18,10 +18,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.example.alex.helloworld.CalendarActivity.RecyclerViewAdapter;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.google.gson.Gson;
@@ -31,7 +31,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
-import java.net.MalformedURLException;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import com.example.alex.helloworld.R.*;
@@ -53,7 +53,6 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private float x1, x2;
     RecyclerView recyclerView;
     RecyclerViewAdapter adapter;
-    DBconnection dBconnection;
 
     ArrayList<Information> meetings = new ArrayList<>();
 

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
-        tools:context="com.example.alex.helloworld.GamePicker.Sport">
+        tools:context="com.example.alex.helloworld.CreateNewMeeting.Sport">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -37,6 +37,12 @@
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
                     />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:onClick="onClick"
+                    android:src="@drawable/ic_autorenew_white_36dp"/>
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>

@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.DisplayWeekActivity;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 /**
  * Created by Korbi on 10/30/2016.

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alex.helloworld.Invites"
+    tools:context="com.example.alex.helloworld.Z_Unused_Inactive.Invites"
     tools:showIn="@layout/activity_einladungen">
 
     <android.support.v7.widget.RecyclerView

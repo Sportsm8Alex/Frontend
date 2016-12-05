@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.Unused_Inactive;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
-import com.example.alex.helloworld.LoginScreen;
+import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.R;
 
 public class MainActivity extends AppCompatActivity {

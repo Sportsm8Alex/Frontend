@@ -100,8 +100,8 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
         @Override
         public Fragment getItem(int position) {
             //get local Information
-            SharedPreferences sharedPrefs = getSharedPreferences("meetingInformation", Context.MODE_PRIVATE);
-            String meetingJson = sharedPrefs.getString("meetingJSON", "");
+            SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
+            String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
             //
             System.out.println("THESE ARE ALL MEETINGZ "+meetingJson); // Gives me nothing but success = 0 :O
             //

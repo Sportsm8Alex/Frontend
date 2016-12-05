@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginScreen" >
+        <activity android:name=".UserClasses.LoginScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,12 +20,12 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
-        <activity android:name=".Unused_Inactive.MainActivity" />
+        <activity android:name=".Z_Unused_Inactive.MainActivity" />
 
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".UserClasses.RegisterActivity" />
 
         <activity
-            android:name=".GamePicker.Sport"
+            android:name=".CreateNewMeeting.Sport"
             android:label="@string/title_activity_sportart"
             android:parentActivityName=".Home"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,7 +35,7 @@
         </activity>
 
         <activity
-            android:name=".Invites"
+            android:name=".Z_Unused_Inactive.Invites"
             android:label="@string/title_activity_einladungen"
             android:parentActivityName=".Home"
             android:theme="@style/AppTheme.NoActionBar">
@@ -45,18 +45,21 @@
         </activity>
 
         <activity
-            android:name=".Unused_Inactive.GamePickerLiga"
+            android:name=".Z_Unused_Inactive.GamePickerLiga"
             android:theme="@style/AppTheme.Custom1" />
 
         <activity
-            android:name=".Unused_Inactive.AddSport"
+            android:name=".Z_Unused_Inactive.AddSport"
+            android:theme="@style/AppTheme.Custom1" />
+        <activity
+            android:name=".Friends.CreateGroup"
             android:theme="@style/AppTheme.Custom1" />
 
         <activity
             android:name=".CreateNewMeeting.CreateNewMeeting"
             android:theme="@style/AppTheme.Custom1" />
 
-        <activity android:name=".CalendarActivity.CalendarActivity" />
+        <activity android:name=".Z_Unused_Inactive.CalendarActivity" />
 
         <activity
             android:name=".activities.AccountPage"

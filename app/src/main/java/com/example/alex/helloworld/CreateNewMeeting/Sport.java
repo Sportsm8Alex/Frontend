@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.GamePicker;
+package com.example.alex.helloworld.CreateNewMeeting;
 
 /**
  * Created by alex on 10/30/2016.
@@ -6,52 +6,43 @@ package com.example.alex.helloworld.GamePicker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import com.example.alex.helloworld.Unused_Inactive.AddSport;
-import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
-import com.example.alex.helloworld.CreateNewMeeting.CreateNewMeeting;
+
+import com.example.alex.helloworld.Z_Unused_Inactive.AddSport;
 import com.example.alex.helloworld.Home;
 import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.Invites;
-import com.example.alex.helloworld.LoginScreen;
+import com.example.alex.helloworld.Z_Unused_Inactive.Invites;
+import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.R;
-import com.example.alex.helloworld.Unused_Inactive.AddSport;
-import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
-import com.example.alex.helloworld.Unused_Inactive.SportAttributes;
-import com.example.alex.helloworld.databaseConnection.AsyncResponse;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
-import com.google.gson.Gson;
+import com.example.alex.helloworld.Z_Unused_Inactive.SportAttributes;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.example.alex.helloworld.activities.AccountPage;
-import org.json.JSONObject;
+
 import org.json.simple.parser.ParseException;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-public class Sport extends AppCompatActivity {
+public class Sport extends AppCompatActivity implements UIthread {
 
 
     ArrayList<Information> sportIDs;
@@ -69,9 +60,6 @@ public class Sport extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,14 +69,14 @@ public class Sport extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        try {
-            createList();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
         navigationView();
+        updateUI();
 
 
+    }
+
+    public void onClick(View view) {
+        createList();
     }
 
 
@@ -101,40 +89,28 @@ public class Sport extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void ligaGame(View v) {
-        Bundle b = new Bundle();
-        b.putInt("sportID", sportID);
-        b.putBoolean("liga", true);
-        Intent intent = new Intent(this, GamePickerLiga.class);
-        intent.putExtras(b);
-        startActivity(intent);
-    }
-
-    public void training(View v) {
-        Bundle b = new Bundle();
-        b.putInt("sportID", sportID);
-    }
-
 
     private void initSpinner() {
-        mySpinner = (Spinner) findViewById(R.id.spinner2);
-        ArrayAdapter<String> myAdapater = new ArrayAdapter<>(Sport.this, R.layout.item_custom_spinner, sportArten);
-        myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mySpinner.setAdapter(myAdapater);
+        if (sportArten != null) {
+            mySpinner = (Spinner) findViewById(R.id.spinner2);
+            ArrayAdapter<String> myAdapater = new ArrayAdapter<>(Sport.this, R.layout.item_custom_spinner, sportArten);
+            myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mySpinner.setAdapter(myAdapater);
 
-        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //update(mySpinner.getSelectedItem().toString());
-                update(position);
-                sportID = position;
-            }
+            mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    //update(mySpinner.getSelectedItem().toString());
+                    update(position);
+                    sportID = position;
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void update(int sID) {
@@ -161,39 +137,11 @@ public class Sport extends AppCompatActivity {
 
     }
 
-    private void createList() throws ExecutionException, InterruptedException {
-        String[] params = {"/IndexSports.php", "function", "getData"};
-        new DBconnection(new AsyncResponse() {
-            @Override
-            public void processFinish(String output) throws ParseException, JSONException {
-                parseToArrayList(output);
-            }
-        }).execute(params);
-
-
-    }
-
-    private void parseToArrayList(String jsonObjectSring) throws JSONException {
-       if (jsonObjectSring!=null) {
-           ArrayList<Information> data = new ArrayList<>();
-           JSONObject jsonObject = new JSONObject(jsonObjectSring);
-
-           int i = 0;
-           while (jsonObject.has("" + i)) {
-               String meetingString = jsonObject.get("" + i).toString();
-               Gson gson = new Gson();
-               Information current = gson.fromJson(meetingString, Information.class);
-               data.add(current);
-               i++;
-           }
-
-           sportArten = new String[data.size()];
-           for (int j = 0; j < data.size(); j++) {
-               sportArten[j] = data.get(j).sportname;
-           }
-           sportIDs = data;
-           initSpinner();
-       }
+    private void createList() {
+        String[] params = {"IndexSports.php", "function", "getData"};
+        Database db = new Database(this, getBaseContext());
+        db.execute(params);
+        updateUI();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -206,6 +154,24 @@ public class Sport extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void updateUI() {
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexSports", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexSportsgetDataJSON", "");
+        try {
+            sportIDs = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        if (sportIDs != null) {
+            sportArten = new String[sportIDs.size()];
+            for (int j = 0; j < sportIDs.size(); j++) {
+                sportArten[j] = sportIDs.get(j).sportname;
+            }
+        }
+        initSpinner();
     }
 
     //Implements Navigation View
@@ -279,4 +245,11 @@ public class Sport extends AppCompatActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
+
+
+    @Override
+    public void updateUI(String answer) {
+
+    }
+
 }

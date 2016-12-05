@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.Unused_Inactive;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 /**
  * Created by alex on 10/30/2016.

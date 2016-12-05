@@ -1,4 +1,4 @@
-package com.example.alex.helloworld.databaseConnection;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 import android.net.Uri;
 import android.os.AsyncTask;

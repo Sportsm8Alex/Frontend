@@ -1,4 +1,4 @@
-package com.example.alex.helloworld;
+package com.example.alex.helloworld.Z_Unused_Inactive;
 
 /**
  * Created by alex on 10/30/2016.
@@ -13,8 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.example.alex.helloworld.CalendarActivity.RecyclerViewAdapter;
-import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivityAdapter;
-import com.example.alex.helloworld.Unused_Inactive.Data;
+import com.example.alex.helloworld.R;
+
 public class Invites extends AppCompatActivity {
 
     RecyclerView recyclerView;
