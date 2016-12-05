@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
-        tools:context="com.example.alex.helloworld.GamePicker.Sport">
+        tools:context="com.example.alex.helloworld.CreateNewMeeting.Sport">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

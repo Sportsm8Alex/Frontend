@@ -14,65 +14,6 @@
         android:layout_weight="1"
         android:id="@+id/buttonLayout">
 
-
-        <!--
-        <Button
-            android:text="Mo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mondayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="Tu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tuesdayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="We"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/wednesdayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="Th"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/thursdayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="Fr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/fridayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="Sa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/saturdayButton"
-            android:layout_weight="1"
-            />
-
-        <Button
-            android:text="Su"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sundayButton"
-            android:layout_weight="1"
-            />
-        -->
-
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

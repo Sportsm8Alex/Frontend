@@ -19,17 +19,16 @@ import android.widget.TextView;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
-import com.example.alex.helloworld.databaseConnection.DBconnection;
 
 import java.util.ArrayList;
 
 public class Friends extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    private DBconnection dBconnection;
     private EditText editText;
     private ArrayList<String> members;
     private ArrayList<Information> friends;
     private ArrayList<Information> selected;
-    private FriendsTab friendsTab;
+    private FriendsListFragment friendsListFragment;
+    private GroupsListFragment groupsListFragment;
     TextView textView_selected_count;
     ImageButton decline_selection;
     RecyclerView recyclerView;
@@ -55,19 +54,19 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         fab = (FloatingActionButton) findViewById(R.id.fab);
         textView_selected_count = (TextView) findViewById(R.id.selected_friends_number);
         decline_selection = (ImageButton) findViewById(R.id.discard_selection_button);
-         fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (selectionMode) {
-                        finishSelection();
-                    } else {
-                        createGroup();
-                    }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectionMode) {
+                    finishSelection();
+                } else {
+                    createGroup();
                 }
-            });
-        if(selectionMode) {
+            }
+        });
+        if (selectionMode) {
             fab.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             fab.setVisibility(View.GONE);
         }
 
@@ -93,9 +92,13 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
     }
 
-    public void setReference(FriendsTab friendsTab) {
-        this.friendsTab = friendsTab;
+    public void setReferenceFriendsList(FriendsListFragment friendsListFragment) {
+        this.friendsListFragment = friendsListFragment;
     }
+    public void setReferenceGroupList(GroupsListFragment groupsListFragment) {
+        this.groupsListFragment = groupsListFragment;
+    }
+
 
     public void activateSelectionMode(Boolean bool, int count) {
 
@@ -116,10 +119,18 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     }
 
     public void onClick(View view) {
-        textView_selected_count.setVisibility(View.GONE);
-        decline_selection.setVisibility(View.GONE);
-        fab.setVisibility(View.GONE);
-        friendsTab.declineSelection();
+        switch (view.getId()) {
+            case R.id.discard_selection_button:
+                textView_selected_count.setVisibility(View.GONE);
+                decline_selection.setVisibility(View.GONE);
+                fab.setVisibility(View.GONE);
+                friendsListFragment.declineSelection();
+                break;
+            case R.id.reload_button_friends:
+                friendsListFragment.updateFriendsList();
+                groupsListFragment.updateGroupList();
+                break;
+        }
     }
 
     public boolean getSelectionMode() {
@@ -140,9 +151,9 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     private void finishSelection() {
 
         ArrayList<Information> selection = new ArrayList<>();
-        for (int i = 0;i<friends.size();i++){
-            if(friends.get(i).selected){
-               selection.add(friends.get(i)) ;
+        for (int i = 0; i < friends.size(); i++) {
+            if (friends.get(i).selected) {
+                selection.add(friends.get(i));
             }
         }
 
@@ -158,14 +169,14 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     private void createGroup() {
 
         ArrayList<Information> selection = new ArrayList<>();
-        for (int i = 0;i<friends.size();i++){
-            if(friends.get(i).selected){
-                selection.add(friends.get(i)) ;
+        for (int i = 0; i < friends.size(); i++) {
+            if (friends.get(i).selected) {
+                selection.add(friends.get(i));
             }
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("GroupList", friends);
-        Intent intent = new Intent(this,CreateGroup.class);
+        Intent intent = new Intent(this, CreateGroup.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alex.helloworld.GamePicker.Sport"
+    tools:context="com.example.alex.helloworld.CreateNewMeeting.Sport"
     tools:showIn="@layout/activity_sportart">
 
 

@@ -24,6 +24,13 @@
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:onClick="onClick"
+                    android:id="@+id/reload_button_friends"
+                    android:src="@drawable/ic_autorenew_white_36dp"/>
 
                 <ImageButton
                     android:id="@+id/discard_selection_button"

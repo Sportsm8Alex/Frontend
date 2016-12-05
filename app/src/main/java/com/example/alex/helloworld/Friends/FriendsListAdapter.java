@@ -25,15 +25,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private Context context;
     private ArrayList<Information> data;
     private LayoutInflater inflater;
-    private FriendsTab friendsTab;
+    private FriendsListFragment friendsListFragment;
     private Boolean selectionMode;
     private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsTab friendsTab, Boolean selectionMode) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, Boolean selectionMode) {
         this.context = context;
         this.data = data;
-        this.friendsTab = friendsTab;
+        this.friendsListFragment= friendsListFragment;
         this.selectionMode = selectionMode;
         inflater = LayoutInflater.from(context);
 
@@ -124,7 +124,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         @Override
         public void onClick(View view) {
             if (selectionMode) {
-                friendsTab.toggle(getAdapterPosition());
+                friendsListFragment.toggle(getAdapterPosition());
                 if (!view.isSelected()) {
                     count++;
                     view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
@@ -135,7 +135,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     count--;
 
                 }
-                friendsTab.updateCount(count);
+                friendsListFragment.updateCount(count);
             }
         }
 
@@ -144,7 +144,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         public boolean onLongClick(View view) {
             if (!selectionMode) {
                 selectionMode = true;
-                friendsTab.toggle(getAdapterPosition());
+                friendsListFragment.toggle(getAdapterPosition());
                 if (!view.isSelected()) {
                     count++;
                     view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
@@ -155,7 +155,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     count--;
 
                 }
-                friendsTab.activateSelectionMode(true, count);
+                friendsListFragment.activateSelectionMode(true, count);
                 return true;
             }
             return false;

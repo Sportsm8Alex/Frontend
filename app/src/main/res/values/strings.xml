@@ -68,6 +68,8 @@
     <string name="title_activity_account_page">AccountPage</string>
     <string name="title_activity_test">test</string>
     <string name="title_activity_friends">Friends</string>
+    <string name="kalendar_activity">Kalender</string>
+
     <string name="button_friends">Freunde</string>
     <string name="add_friends">Add Friends</string>
     <string name="setTimeWrong">Zeit falsch eingestellt</string>

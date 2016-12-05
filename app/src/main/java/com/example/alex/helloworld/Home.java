@@ -20,8 +20,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivity;
-import com.example.alex.helloworld.GamePicker.Sport;
+import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
+import com.example.alex.helloworld.CreateNewMeeting.Sport;
+import com.example.alex.helloworld.Z_Unused_Inactive.Invites;
+import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.activities.AccountPage;
 import com.example.alex.helloworld.Friends.Friends;
 
@@ -69,7 +71,7 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.calendar_button:
-                intent= new Intent(this, DisplayWeekActivity.class);
+                intent= new Intent(this, KalendarActivity.class);
                 startActivity(intent);
                 break;
             case R.id.friends_button:

@@ -30,6 +30,8 @@ package com.example.alex.helloworld.SlidingTabLayout;
         import android.widget.LinearLayout;
         import android.widget.TextView;
 
+        import com.example.alex.helloworld.R;
+
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
  * the user's scroll progress.
@@ -118,6 +120,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
      */
     public void setSelectedIndicatorColors(int... colors) {
+        //here the text should get the same color!!
         mTabStrip.setSelectedIndicatorColors(colors);
     }
 
@@ -163,6 +166,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      */
     protected TextView createDefaultTabView(Context context) {
         TextView textView = new TextView(context);
+        textView.setTextColor(getResources().getColor(R.color.weiss));
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
