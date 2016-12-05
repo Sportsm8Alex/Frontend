@@ -24,7 +24,8 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class FriendsTab extends Fragment implements UIthread {
+public class FriendsListFragment extends Fragment implements UIthread{
+
     private ArrayList<Information> friends;
     RecyclerView recyclerView;
     FriendsListAdapter adapter;
@@ -33,7 +34,7 @@ public class FriendsTab extends Fragment implements UIthread {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.friends_tab, container, false);
+        View v =inflater.inflate(R.layout.friends_fragment,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.friends_recycler_view);
         friends = new ArrayList<>();
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);

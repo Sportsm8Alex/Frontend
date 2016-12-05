@@ -29,7 +29,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-
+import com.example.alex.helloworld.Unused_Inactive.AddSport;
+import com.example.alex.helloworld.Unused_Inactive.GamePickerLiga;
+import com.example.alex.helloworld.CreateNewMeeting.CreateNewMeeting;
 import com.example.alex.helloworld.Home;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.Invites;
@@ -42,7 +44,6 @@ import com.example.alex.helloworld.databaseConnection.AsyncResponse;
 import com.example.alex.helloworld.databaseConnection.DBconnection;
 import com.google.gson.Gson;
 import com.example.alex.helloworld.activities.AccountPage;
-
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.json.JSONException;
@@ -95,7 +96,7 @@ public class Sport extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putInt("sportID", sportID);
         b.putBoolean("liga", false);
-        Intent intent = new Intent(this, Gamepicker.class);
+        Intent intent = new Intent(this, CreateNewMeeting.class);
         intent.putExtras(b);
         startActivity(intent);
     }

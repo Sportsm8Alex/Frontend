@@ -29,7 +29,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     private ArrayList<String> members;
     private ArrayList<Information> friends;
     private ArrayList<Information> selected;
-    private FriendsTab friendsTab;
+    private FriendsListFragment friendsListFragment;
     TextView textView_selected_count;
     ImageButton decline_selection;
     RecyclerView recyclerView;
@@ -93,8 +93,8 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
     }
 
-    public void setReference(FriendsTab friendsTab) {
-        this.friendsTab = friendsTab;
+    public void setReference(FriendsListFragment friendsListFragment) {
+        this.friendsListFragment = friendsListFragment;
     }
 
     public void activateSelectionMode(Boolean bool, int count) {
@@ -119,7 +119,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         textView_selected_count.setVisibility(View.GONE);
         decline_selection.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
-        friendsTab.declineSelection();
+        friendsListFragment.declineSelection();
     }
 
     public boolean getSelectionMode() {

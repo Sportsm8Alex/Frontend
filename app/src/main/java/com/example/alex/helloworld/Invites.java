@@ -12,14 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
+import com.example.alex.helloworld.CalendarActivity.RecyclerViewAdapter;
 import com.example.alex.helloworld.DisplayWeekActivity.DisplayWeekActivityAdapter;
 import com.example.alex.helloworld.Unused_Inactive.Data;
-
 public class Invites extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    DisplayWeekActivityAdapter adapter;
+    RecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class Invites extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.inviteView);
-        adapter = new DisplayWeekActivityAdapter(this, Data.getInvites());
+        adapter = new RecyclerViewAdapter(this, Data.getInvites());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

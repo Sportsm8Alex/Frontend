@@ -21,7 +21,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class GroupTab extends Fragment {
+public class GroupsListFragment extends Fragment {
     private DBconnection dBconnection;
     private ArrayList<Information> friends;
 
@@ -30,7 +30,7 @@ public class GroupTab extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.groups_tab,container,false);
+        View v =inflater.inflate(R.layout.groups_fragment,container,false);
         recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
         friends = new ArrayList<>();
         updateFriendsList("Korbi@Korbi.de");
