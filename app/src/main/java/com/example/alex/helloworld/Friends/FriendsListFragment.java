@@ -81,7 +81,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
     @Override
     public void updateUI() {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexFriendshipJSON", "");
+        String meetingJson = sharedPrefs.getString("IndexFriendshipgetFriendsJSON", "");
         try {
             friends = Database.jsonToArrayList(meetingJson);
         } catch (JSONException | ParseException e) {

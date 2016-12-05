@@ -53,7 +53,7 @@ public class GroupsListFragment extends Fragment implements UIthread{
     @Override
     public void updateUI() {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexGroupsJSON", "");
+        String meetingJson = sharedPrefs.getString("IndexGroupsgetGroupsJSON", "");
         try {
             groups = Database.jsonToArrayList(meetingJson);
         } catch (JSONException | ParseException e) {
