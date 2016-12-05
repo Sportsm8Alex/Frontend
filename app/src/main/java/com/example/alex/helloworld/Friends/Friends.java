@@ -130,6 +130,10 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
                 friendsListFragment.updateFriendsList();
                 groupsListFragment.updateGroupList();
                 break;
+            case R.id.add_new_friend:
+                Intent intent = new Intent(this, SearchNewFriends.class);
+                startActivity(intent);
+                break;
         }
     }
 

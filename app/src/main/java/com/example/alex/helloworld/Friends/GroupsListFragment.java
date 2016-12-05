@@ -21,7 +21,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class GroupsListFragment extends Fragment implements UIthread{
+public class GroupsListFragment extends Fragment implements UIthread {
     private ArrayList<Information> groups;
     Friends activity;
     RecyclerView recyclerView;
@@ -29,7 +29,7 @@ public class GroupsListFragment extends Fragment implements UIthread{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.groups_fragment,container,false);
+        View v = inflater.inflate(R.layout.groups_fragment, container, false);
         recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
         groups = new ArrayList<>();
         adapter = new GroupListAdapter(getContext(), groups);
@@ -37,7 +37,7 @@ public class GroupsListFragment extends Fragment implements UIthread{
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         activity = (Friends) getActivity();
         activity.setReferenceGroupList(this);
-        updateUI();
+        updateUI("");
         return v;
     }
 
@@ -45,13 +45,18 @@ public class GroupsListFragment extends Fragment implements UIthread{
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
         String[] params = {"IndexGroups.php", "function", "getGroups"};
-        Database db = new Database(this,getContext());
+        Database db = new Database(this, getContext());
         db.execute(params);
-        updateUI();
+        updateUI("");
     }
 
     @Override
     public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexGroupsgetGroupsJSON", "");
         try {
@@ -63,10 +68,5 @@ public class GroupsListFragment extends Fragment implements UIthread{
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void updateUI(String answer) {
-
     }
 }
