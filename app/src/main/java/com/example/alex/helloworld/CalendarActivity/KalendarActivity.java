@@ -79,6 +79,11 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
         // needs to be adapted to keep current db info if refreshing not possible (no overwriting of sharedPreferences if no connection)
     }
 
+    @Override
+    public void updateUI(String answer) {
+
+    }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private int numberOfTabs;
