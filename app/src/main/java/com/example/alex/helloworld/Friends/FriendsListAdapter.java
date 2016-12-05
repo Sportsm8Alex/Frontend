@@ -1,6 +1,7 @@
 package com.example.alex.helloworld.Friends;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,15 +29,18 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private ArrayList<Information> data;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
-    private Boolean selectionMode;
+    private SearchNewFriends searchNewFriends;
+    private Boolean selectionMode, newFriends;
     private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, Boolean selectionMode) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment,SearchNewFriends searchNewFriends, Boolean selectionMode, Boolean newFriends) {
         this.context = context;
         this.data = data;
-        this.friendsListFragment= friendsListFragment;
+        this.friendsListFragment = friendsListFragment;
+        this.searchNewFriends= searchNewFriends;
         this.selectionMode = selectionMode;
+        this.newFriends = newFriends;
         inflater = LayoutInflater.from(context);
 
     }
@@ -101,7 +107,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
+
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener,UIthread {
         TextView username;
         TextView email;
         ImageView profileP;
@@ -123,42 +131,64 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public void onClick(View view) {
-            if (selectionMode) {
-                friendsListFragment.toggle(getAdapterPosition());
-                if (!view.isSelected()) {
-                    count++;
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-                    view.setSelected(true);
-                } else if (view.isSelected()) {
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                    view.setSelected(false);
-                    count--;
+            if (!newFriends) {
+                if (selectionMode) {
+                    friendsListFragment.toggle(getAdapterPosition());
+                    if (!view.isSelected()) {
+                        count++;
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                        view.setSelected(true);
+                    } else if (view.isSelected()) {
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                        view.setSelected(false);
+                        count--;
 
+                    }
+                    friendsListFragment.updateCount(count);
                 }
-                friendsListFragment.updateCount(count);
+            }else{
+                SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                String emailString = sharedPrefs.getString("email", "");
+                String friendemail = searchNewFriends.getEmail(getAdapterPosition());
+                String[] params = {"IndexFriendship.php","function","setFriend","email",emailString,"friendemail",friendemail};
+                Database db = new Database(this,contxt);
+                db.execute(params);
+                searchNewFriends.finish();
             }
         }
 
 
         @Override
         public boolean onLongClick(View view) {
-            if (!selectionMode) {
-                selectionMode = true;
-                friendsListFragment.toggle(getAdapterPosition());
-                if (!view.isSelected()) {
-                    count++;
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-                    view.setSelected(true);
-                } else if (view.isSelected()) {
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                    view.setSelected(false);
-                    count--;
+            if (!newFriends) {
+                if (!selectionMode) {
+                    selectionMode = true;
+                    friendsListFragment.toggle(getAdapterPosition());
+                    if (!view.isSelected()) {
+                        count++;
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                        view.setSelected(true);
+                    } else if (view.isSelected()) {
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                        view.setSelected(false);
+                        count--;
 
+                    }
+                    friendsListFragment.activateSelectionMode(true, count);
+                    return true;
                 }
-                friendsListFragment.activateSelectionMode(true, count);
-                return true;
             }
             return false;
+        }
+
+        @Override
+        public void updateUI() {
+
+        }
+
+        @Override
+        public void updateUI(String answer) {
+
         }
     }
 

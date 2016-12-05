@@ -158,6 +158,11 @@ public class Sport extends AppCompatActivity implements UIthread {
 
     @Override
     public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
         SharedPreferences sharedPrefs = getSharedPreferences("IndexSports", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexSportsgetDataJSON", "");
         try {
@@ -246,10 +251,5 @@ public class Sport extends AppCompatActivity implements UIthread {
         }
     }
 
-
-    @Override
-    public void updateUI(String answer) {
-
-    }
 
 }

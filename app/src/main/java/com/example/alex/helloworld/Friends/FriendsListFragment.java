@@ -38,9 +38,9 @@ public class FriendsListFragment extends Fragment implements UIthread{
         activity = (Friends) getActivity();
         selectionMode = activity.getSelectionMode();
         activity.setReferenceFriendsList(this);
-        updateUI();
+        updateUI("");
         //Sets empty adapter to prevent Errors
-        adapter = new FriendsListAdapter(getContext(), friends, this, selectionMode);
+        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
@@ -53,7 +53,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
     }
 
     public void declineSelection(){
-        adapter = new FriendsListAdapter(getContext(), friends, this, selectionMode);
+        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
@@ -71,7 +71,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
         String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
         Database db = new Database(this,getContext());
         db.execute(params);
-        updateUI();
+        updateUI("");
     }
 
     public void updateCount(int count) {
@@ -80,6 +80,11 @@ public class FriendsListFragment extends Fragment implements UIthread{
 
     @Override
     public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexFriendshipgetFriendsJSON", "");
         try {
@@ -87,18 +92,12 @@ public class FriendsListFragment extends Fragment implements UIthread{
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new FriendsListAdapter(getContext(), friends, this, selectionMode);
+        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
         activity.setData(friends);
         adapter.notifyDataSetChanged();
-
-    }
-
-    @Override
-    public void updateUI(String answer) {
-
     }
 
 
