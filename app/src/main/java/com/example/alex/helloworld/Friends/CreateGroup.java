@@ -22,8 +22,8 @@ import java.util.Arrays;
 
 public class CreateGroup extends Activity implements TextWatcher, UIthread {
 
-    ArrayList<Information> groupmembers;
-    String groupname;
+    private ArrayList<Information> groupmembers;
+    private String groupname;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +32,13 @@ public class CreateGroup extends Activity implements TextWatcher, UIthread {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         getWindow().setLayout((int) (width * .8), (int) (width * .8));
+        //Declaration Views
         EditText groupname = (EditText) findViewById(R.id.editText_new_group);
-        groupname.addTextChangedListener(this);
+        //Declaration Variables
         Bundle bundle = getIntent().getExtras();
         groupmembers = (ArrayList<Information>) bundle.getSerializable("GroupList");
+        //Init Listeners
+        groupname.addTextChangedListener(this);
         groupname.setSingleLine(true);
     }
 

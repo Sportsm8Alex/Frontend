@@ -86,18 +86,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         setScaleAnimation(holder.itemView);
     }
 
-    //search is not working right now
-    public int search(String search) {
-        int posi = 0;
-        for (int i = 0; i < getItemCount(); i++) {
-            if (data.get(i).getUsername().toLowerCase().startsWith(search.toLowerCase())) {
-                posi = i;
-            }
-        }
-
-        return posi;
-    }
-
     private void setScaleAnimation(View view) {
         ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         anim.setDuration(FADE_DURATION);

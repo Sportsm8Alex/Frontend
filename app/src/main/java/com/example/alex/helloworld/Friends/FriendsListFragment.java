@@ -21,38 +21,39 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-public class FriendsListFragment extends Fragment implements UIthread{
+public class FriendsListFragment extends Fragment implements UIthread {
 
     private ArrayList<Information> friends;
-    RecyclerView recyclerView;
-    FriendsListAdapter adapter;
+    private RecyclerView recyclerView;
+    private FriendsListAdapter adapter;
     private Boolean selectionMode;
-    Friends activity;
+    private Friends activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.friends_fragment,container,false);
-        recyclerView = (RecyclerView) v.findViewById(R.id.friends_recycler_view);
+        View view = inflater.inflate(R.layout.friends_fragment, container, false);
+        //Declaration Variables
         friends = new ArrayList<>();
-
         activity = (Friends) getActivity();
         selectionMode = activity.getSelectionMode();
+        //Declaration Views
+        recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
+
         activity.setReferenceFriendsList(this);
         updateUI("");
-        //Sets empty adapter to prevent Errors
-        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter.notifyDataSetChanged();
-
-        return v;
-    }
-    public void activateSelectionMode(Boolean bool,int count){
-        activity.activateSelectionMode(bool,count);
+        return view;
     }
 
-    public void declineSelection(){
-        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
+    public void updateFriendsList() {
+        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
+        Database db = new Database(this, getContext());
+        db.execute(params);
+    }
+
+    public void declineSelection() {
+        adapter = new FriendsListAdapter(getContext(), friends, this, null, selectionMode, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
@@ -63,13 +64,8 @@ public class FriendsListFragment extends Fragment implements UIthread{
         activity.setDataFriends(friends);
     }
 
-    //Needs to be adapted to Alex DatabaseConnection
-    public void updateFriendsList() {
-        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
-        Database db = new Database(this,getContext());
-        db.execute(params);
+    public void activateSelectionMode(Boolean bool, int count) {
+        activity.activateSelectionMode(bool, count);
     }
 
     public void updateCount(int count) {
@@ -90,7 +86,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new FriendsListAdapter(getContext(), friends, this,null, selectionMode,false);
+        adapter = new FriendsListAdapter(getContext(), friends, this, null, selectionMode, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
@@ -98,7 +94,6 @@ public class FriendsListFragment extends Fragment implements UIthread{
         adapter.notifyDataSetChanged();
         activity.setSwipeRefreshLayout(false);
     }
-
 
 
 }

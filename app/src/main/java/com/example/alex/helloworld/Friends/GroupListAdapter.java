@@ -24,19 +24,17 @@ import java.util.ArrayList;
 
 public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyViewHolder> {
 
-    Context context;
-    ArrayList<Information> data;
-    ArrayList<Information> backup;
-    LayoutInflater inflater;
-    String email;
-    Boolean selectionMode;
-    GroupsListFragment groupsListFragment;
-    int count = 0;
+    private Context context;
+    private ArrayList<Information> data;
+    private LayoutInflater inflater;
+    private Boolean selectionMode;
+    private GroupsListFragment groupsListFragment;
+    private int count = 0;
+    private final static int FADE_DURATION = 300;
 
     public GroupListAdapter(Context context, ArrayList<Information> data, GroupsListFragment groupsListFragment, Boolean selectionMode) {
         this.context = context;
         this.data = data;
-        backup = data;
         this.groupsListFragment = groupsListFragment;
         this.selectionMode = selectionMode;
         inflater = LayoutInflater.from(context);
@@ -49,23 +47,11 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
         return new MyViewHolder(view, context, data);
     }
 
-    private final static int FADE_DURATION = 300;
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.groupname.setText(data.get(position).GroupName);
         setScaleAnimation(holder.itemView);
-    }
-
-    public int search(String search) {
-        int posi = 0;
-        for (int i = 0; i < getItemCount(); i++) {
-            if (data.get(i).getUsername().toLowerCase().startsWith(search.toLowerCase())) {
-                posi = i;
-            }
-        }
-
-        return posi;
     }
 
     private void setScaleAnimation(View view) {
@@ -84,28 +70,23 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView groupname;
-        TextView email;
         ArrayList<Information> informations = new ArrayList<>();
         Context contxt;
 
 
-        public MyViewHolder(final View itemView, Context ctx, ArrayList<Information> info) {
+        MyViewHolder(final View itemView, Context ctx, ArrayList<Information> info) {
             super(itemView);
             this.informations = info;
             this.contxt = ctx;
+            this.groupname = (TextView) itemView.findViewById(R.id.group_name);
             itemView.setOnLongClickListener(this);
             itemView.setOnClickListener(this);
             itemView.setSelected(false);
-            groupname = (TextView) itemView.findViewById(R.id.group_name);
-
-
         }
 
 
         @Override
         public void onClick(View view) {
-
-
             if (selectionMode) {
                 groupsListFragment.toggle(getAdapterPosition());
                 if (!view.isSelected()) {

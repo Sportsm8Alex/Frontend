@@ -23,26 +23,19 @@ import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
 
 import java.util.ArrayList;
 
-public class Friends extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    private EditText editText;
-    private ArrayList<String> members;
-    private ArrayList<Information> friends,groups;
-    private ArrayList<Information> selected;
+public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+    private ArrayList<Information> friends, groups;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
-    SwipeRefreshLayout swipeRefreshLayout;
-    TextView textView_selected_count;
-    ImageButton decline_selection;
-    RecyclerView recyclerView;
-    FriendsListAdapter adapter;
-    private Boolean selectionMode;
-    FloatingActionButton fab;
-    ViewPager pager;
-    Boolean newGroupMode=false;
-    ViewPagerAdapter viewPagerAdapter;
-    SlidingTabLayout tabs;
-    CharSequence Titles[] = {"Friends", "Groups"};
-    int NumOfTabs = 2;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView textView_selected_count;
+    private ImageButton decline_selection;
+    private Boolean selectionMode,newGroupMode=false;
+    private ViewPager pager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private SlidingTabLayout tabs;
+    private CharSequence Titles[] = {"Friends", "Groups"};
+    private int NumOfTabs = 2;
 
 
     @Override
@@ -51,39 +44,25 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         setContentView(R.layout.activity_friends);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Declarations Variables
         Bundle bundle = getIntent().getExtras();
         selectionMode = bundle.getBoolean("SelectionMode");
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        textView_selected_count = (TextView) findViewById(R.id.selected_friends_number);
-        decline_selection = (ImageButton) findViewById(R.id.discard_selection_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectionMode) {
-                    finishSelection();
-                } else {
-                    createGroup();
-                }
-            }
-        });
-        if (selectionMode) {
-            fab.setVisibility(View.VISIBLE);
-        } else {
-            fab.setVisibility(View.GONE);
-        }
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-        editText = (EditText) findViewById(R.id.search_friends);
-        members = new ArrayList<>();
-        selected = new ArrayList<>();
         friends = new ArrayList<>();
         groups = new ArrayList<>();
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumOfTabs);
+        //Declarations Views
+        textView_selected_count = (TextView) findViewById(R.id.selected_friends_number);
+        decline_selection = (ImageButton) findViewById(R.id.discard_selection_button);
         pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(viewPagerAdapter);
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.friends_refresh);
+        //Hiding Keyboard on Startup
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        //Setting OnRefreshListener
+        swipeRefreshLayout.setOnRefreshListener(this);
+        //Setting up ViewPager
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumOfTabs);
+        pager.setAdapter(viewPagerAdapter);
         tabs.setDistributeEvenly(true);
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
@@ -91,57 +70,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
                 return ContextCompat.getColor(getBaseContext(), R.color.colorAccent);
             }
         });
-
         tabs.setViewPager(pager);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.friends_refresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                friendsListFragment.updateFriendsList();
-                groupsListFragment.updateGroupList();
-                textView_selected_count.setVisibility(View.GONE);
-                decline_selection.setVisibility(View.GONE);
-
-
-            }
-        });
-
-
-
-    }
-
-    public void setSwipeRefreshLayout(Boolean bool) {
-        swipeRefreshLayout.setRefreshing(bool);
-    }
-
-    public void setReferenceFriendsList(FriendsListFragment friendsListFragment) {
-        this.friendsListFragment = friendsListFragment;
-    }
-
-    public void setReferenceGroupList(GroupsListFragment groupsListFragment) {
-        this.groupsListFragment = groupsListFragment;
-    }
-
-
-    public void activateSelectionMode(Boolean bool, int count) {
-
-        textView_selected_count.setVisibility(View.VISIBLE);
-        textView_selected_count.setText(count + " ausgewählt");
-        decline_selection.setVisibility(View.VISIBLE);
-
-        if (bool) {
-            fab.setVisibility(View.GONE);
-            fab.setEnabled(true);
-            newGroupMode = true;
-        } else {
-            fab.setVisibility(View.GONE);
-            fab.setEnabled(false);
-            newGroupMode = false;
-        }
-    }
-
-    public void updateCount(int count) {
-        textView_selected_count.setText(count + " ausgewählt");
     }
 
     public void onClick(View view) {
@@ -149,39 +78,21 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
             case R.id.discard_selection_button:
                 textView_selected_count.setVisibility(View.GONE);
                 decline_selection.setVisibility(View.GONE);
-                fab.setVisibility(View.GONE);
-                newGroupMode=false;
+                newGroupMode = false;
                 friendsListFragment.declineSelection();
-                break;
-            case R.id.reload_button_friends:
-                friendsListFragment.updateFriendsList();
-                groupsListFragment.updateGroupList();
                 break;
             case R.id.add_new_friend:
                 if (newGroupMode) {
                     createGroup();
-                } else {
+                } else if (!selectionMode) {
                     Intent intent = new Intent(this, SearchNewFriends.class);
                     startActivity(intent);
+                } else if (selectionMode) {
+                    finishSelection();
                 }
                 break;
         }
     }
-
-    public boolean getSelectionMode() {
-        return selectionMode;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     private void finishSelection() {
 
@@ -201,7 +112,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("partyList", selectionfriends);
-        bundle.putSerializable("groupList",selectiongroups);
+        bundle.putSerializable("groupList", selectiongroups);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
@@ -223,28 +134,57 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         startActivity(intent);
     }
 
+    public void activateSelectionMode(Boolean bool, int count) {
+
+        textView_selected_count.setVisibility(View.VISIBLE);
+        textView_selected_count.setText(getString(R.string.text_selected,count));
+        decline_selection.setVisibility(View.VISIBLE);
+        newGroupMode = bool;
+    }
+
+    public void updateCount(int count) {
+        textView_selected_count.setText(getString(R.string.text_selected,count));
+    }
+
+    public void setSwipeRefreshLayout(Boolean bool) {
+        swipeRefreshLayout.setRefreshing(bool);
+    }
+
+    public void setReferenceFriendsList(FriendsListFragment friendsListFragment) {
+        this.friendsListFragment = friendsListFragment;
+    }
+
+    public void setReferenceGroupList(GroupsListFragment groupsListFragment) {
+        this.groupsListFragment = groupsListFragment;
+    }
+
+    public boolean getSelectionMode() {
+        return selectionMode;
+    }
+
     public void setDataFriends(ArrayList<Information> data) {
         friends = data;
     }
+
     public void setDataGroups(ArrayList<Information> data) {
         groups = data;
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        if (adapter != null) {
-            int pos = adapter.search(newText);
-            recyclerView.scrollToPosition(pos);
-            return true;
-        }
-        return false;
-
+    public void onRefresh() {
+        friendsListFragment.updateFriendsList();
+        groupsListFragment.updateGroupList();
+        textView_selected_count.setVisibility(View.GONE);
+        decline_selection.setVisibility(View.GONE);
     }
-
-
 }
