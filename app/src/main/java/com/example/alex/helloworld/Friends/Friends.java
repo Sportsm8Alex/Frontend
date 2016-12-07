@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -25,10 +26,11 @@ import java.util.ArrayList;
 public class Friends extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private EditText editText;
     private ArrayList<String> members;
-    private ArrayList<Information> friends;
+    private ArrayList<Information> friends,groups;
     private ArrayList<Information> selected;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
+    SwipeRefreshLayout swipeRefreshLayout;
     TextView textView_selected_count;
     ImageButton decline_selection;
     RecyclerView recyclerView;
@@ -36,6 +38,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
     private Boolean selectionMode;
     FloatingActionButton fab;
     ViewPager pager;
+    Boolean newGroupMode=false;
     ViewPagerAdapter viewPagerAdapter;
     SlidingTabLayout tabs;
     CharSequence Titles[] = {"Friends", "Groups"};
@@ -76,7 +79,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         members = new ArrayList<>();
         selected = new ArrayList<>();
         friends = new ArrayList<>();
-
+        groups = new ArrayList<>();
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumOfTabs);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(viewPagerAdapter);
@@ -88,13 +91,33 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
                 return ContextCompat.getColor(getBaseContext(), R.color.colorAccent);
             }
         });
-        tabs.setViewPager(pager);
 
+        tabs.setViewPager(pager);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.friends_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                friendsListFragment.updateFriendsList();
+                groupsListFragment.updateGroupList();
+                textView_selected_count.setVisibility(View.GONE);
+                decline_selection.setVisibility(View.GONE);
+
+
+            }
+        });
+
+
+
+    }
+
+    public void setSwipeRefreshLayout(Boolean bool) {
+        swipeRefreshLayout.setRefreshing(bool);
     }
 
     public void setReferenceFriendsList(FriendsListFragment friendsListFragment) {
         this.friendsListFragment = friendsListFragment;
     }
+
     public void setReferenceGroupList(GroupsListFragment groupsListFragment) {
         this.groupsListFragment = groupsListFragment;
     }
@@ -105,12 +128,15 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         textView_selected_count.setVisibility(View.VISIBLE);
         textView_selected_count.setText(count + " ausgewählt");
         decline_selection.setVisibility(View.VISIBLE);
+
         if (bool) {
-            fab.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.GONE);
             fab.setEnabled(true);
+            newGroupMode = true;
         } else {
             fab.setVisibility(View.GONE);
             fab.setEnabled(false);
+            newGroupMode = false;
         }
     }
 
@@ -124,6 +150,7 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
                 textView_selected_count.setVisibility(View.GONE);
                 decline_selection.setVisibility(View.GONE);
                 fab.setVisibility(View.GONE);
+                newGroupMode=false;
                 friendsListFragment.declineSelection();
                 break;
             case R.id.reload_button_friends:
@@ -131,8 +158,12 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
                 groupsListFragment.updateGroupList();
                 break;
             case R.id.add_new_friend:
-                Intent intent = new Intent(this, SearchNewFriends.class);
-                startActivity(intent);
+                if (newGroupMode) {
+                    createGroup();
+                } else {
+                    Intent intent = new Intent(this, SearchNewFriends.class);
+                    startActivity(intent);
+                }
                 break;
         }
     }
@@ -154,16 +185,23 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
 
     private void finishSelection() {
 
-        ArrayList<Information> selection = new ArrayList<>();
+        ArrayList<Information> selectionfriends = new ArrayList<>();
+        ArrayList<Information> selectiongroups = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
-                selection.add(friends.get(i));
+                selectionfriends.add(friends.get(i));
+            }
+        }
+        for (int i = 0; i < groups.size(); i++) {
+            if (groups.get(i).selected) {
+                selectiongroups.add(groups.get(i));
             }
         }
 
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("partyList", selection);
+        bundle.putSerializable("partyList", selectionfriends);
+        bundle.putSerializable("groupList",selectiongroups);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
@@ -185,8 +223,11 @@ public class Friends extends AppCompatActivity implements SearchView.OnQueryText
         startActivity(intent);
     }
 
-    public void setData(ArrayList<Information> data) {
+    public void setDataFriends(ArrayList<Information> data) {
         friends = data;
+    }
+    public void setDataGroups(ArrayList<Information> data) {
+        groups = data;
     }
 
     @Override

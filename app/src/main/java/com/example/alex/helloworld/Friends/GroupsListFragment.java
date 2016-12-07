@@ -26,19 +26,28 @@ public class GroupsListFragment extends Fragment implements UIthread {
     Friends activity;
     RecyclerView recyclerView;
     GroupListAdapter adapter;
+    Boolean selectionMode;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.groups_fragment, container, false);
         recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
         groups = new ArrayList<>();
-        adapter = new GroupListAdapter(getContext(), groups);
+
+        activity = (Friends) getActivity();
+        selectionMode=activity.getSelectionMode();
+        activity.setReferenceGroupList(this);
+
+        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        activity = (Friends) getActivity();
-        activity.setReferenceGroupList(this);
+
         updateUI("");
         return v;
+    }
+    public void toggle(int pos) {
+        groups.get(pos).selected ^= true;
+        activity.setDataGroups(groups);
     }
 
     public void updateGroupList() {
@@ -47,12 +56,15 @@ public class GroupsListFragment extends Fragment implements UIthread {
         String[] params = {"IndexGroups.php", "function", "getGroups"};
         Database db = new Database(this, getContext());
         db.execute(params);
-        updateUI("");
     }
 
     @Override
     public void updateUI() {
 
+    }
+
+    public void activateSelectionMode(Boolean bool,int count){
+        activity.activateSelectionMode(bool,count);
     }
 
     @Override
@@ -64,9 +76,10 @@ public class GroupsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new GroupListAdapter(getContext(), groups);
+        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
+        activity.setSwipeRefreshLayout(false);
     }
 }

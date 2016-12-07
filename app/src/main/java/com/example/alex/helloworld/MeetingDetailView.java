@@ -1,0 +1,183 @@
+package com.example.alex.helloworld;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.icu.text.IDNA;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.databaseConnection.Database;
+import com.example.alex.helloworld.databaseConnection.UIthread;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class MeetingDetailView extends AppCompatActivity implements UIthread {
+
+    ListView listView;
+    String meetingID,startTime,endTime,sportID;
+    ArrayList<Information> members,Selection;
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_meeting_detail_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        listView = (ListView) findViewById(R.id.listview_meeting_detail);
+        Bundle b = getIntent().getExtras();
+        meetingID = b.getString("MeetingID");
+        startTime = b.getString("startTime");
+        endTime = b.getString("endTime");
+        sportID = b.getString("sportID");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        DateTime dt = formatter.parseDateTime(startTime);
+        DateTime dt2 = formatter.parseDateTime(endTime);
+        TextView textView = (TextView) findViewById(R.id.time_meeting_detail);
+        TextView textView2 = (TextView) findViewById(R.id.time_meetingdetail);
+        textView.setText(dt.toString("HH:mm")+"-"+dt2.toString("HH:mm"));
+        textView2.setText(dt.toString("dd.MM.YYYY"));
+        TextView textView3 = (TextView) findViewById(R.id.activity_name_detailview);
+        Resources res = getResources();
+        String[] array = res.getStringArray(R.array.sportarten);
+        textView3.setText(array[Integer.valueOf(sportID)]);
+        System.out.print(meetingID);
+        getMemberList();
+        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMemberList();
+            }
+        });
+
+    }
+
+
+    public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("SelectionMode", true);
+        Intent intent = new Intent(this, Friends.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
+
+                ArrayList<String> paramsArrayList = new ArrayList<>(
+                        Arrays.asList("IndexMeetings.php", "function", "addMembersToMeeting", "MeetingID", meetingID));
+
+                for (int i = 0; i < Selection.size(); i++) {
+                    paramsArrayList.add("member" + i);
+                    paramsArrayList.add(Selection.get(i).email);
+                }
+                String[] params = new String[paramsArrayList.size()];
+                params = paramsArrayList.toArray(params);
+                Database db = new Database(this,getBaseContext());
+                db.execute(params);
+
+            }
+        }
+        getMemberList();
+    }
+
+    private void getMemberList() {
+        String[] params = {"IndexMeetings.php", "function", "getMeetingMembers", "MeetingID", meetingID};
+        Database db = new Database(this, getBaseContext());
+        db.execute(params);
+    }
+
+    @Override
+    public void updateUI() {
+
+    }
+
+    @Override
+    public void updateUI(String answer) {
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingMembersJSON", "");
+        try {
+            members = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> emails = new ArrayList<>();
+        for (int i = 0; i < members.size(); i++) {
+            emails.add(members.get(i).email);
+        }
+        ListViewAdapter arrayAdapter = new ListViewAdapter(this,members);
+        listView.setAdapter(arrayAdapter);
+        swipeRefreshLayout.setRefreshing(false);
+
+
+    }
+
+
+    class ListViewAdapter extends BaseAdapter{
+
+        ArrayList<Information> list;
+        Context context;
+        public ListViewAdapter(Context context,ArrayList<Information> listItem) {
+            list=listItem;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = inflater.inflate(android.R.layout.simple_list_item_1,viewGroup,false);
+            TextView textView = (TextView) row.findViewById(android.R.id.text1);
+            textView.setText(list.get(i).username);
+            if(Integer.valueOf(list.get(i).confirmed) == 1){
+                row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+            }
+            return row;
+
+        }
+    }
+}

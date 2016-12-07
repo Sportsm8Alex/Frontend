@@ -29,7 +29,6 @@ public class SearchNewFriends extends AppCompatActivity implements UIthread, Sea
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
     private ArrayList<Information> friends;
-    private FriendsListFragment friendsListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +39,9 @@ public class SearchNewFriends extends AppCompatActivity implements UIthread, Sea
         SearchView searchView = (SearchView) findViewById(R.id.searchview_new_friends);
         searchView.setOnQueryTextListener(this);
         searchView.setIconified(false);
-        friendsListFragment = new FriendsListFragment();
         recyclerView = (RecyclerView) findViewById(R.id.add_new_friend_recyclerview);
         friends = new ArrayList<>();
-        adapter = new FriendsListAdapter(getBaseContext(), friends, friendsListFragment, this, false, true);
+        adapter = new FriendsListAdapter(getBaseContext(), friends, null, this, false, true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
 
@@ -75,7 +73,7 @@ public class SearchNewFriends extends AppCompatActivity implements UIthread, Sea
             e.printStackTrace();
         }
 
-        adapter = new FriendsListAdapter(getBaseContext(), friends, friendsListFragment, this, false, true);
+        adapter = new FriendsListAdapter(getBaseContext(), friends, null, this, false, true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
     }
