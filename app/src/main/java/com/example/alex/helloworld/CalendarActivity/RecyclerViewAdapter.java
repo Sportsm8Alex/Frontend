@@ -1,8 +1,10 @@
 package com.example.alex.helloworld.CalendarActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.MeetingDetailView;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
@@ -26,13 +30,13 @@ import java.util.ArrayList;
  * Created by Korbi on 10/30/2016.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread {
 
     Context context;
     ArrayList<Information> meetingsOnDay;
     DateTimeFormatter formatter;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Information> meetingsOnDay){
+    public RecyclerViewAdapter(Context context, ArrayList<Information> meetingsOnDay) {
         this.context = context;
         this.meetingsOnDay = meetingsOnDay;
     }
@@ -79,6 +83,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private void onClickEvents(final MeetingsViewHolder meetingsViewHolder, final int position, final Information infoData) {
+        meetingsViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,MeetingDetailView.class);
+                Bundle b = new Bundle();
+                b.putString("MeetingID",meetingsOnDay.get(position).MeetingID);
+                b.putString("startTime",meetingsOnDay.get(position).startTime);
+                b.putString("endTime",meetingsOnDay.get(position).endTime);
+                b.putString("sportID",meetingsOnDay.get(position).sportID);
+                intent.putExtras(b);
+                context.startActivity(intent);
+            }
+        });
         meetingsViewHolder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,7 +20,7 @@ import java.util.Arrays;
  * Created by Korbi on 02.11.2016.
  */
 
-public class CreateGroup extends Activity implements TextWatcher,UIthread {
+public class CreateGroup extends Activity implements TextWatcher, UIthread {
 
     ArrayList<Information> groupmembers;
     String groupname;
@@ -42,11 +42,13 @@ public class CreateGroup extends Activity implements TextWatcher,UIthread {
 
     public void onClick(View view) {
         ArrayList<String> paramsArrayList = new ArrayList<>(
-                Arrays.asList("IndexGroups.php", "function", "newGroup","groupName",groupname)
+                Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname)
         );
         for (int i = 0; i < groupmembers.size(); i++) {
-            paramsArrayList.add("member" + i);
-            paramsArrayList.add(groupmembers.get(i).email);
+            if (groupmembers.get(i).selected) {
+                paramsArrayList.add("member" + i);
+                paramsArrayList.add(groupmembers.get(i).email);
+            }
         }
         String[] params = new String[paramsArrayList.size()];
         params = paramsArrayList.toArray(params);

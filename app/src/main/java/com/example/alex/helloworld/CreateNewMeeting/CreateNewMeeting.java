@@ -29,7 +29,10 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -37,19 +40,20 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,TextWatcher,UIthread {
+public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TextWatcher, UIthread {
 
     int numP = 4, minHours = 2;
     Button SelectedButton;
 
     int sportart_ID = -1;
     ArrayList<Information> Selection = new ArrayList<>();
+    ArrayList<Information> SelectionGroup = new ArrayList<>();
     private EditText additionalInfos;
     private Boolean endOrStart;
     private MutableDateTime startTime, endTime;
     private DateTime datetime;
     private DateTimeFormatter formatter;
-    private Button startTime_b,endTime_b,date_b;
+    private Button startTime_b, endTime_b, date_b;
     private String extraInfoString;
     private TextView text_minHour;
     private TextView text_minParti;
@@ -58,7 +62,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_new_meeting);
         endOrStart = false;
-        extraInfoString ="";
+        extraInfoString = "";
 
         //Popup größe
         DisplayMetrics dm = new DisplayMetrics();
@@ -92,8 +96,6 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         startTime_b.setText(startTime.toString("HH:mm"));
         endTime_b.setText(startTime.toString("HH:mm"));
         date_b.setText(datetime.toString("MM.dd.YY"));
-
-
 
 
     }
@@ -149,10 +151,11 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
 
         if (startTime.get(DateTimeFieldType.millisOfSecond()) == 0 && endTime.get(DateTimeFieldType.millisOfSecond()) == 0 && startTime.get(DateTimeFieldType.year()) != 0 && numP != 0) {
             if (startTime.isBefore(endTime)) {
+
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime",formatter.print(startTime), "endTime", formatter.print(endTime),"minPar",numP+"","member", email,"activity",extraInfoString,"sportID",""+sportart_ID)
+                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", numP + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -161,7 +164,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 String[] params = new String[paramsArrayList.size()];
                 params = paramsArrayList.toArray(params);
 
-                Database db = new Database(this,getBaseContext());
+                Database db = new Database(this, getBaseContext());
                 db.execute(params);
                 Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
                 finish();
@@ -172,6 +175,38 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
 
         } else {
             Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void mergeGroupsAndFriends() {
+        ArrayList<Information> temp = new ArrayList<>();
+        for (int i = 0; i < SelectionGroup.size(); i++) {
+            String[] params = {"IndexGroups.php", "function", "getGroupMembers", "GroupID", SelectionGroup.get(0).GroupID};
+            Database db = new Database(this, getBaseContext());
+            db.execute(params);
+
+            SharedPreferences sharedPrefs = getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);
+            String meetingJson = sharedPrefs.getString("IndexGroupsgetGroupMembersJSON", "");
+            try {
+                temp = Database.jsonToArrayList(meetingJson);
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
+            }
+            for (int j = 0; j < temp.size(); j++) {
+                Boolean tempBool= false;
+                int tempInt =0;
+                for (int h = 0; h < Selection.size(); h++) {
+                    if (temp.get(j).email.equals(Selection.get(h).email)) {
+                        tempBool = true;
+                    }
+                }
+                if(!tempBool){
+                    Selection.add(temp.get(j));
+                    tempBool=false;
+                }
+            }
+
         }
 
     }
@@ -235,10 +270,12 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
+                SelectionGroup = (ArrayList<Information>) bundle.getSerializable("groupList");
                 TextView textView = (TextView) findViewById(R.id.number_added);
                 textView.setText(Selection.size() + " Teilnehmer");
             }
         }
+        mergeGroupsAndFriends();
     }
 
     @Override

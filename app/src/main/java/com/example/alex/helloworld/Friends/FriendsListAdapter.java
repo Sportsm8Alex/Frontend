@@ -3,6 +3,7 @@ package com.example.alex.helloworld.Friends;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
+import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -62,9 +65,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
                 .placeholder(R.drawable.dickbutt)
                 .error(R.drawable.dickbutt)
+                .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
                 .into(holder.profileP);
-        /* Ion.with(context)
-                .load("http://sportsm8.bplaceds.net" + data.get(position).PPpath)
+       /*  Ion.with(context)
+                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
                 .noCache()
                 .withBitmap()
                 .placeholder(R.drawable.dickbutt)
@@ -113,6 +117,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         TextView username;
         TextView email;
         ImageView profileP;
+        CardView cardView;
         Context contxt;
 
 
@@ -122,6 +127,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
+            cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
             username = (TextView) itemView.findViewById(R.id.username_text);
             email = (TextView) itemView.findViewById(R.id.user_email);
@@ -136,7 +142,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     friendsListFragment.toggle(getAdapterPosition());
                     if (!view.isSelected()) {
                         count++;
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
                         view.setSelected(true);
                     } else if (view.isSelected()) {
                         view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
@@ -166,7 +172,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     friendsListFragment.toggle(getAdapterPosition());
                     if (!view.isSelected()) {
                         count++;
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
                         view.setSelected(true);
                     } else if (view.isSelected()) {
                         view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));

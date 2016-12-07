@@ -19,7 +19,7 @@
         </activity>
         <activity
             android:name=".Home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Z_Unused_Inactive.MainActivity" />
         <activity android:name=".UserClasses.RegisterActivity" />
         <activity
@@ -71,6 +71,14 @@
             android:label="@string/kalendar_activity" />
         <activity
             android:name=".Friends.SearchNewFriends"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MeetingDetailView"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".GroupDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

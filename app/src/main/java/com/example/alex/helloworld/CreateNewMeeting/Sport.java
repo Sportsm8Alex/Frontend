@@ -70,7 +70,7 @@ public class Sport extends AppCompatActivity implements UIthread {
             }
         });
         navigationView();
-        updateUI();
+        createList();
 
 
     }
@@ -141,7 +141,7 @@ public class Sport extends AppCompatActivity implements UIthread {
         String[] params = {"IndexSports.php", "function", "getData"};
         Database db = new Database(this, getBaseContext());
         db.execute(params);
-        updateUI();
+        updateUI("");
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

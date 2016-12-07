@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_meeting_detail_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.alex.helloworld.GroupDetailView"
+    tools:showIn="@layout/activity_group_detail_view">
+
+    <RelativeLayout
+        android:id="@+id/rl_meeting_detail"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/time_label_meetingDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Mitglieder:" />
+
+            <TextView
+                android:id="@+id/group_size_detailview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_toEndOf="@id/time_label_meetingDetail" />
+
+            <TextView
+                android:id="@+id/date_label_meetingDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_label_meetingDetail"
+                android:layout_margin="8dp"
+                android:text="Homebase: Vaterstetten" />
+
+            <TextView
+                android:id="@+id/time_meetingdetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_label_meetingDetail"
+                android:layout_margin="8dp"
+                android:layout_toEndOf="@id/date_label_meetingDetail" />
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/indicator_view"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_meeting_detail">
+
+
+        <ListView
+            android:id="@+id/listview_group_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false" />
+    </RelativeLayout>
+
+</RelativeLayout>

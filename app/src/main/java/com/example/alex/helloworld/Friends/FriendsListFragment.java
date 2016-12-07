@@ -48,7 +48,6 @@ public class FriendsListFragment extends Fragment implements UIthread{
         return v;
     }
     public void activateSelectionMode(Boolean bool,int count){
-        Friends activity = (Friends) getActivity();
         activity.activateSelectionMode(bool,count);
     }
 
@@ -61,7 +60,7 @@ public class FriendsListFragment extends Fragment implements UIthread{
 
     public void toggle(int pos) {
         friends.get(pos).selected ^= true;
-        activity.setData(friends);
+        activity.setDataFriends(friends);
     }
 
     //Needs to be adapted to Alex DatabaseConnection
@@ -71,7 +70,6 @@ public class FriendsListFragment extends Fragment implements UIthread{
         String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
         Database db = new Database(this,getContext());
         db.execute(params);
-        updateUI("");
     }
 
     public void updateCount(int count) {
@@ -96,8 +94,9 @@ public class FriendsListFragment extends Fragment implements UIthread{
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
-        activity.setData(friends);
+        activity.setDataFriends(friends);
         adapter.notifyDataSetChanged();
+        activity.setSwipeRefreshLayout(false);
     }
 
 
