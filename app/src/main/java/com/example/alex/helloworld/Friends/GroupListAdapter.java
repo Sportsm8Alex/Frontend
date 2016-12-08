@@ -51,7 +51,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.groupname.setText(data.get(position).GroupName);
-        setScaleAnimation(holder.itemView);
+        //(setScaleAnimation(holder.itemView);
     }
 
     private void setScaleAnimation(View view) {
@@ -110,21 +110,6 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
 
         @Override
         public boolean onLongClick(View view) {
-            if (!selectionMode) {
-                selectionMode = true;
-                groupsListFragment.toggle(getAdapterPosition());
-                if (!view.isSelected()) {
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                    view.setSelected(true);
-                } else if (view.isSelected()) {
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                    view.setSelected(false);
-
-                }
-                groupsListFragment.activateSelectionMode(true, count);
-                return true;
-            }
-
             return false;
         }
     }

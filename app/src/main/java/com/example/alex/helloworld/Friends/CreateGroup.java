@@ -1,6 +1,8 @@
 package com.example.alex.helloworld.Friends;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,14 +46,14 @@ public class CreateGroup extends Activity implements TextWatcher, UIthread {
 
 
     public void onClick(View view) {
+        SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
         ArrayList<String> paramsArrayList = new ArrayList<>(
-                Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname)
+                Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname,"member",email)
         );
         for (int i = 0; i < groupmembers.size(); i++) {
-            if (groupmembers.get(i).selected) {
-                paramsArrayList.add("member" + i);
-                paramsArrayList.add(groupmembers.get(i).email);
-            }
+            paramsArrayList.add("member" + i);
+            paramsArrayList.add(groupmembers.get(i).email);
         }
         String[] params = new String[paramsArrayList.size()];
         params = paramsArrayList.toArray(params);

@@ -54,7 +54,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
     public void updateGroupList() {
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexGroups.php", "function", "getGroups"};
+        String[] params = {"IndexGroups.php", "function", "getGroups","email",email};
         Database db = new Database(this, getContext());
         db.execute(params);
     }

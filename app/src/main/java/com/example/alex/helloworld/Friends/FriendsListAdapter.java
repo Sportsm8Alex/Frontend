@@ -50,7 +50,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = inflater.inflate(R.layout.item_friends_view, parent, false);
         return new MyViewHolder(view, context);
     }
@@ -65,7 +64,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
                 .placeholder(R.drawable.dickbutt)
                 .error(R.drawable.dickbutt)
-                .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
+               // .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
                 .into(holder.profileP);
        /*  Ion.with(context)
                 .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
@@ -80,10 +79,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 .placeholder(R.drawable.dickbutt)
                 .error(R.drawable.dickbutt)
                 .load("http://sportsm8.bplaced.net" + data.get(position).PPpath);*/
-
         holder.username.setText(data.get(position).username);
         holder.email.setText(data.get(position).email);
-        setScaleAnimation(holder.itemView);
+        //setScaleAnimation(holder.itemView);
     }
 
     private void setScaleAnimation(View view) {
@@ -97,7 +95,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public int getItemCount() {
         return data.size();
     }
-
 
 
 

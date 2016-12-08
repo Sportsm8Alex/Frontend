@@ -72,6 +72,10 @@ public class FriendsListFragment extends Fragment implements UIthread {
         activity.updateCount(count);
     }
 
+    public void removeSelection() {
+        updateUI("");
+    }
+
     @Override
     public void updateUI() {
 
@@ -94,6 +98,7 @@ public class FriendsListFragment extends Fragment implements UIthread {
         adapter.notifyDataSetChanged();
         activity.setSwipeRefreshLayout(false);
     }
+
 
 
 }
