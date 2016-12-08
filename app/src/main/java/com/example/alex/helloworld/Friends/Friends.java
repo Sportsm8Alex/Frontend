@@ -86,7 +86,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 decline_selection.setVisibility(View.GONE);
                 newGroupMode = false;
                 page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
-                friendsListFragment.declineSelection();
+                friendsListFragment.removeSelection();
                 break;
             case R.id.add_new_friend:
                 if (newGroupMode) {
@@ -138,7 +138,17 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         bundle.putSerializable("GroupList", selection);
         Intent intent = new Intent(this, CreateGroup.class);
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if(resultCode== RESULT_OK){
+           friendsListFragment.removeSelection();
+           textView_selected_count.setVisibility(View.GONE);
+           decline_selection.setVisibility(View.GONE);
+           newGroupMode = false;
+       }
     }
 
     public void activateSelectionMode(Boolean bool, int count) {

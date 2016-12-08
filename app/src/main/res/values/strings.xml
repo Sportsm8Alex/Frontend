@@ -82,4 +82,5 @@
     <string name="title_activity_search_new_friends">SearchNewFriends</string>
     <string name="title_activity_meeting_detail_view">MeetingDetailView</string>
     <string name="text_selected">"%d ausgewählt"</string>
+    <string name="friendRequest">FreundschaftsAnfrage</string>
 </resources>

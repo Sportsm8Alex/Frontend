@@ -14,7 +14,7 @@ public class Information implements Serializable {
 
     //meetingInformation
     public String MeetingID, startTime, endTime,status, meetingActivity;
-    public String confirmed = "0";
+    public String confirmed ="0";
 
     //GroupInformation
     public String GroupID, GroupName;

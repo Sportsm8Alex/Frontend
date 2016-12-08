@@ -60,6 +60,7 @@ public class CreateGroup extends Activity implements TextWatcher, UIthread {
 
         Database db = new Database(this, getBaseContext());
         db.execute(params);
+        setResult(RESULT_OK);
         finish();
     }
 

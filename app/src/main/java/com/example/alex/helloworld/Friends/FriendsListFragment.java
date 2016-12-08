@@ -52,13 +52,6 @@ public class FriendsListFragment extends Fragment implements UIthread {
         db.execute(params);
     }
 
-    public void declineSelection() {
-        adapter = new FriendsListAdapter(getContext(), friends, this, null, selectionMode, false);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter.notifyDataSetChanged();
-    }
-
     public void toggle(int pos) {
         friends.get(pos).selected ^= true;
         activity.setDataFriends(friends);
@@ -73,7 +66,11 @@ public class FriendsListFragment extends Fragment implements UIthread {
     }
 
     public void removeSelection() {
-        updateUI("");
+        for(int i =0;i<friends.size();i++){
+            friends.get(i).selected=false;
+        }
+        adapter.resetData(friends);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
