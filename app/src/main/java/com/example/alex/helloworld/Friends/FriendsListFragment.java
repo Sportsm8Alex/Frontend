@@ -35,7 +35,7 @@ public class FriendsListFragment extends Fragment implements UIthread {
         //Declaration Variables
         friends = new ArrayList<>();
         activity = (Friends) getActivity();
-        selectionMode = activity.getSelectionMode();
+        selectionMode = activity.getAddToMeetingMode();
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
 

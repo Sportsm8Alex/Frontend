@@ -36,7 +36,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
         //variables
         groups = new ArrayList<>();
         activity = (Friends) getActivity();
-        selectionMode=activity.getSelectionMode();
+        selectionMode=activity.getAddToMeetingMode();
 
         activity.setReferenceGroupList(this);
         adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);

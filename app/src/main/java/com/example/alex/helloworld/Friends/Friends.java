@@ -1,24 +1,17 @@
 package com.example.alex.helloworld.Friends;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
@@ -33,7 +26,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textView_selected_count;
     private ImageButton decline_selection,page_button;
-    private Boolean selectionMode, newGroupMode = false;
+    private Boolean addToMeetingMode, newGroupMode = false;
     private ViewPager pager;
     private ViewPagerAdapter viewPagerAdapter;
     private SlidingTabLayout tabs;
@@ -50,7 +43,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
         //Declarations Variables
         Bundle bundle = getIntent().getExtras();
-        selectionMode = bundle.getBoolean("SelectionMode");
+        addToMeetingMode = bundle.getBoolean("SelectionMode");
         friends = new ArrayList<>();
         groups = new ArrayList<>();
         //Declarations Views
@@ -91,10 +84,10 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
             case R.id.add_new_friend:
                 if (newGroupMode) {
                     createGroup();
-                } else if (!selectionMode) {
+                } else if (!addToMeetingMode) {
                     Intent intent = new Intent(this, SearchNewFriends.class);
                     startActivity(intent);
-                } else if (selectionMode) {
+                } else if (addToMeetingMode) {
                     finishSelection();
                 }
                 break;
@@ -176,8 +169,8 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         this.groupsListFragment = groupsListFragment;
     }
 
-    public boolean getSelectionMode() {
-        return selectionMode;
+    public boolean getAddToMeetingMode() {
+        return addToMeetingMode;
     }
 
     public void setDataFriends(ArrayList<Information> data) {

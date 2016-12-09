@@ -19,8 +19,6 @@ import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
-import com.koushikdutta.ion.Ion;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,24 +33,24 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
     private SearchNewFriends searchNewFriends;
-    private Boolean selectionMode, newFriends;
+    private Boolean addToMeetingMode, newFriendsMode;
     private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, SearchNewFriends searchNewFriends, Boolean selectionMode, Boolean newFriends) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, SearchNewFriends searchNewFriends, Boolean addToMeetingMode, Boolean newFriendsMode) {
         this.context = context;
         this.data = data;
         this.friendsListFragment = friendsListFragment;
         this.searchNewFriends = searchNewFriends;
-        this.selectionMode = selectionMode;
-        this.newFriends = newFriends;
+        this.addToMeetingMode = addToMeetingMode;
+        this.newFriendsMode = newFriendsMode;
         inflater = LayoutInflater.from(context);
 
     }
 
     public void resetData(ArrayList<Information> data) {
         this.data = data;
-        selectionMode = false;
+        addToMeetingMode = false;
         count = 0;
     }
 
@@ -73,7 +71,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
             holder.itemView.setSelected(false);
         }
-        if (Integer.valueOf(data.get(position).confirmed) == 0&&!newFriends) {
+        if (Integer.valueOf(data.get(position).confirmed) == 0&&!newFriendsMode) {
             holder.friendsrequest.setVisibility(View.VISIBLE);
         } else {
             holder.friendsrequest.setVisibility(View.GONE);
@@ -154,8 +152,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             String emailString = sharedPrefs.getString("email", "");
             switch (view.getId()) {
                 case R.id.cardview_friends:
-                    if (!newFriends) {
-                        if (selectionMode&&Integer.valueOf(data.get(getAdapterPosition()).confirmed)==1) {
+                    if (!newFriendsMode) {
+                        if (addToMeetingMode ) {
                             friendsListFragment.toggle(getAdapterPosition());
                             if (!view.isSelected()) {
                                 count++;
@@ -193,9 +191,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public boolean onLongClick(View view) {
-            if (!newFriends) {
-                if (!selectionMode&&Integer.valueOf(data.get(getAdapterPosition()).confirmed)==1) {
-                    selectionMode = true;
+            if (!newFriendsMode) {
+                if (!addToMeetingMode &&Integer.valueOf(data.get(getAdapterPosition()).confirmed)==1) {
+                    addToMeetingMode = true;
                     friendsListFragment.toggle(getAdapterPosition());
                     if (!view.isSelected()) {
                         count++;

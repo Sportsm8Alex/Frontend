@@ -16,6 +16,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:background="@color/cardview_light_background"
+            android:elevation="8dp"
             android:layout_height="match_parent">
 
             <com.makeramen.roundedimageview.RoundedImageView
@@ -81,9 +83,8 @@
         <LinearLayout
             android:id="@+id/linearL_friendsrequest"
             android:layout_width="match_parent"
-            android:elevation="4dp"
             android:layout_height="wrap_content"
-            android:background="@color/red"
+            android:background="@color/darkred"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
