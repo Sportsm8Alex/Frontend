@@ -13,6 +13,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.alex.helloworld.Information;
@@ -22,30 +23,37 @@ import com.example.alex.helloworld.databaseConnection.UIthread;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
 
 
-    private final static int FADE_DURATION = 300;
+    private final static int FADE_DURATION = 500;
     private Context context;
-    private ArrayList<Information> data;
+    private ArrayList<Information> data, backup;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
     private SearchNewFriends searchNewFriends;
-    private Boolean addToMeetingMode, newFriendsMode;
+    private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
     private int count = 0;
 
 
     public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, SearchNewFriends searchNewFriends, Boolean addToMeetingMode, Boolean newFriendsMode) {
         this.context = context;
         this.data = data;
+        this.backup = data;
         this.friendsListFragment = friendsListFragment;
         this.searchNewFriends = searchNewFriends;
         this.addToMeetingMode = addToMeetingMode;
-        this.newFriendsMode = newFriendsMode;
+        this.addFriendMode = newFriendsMode;
         inflater = LayoutInflater.from(context);
 
+    }
+
+    public void setDataBackup() {
+        data = backup;
+        notifyDataSetChanged();
     }
 
     public void resetData(ArrayList<Information> data) {
@@ -65,13 +73,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         if (data.get(position).selected) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
+            holder.relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
             holder.itemView.setSelected(true);
         } else if (!data.get(position).selected) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+            holder.relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
             holder.itemView.setSelected(false);
         }
-        if (Integer.valueOf(data.get(position).confirmed) == 0&&!newFriendsMode) {
+        if (Integer.valueOf(data.get(position).confirmed) == 0 && !addFriendMode) {
             holder.friendsrequest.setVisibility(View.VISIBLE);
         } else {
             holder.friendsrequest.setVisibility(View.GONE);
@@ -100,6 +108,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         holder.username.setText(data.get(position).username);
         holder.email.setText(data.get(position).email);
         setScaleAnimation(holder.itemView);
+
     }
 
     private void setScaleAnimation(View view) {
@@ -123,6 +132,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         Context contxt;
         ImageButton accept, decline;
         LinearLayout friendsrequest;
+        RelativeLayout relativeLayoutCardview;
 
 
         public MyViewHolder(final View itemView, Context ctx) {
@@ -135,6 +145,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
             username = (TextView) itemView.findViewById(R.id.username_text);
             email = (TextView) itemView.findViewById(R.id.user_email);
+            relativeLayoutCardview = (RelativeLayout) itemView.findViewById(R.id.rL_cardview);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
@@ -144,23 +155,22 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         }
 
-
         @Override
         public void onClick(View view) {
-            Database db = new Database(this,context);
+            Database db = new Database(this, context);
             SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             String emailString = sharedPrefs.getString("email", "");
             switch (view.getId()) {
                 case R.id.cardview_friends:
-                    if (!newFriendsMode) {
-                        if (addToMeetingMode ) {
+                    if (!addFriendMode) {
+                        if ((addToMeetingMode || creatGroupMode) && Integer.valueOf(data.get(getAdapterPosition()).confirmed) == 1) {
                             friendsListFragment.toggle(getAdapterPosition());
                             if (!view.isSelected()) {
                                 count++;
-                                view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
+                                relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
                                 view.setSelected(true);
                             } else if (view.isSelected()) {
-                                view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                                relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
                                 view.setSelected(false);
                                 count--;
 
@@ -175,12 +185,12 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     }
                     break;
                 case R.id.accept_friendship:
-                    String[] params = {"IndexFriendship.php","function","confirmFriend","email",emailString,"friendemail",data.get(getAdapterPosition()).email};
+                    String[] params = {"IndexFriendship.php", "function", "confirmFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
                     db.execute(params);
                     friendsrequest.setVisibility(View.GONE);
                     break;
                 case R.id.decline_friendship:
-                    String[] params2 = {"IndexFriendship.php","function","deleteFriend","email",emailString,"friendemail",data.get(getAdapterPosition()).email};
+                    String[] params2 = {"IndexFriendship.php", "function", "deleteFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
                     db.execute(params2);
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
@@ -191,23 +201,21 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public boolean onLongClick(View view) {
-            if (!newFriendsMode) {
-                if (!addToMeetingMode &&Integer.valueOf(data.get(getAdapterPosition()).confirmed)==1) {
-                    addToMeetingMode = true;
-                    friendsListFragment.toggle(getAdapterPosition());
-                    if (!view.isSelected()) {
-                        count++;
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                        view.setSelected(true);
-                    } else if (view.isSelected()) {
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                        view.setSelected(false);
-                        count--;
 
-                    }
-                    friendsListFragment.activateSelectionMode(true, count);
-                    return true;
+            if (!addFriendMode && !addToMeetingMode && Integer.valueOf(data.get(getAdapterPosition()).confirmed) == 1) { //No LongClick Action while adding new Friends or CreatingGroups
+                creatGroupMode = true;
+                friendsListFragment.toggle(getAdapterPosition());
+                if (!view.isSelected()) {
+                    count++;
+                    relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
+                    view.setSelected(true);
+                } else if (view.isSelected()) {
+                    relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
+                    view.setSelected(false);
+                    count--;
                 }
+                friendsListFragment.activateGroupSelectionMode(true, count);
+                return true;
             }
             return false;
         }

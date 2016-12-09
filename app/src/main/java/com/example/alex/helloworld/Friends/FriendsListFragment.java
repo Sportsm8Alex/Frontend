@@ -57,8 +57,8 @@ public class FriendsListFragment extends Fragment implements UIthread {
         activity.setDataFriends(friends);
     }
 
-    public void activateSelectionMode(Boolean bool, int count) {
-        activity.activateSelectionMode(bool, count);
+    public void activateGroupSelectionMode(Boolean bool, int count){
+        activity.activateGroupSelectionMode(bool,count);
     }
 
     public void updateCount(int count) {

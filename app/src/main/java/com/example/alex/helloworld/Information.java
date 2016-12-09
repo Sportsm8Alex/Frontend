@@ -31,6 +31,8 @@ public class Information implements Serializable {
         return username;
     }
 
+    public String getConfirmed(){return confirmed;}
+
     public void setUsername(String username) {
         this.username = username;
     }

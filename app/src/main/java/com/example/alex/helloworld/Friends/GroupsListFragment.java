@@ -64,10 +64,6 @@ public class GroupsListFragment extends Fragment implements UIthread {
 
     }
 
-    public void activateSelectionMode(Boolean bool,int count){
-        activity.activateSelectionMode(bool,count);
-    }
-
     @Override
     public void updateUI(String answer) {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);

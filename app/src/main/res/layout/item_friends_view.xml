@@ -17,6 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:background="@color/cardview_light_background"
+            android:id="@+id/rL_cardview"
             android:elevation="8dp"
             android:layout_height="match_parent">
 

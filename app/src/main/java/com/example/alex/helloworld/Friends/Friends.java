@@ -144,8 +144,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
        }
     }
 
-    public void activateSelectionMode(Boolean bool, int count) {
-
+    public void activateGroupSelectionMode(Boolean bool,int count){
         textView_selected_count.setVisibility(View.VISIBLE);
         textView_selected_count.setText(getString(R.string.text_selected, count));
         decline_selection.setVisibility(View.VISIBLE);
