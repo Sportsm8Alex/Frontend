@@ -37,6 +37,8 @@ public class Home extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,8 @@ public class Home extends AppCompatActivity {
         navigationView();
         buttons();
     }
-    
+
+
     public void onClick(View v) {
         Intent intent;
         switch (v.getId()) {
@@ -71,15 +74,26 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.calendar_button:
-                intent= new Intent(this, KalendarActivity.class);
+                intent = new Intent(this, KalendarActivity.class);
                 startActivity(intent);
                 break;
             case R.id.friends_button:
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("SelectionMode",false);
-                intent = new Intent(this,Friends.class);
+                bundle.putBoolean("SelectionMode", false);
+                intent = new Intent(this, Friends.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                break;
+            case R.id.email_changer:
+                String[] array = getResources().getStringArray(R.array.emails);
+                SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString("email", array[i]);
+                editor.apply();
+                Button btn = (Button) findViewById(R.id.email_changer);
+                btn.setText(array[i]);
+                i++;
+                i = i%7;
                 break;
             default:
                 finish();
@@ -118,6 +132,7 @@ public class Home extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     //Implements Navigation View
     private void navigationView() {
 
@@ -145,7 +160,7 @@ public class Home extends AppCompatActivity {
                     case R.id.nav_logout:
                         //delete locally saved userinformation
                         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor =  sharedPrefs.edit();
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
                         editor.clear();
                         editor.apply();
 

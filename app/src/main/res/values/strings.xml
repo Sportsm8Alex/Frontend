@@ -31,6 +31,19 @@
         <item>Tricking</item>
 
 
+
+    </string-array>
+
+    <string-array name="emails">
+        <item>alexa.reish@gmail.com</item>
+        <item>alexander.reisach@gmail.com</item>
+        <item>Hendrik@gmail.com</item>
+        <item>jonathanhaas@arcor.de</item>
+        <item>Korbi@korbi.de</item>
+        <item>Lorenz@kommtehnicht.de</item>
+        <item>Nils@der.de</item>
+        <item>Vicent@Vaas.de</item>
+
     </string-array>
 
     <string name="title_activity_main">MainActivity</string>

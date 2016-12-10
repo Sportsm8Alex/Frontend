@@ -195,7 +195,6 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 }
                 if (!tempBool) {
                     Selection.add(temp.get(j));
-                    tempBool = false;
                 }
             }
 

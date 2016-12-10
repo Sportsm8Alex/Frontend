@@ -50,5 +50,9 @@
             android:onClick="onClick"
             style="@style/Widget.AppCompat.Button"
             />
+        <Button
+            android:id="@+id/email_changer"
+            android:onClick="onClick"
+            />
     </GridLayout>
 </RelativeLayout>
