@@ -1,5 +1,6 @@
 package com.example.alex.helloworld.Friends;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
@@ -10,92 +11,75 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
-import com.koushikdutta.ion.Ion;
-import com.squareup.picasso.MemoryPolicy;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
+public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyViewHolder> {
 
 
-    private final static int FADE_DURATION = 300;
+    private final static int FADE_DURATION = 500;
     private Context context;
-    private ArrayList<Information> data;
+    private ArrayList<Information> data, backup;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
-    private SearchNewFriends searchNewFriends;
-    private Boolean selectionMode, newFriends;
+    private OnlyFriendsView searchNewFriends;
+    private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
     private int count = 0;
 
+    private ClickListener clickListener;
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment,SearchNewFriends searchNewFriends, Boolean selectionMode, Boolean newFriends) {
+
+    public FriendsListAdapter(Context context, ClickListener clickListener, ArrayList<Information> data, Boolean addFriendMode) {
+        super();
+        this.clickListener = clickListener;
         this.context = context;
         this.data = data;
-        this.friendsListFragment = friendsListFragment;
-        this.searchNewFriends= searchNewFriends;
-        this.selectionMode = selectionMode;
-        this.newFriends = newFriends;
+        this.backup = data;
+        this.addFriendMode = addFriendMode;
         inflater = LayoutInflater.from(context);
 
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = inflater.inflate(R.layout.item_friends_view, parent, false);
-        return new MyViewHolder(view, context);
+        return new MyViewHolder(view, context, clickListener);
     }
 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
+        holder.relativeLayoutCardview.setBackgroundColor(isSelected(position) ? ContextCompat.getColor(context, R.color.lightblue) : ContextCompat.getColor(context, R.color.cardview_light_background));
+        holder.addToFriends.setVisibility(addFriendMode ? View.VISIBLE:View.GONE);
+        holder.friendsrequest.setVisibility(Integer.valueOf(data.get(position).confirmed) == 0&&!addFriendMode? View.VISIBLE : View.GONE);
 
         //Loads profile Picture with Ion Library in an AsyncTask
         Picasso.with(context)
                 .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
                 .placeholder(R.drawable.dickbutt)
                 .error(R.drawable.dickbutt)
-                .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
+                // .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
                 .into(holder.profileP);
-       /*  Ion.with(context)
-                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
-                .noCache()
-                .withBitmap()
-                .placeholder(R.drawable.dickbutt)
-                .error(R.drawable.dickbutt)
-                .intoImageView(holder.profileP);
-
-
-        Ion.with(holder.profileP)
-                .placeholder(R.drawable.dickbutt)
-                .error(R.drawable.dickbutt)
-                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath);*/
 
         holder.username.setText(data.get(position).username);
         holder.email.setText(data.get(position).email);
-        setScaleAnimation(holder.itemView);
-    }
+        // setScaleAnimation(holder.itemView);
 
-    //search is not working right now
-    public int search(String search) {
-        int posi = 0;
-        for (int i = 0; i < getItemCount(); i++) {
-            if (data.get(i).getUsername().toLowerCase().startsWith(search.toLowerCase())) {
-                posi = i;
-            }
-        }
-
-        return posi;
     }
 
     private void setScaleAnimation(View view) {
@@ -105,84 +89,101 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     }
 
+    public void removeItem(int position) {
+        data.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void removeRange(int positionStart, int itemCount) {
+        for (int i = 0; i < itemCount; ++i) {
+            data.remove(positionStart);
+        }
+        notifyItemRangeRemoved(positionStart, itemCount);
+    }
+
     @Override
     public int getItemCount() {
         return data.size();
     }
 
+    public void setClicklistener(Friends clicklistener) {
+        this.clickListener = clicklistener;
+    }
 
 
-
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener,UIthread {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, UIthread {
         TextView username;
         TextView email;
         ImageView profileP;
         CardView cardView;
         Context contxt;
+        ImageButton accept, decline, addToFriends;
+        LinearLayout friendsrequest;
+        RelativeLayout relativeLayoutCardview;
+
+        ClickListener listener;
 
 
-        public MyViewHolder(final View itemView, Context ctx) {
+        public MyViewHolder(final View itemView, Context ctx, ClickListener listener) {
             super(itemView);
             this.contxt = ctx;
+            friendsrequest = (LinearLayout) itemView.findViewById(R.id.linearL_friendsrequest);
+            accept = (ImageButton) itemView.findViewById(R.id.accept_friendship);
+            decline = (ImageButton) itemView.findViewById(R.id.decline_friendship);
+            addToFriends = (ImageButton) itemView.findViewById(R.id.add_to_friends);
+            cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
+            profileP = (ImageView) itemView.findViewById(R.id.profile_picture3);
+            username = (TextView) itemView.findViewById(R.id.username_text);
+            email = (TextView) itemView.findViewById(R.id.user_email);
+            relativeLayoutCardview = (RelativeLayout) itemView.findViewById(R.id.rL_cardview);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
-            cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
-            profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
-            username = (TextView) itemView.findViewById(R.id.username_text);
-            email = (TextView) itemView.findViewById(R.id.user_email);
+            accept.setOnClickListener(this);
+            addToFriends.setOnClickListener(this);
+            decline.setOnClickListener(this);
+            this.listener = listener;
+
 
         }
 
-
         @Override
         public void onClick(View view) {
-            if (!newFriends) {
-                if (selectionMode) {
-                    friendsListFragment.toggle(getAdapterPosition());
-                    if (!view.isSelected()) {
-                        count++;
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                        view.setSelected(true);
-                    } else if (view.isSelected()) {
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                        view.setSelected(false);
-                        count--;
-
+            Database db = new Database(this, context);
+            SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+            String emailString = sharedPrefs.getString("email", "");
+            String[] params;
+            switch (view.getId()) {
+                case R.id.accept_friendship:
+                    friendsrequest.setVisibility(View.GONE);
+                    params = new String[]{"IndexFriendship.php", "function", "confirmFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
+                    break;
+                case R.id.decline_friendship:
+                    params = new String[]{"IndexFriendship.php", "function", "deleteFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    break;
+                case R.id.add_to_friends:
+                    params = new String[]{"IndexFriendship.php", "function", "setFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    break;
+                case R.id.cardview_friends:
+                    if (listener != null) {
+                        listener.onItemClicked(getAdapterPosition(), false);
                     }
-                    friendsListFragment.updateCount(count);
-                }
-            }else{
-                SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                String emailString = sharedPrefs.getString("email", "");
-                String friendemail = searchNewFriends.getEmail(getAdapterPosition());
-                String[] params = {"IndexFriendship.php","function","setFriend","email",emailString,"friendemail",friendemail};
-                Database db = new Database(this,contxt);
-                db.execute(params);
-                searchNewFriends.finish();
+                    break;
             }
         }
 
 
         @Override
         public boolean onLongClick(View view) {
-            if (!newFriends) {
-                if (!selectionMode) {
-                    selectionMode = true;
-                    friendsListFragment.toggle(getAdapterPosition());
-                    if (!view.isSelected()) {
-                        count++;
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                        view.setSelected(true);
-                    } else if (view.isSelected()) {
-                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                        view.setSelected(false);
-                        count--;
-
-                    }
-                    friendsListFragment.activateSelectionMode(true, count);
-                    return true;
-                }
+            if (listener != null) {
+                return listener.onItemLongClicked(getAdapterPosition(), false);
             }
             return false;
         }
@@ -196,6 +197,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         public void updateUI(String answer) {
 
         }
+
     }
 
 

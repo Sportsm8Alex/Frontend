@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 
@@ -25,12 +26,13 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GroupDetailView extends AppCompatActivity implements UIthread {
+public class GroupDetailView extends AppCompatActivity implements UIthread,SwipeRefreshLayout.OnRefreshListener {
 
-    ListView listView;
-    ArrayList<Information> members,Selection;
-    SwipeRefreshLayout swipeRefreshLayout;
-    String GroupID, groupName;
+    private ListView listView;
+    private ArrayList<Information> members,Selection;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private String GroupID, groupName;
+    private TextView textView_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +40,24 @@ public class GroupDetailView extends AppCompatActivity implements UIthread {
         setContentView(R.layout.activity_group_detail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Variables
         Bundle b = getIntent().getExtras();
         GroupID = b.getString("GroupID");
         groupName = b.getString("GroupName");
-        TextView textView =(TextView) findViewById(R.id.group_name_detailview);
-        textView.setText(groupName);
-        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getMemberList();
-            }
-        });
-        getMemberList();
+        //Views
+        textView_name =(TextView) findViewById(R.id.group_name_detailview);
         listView = (ListView) findViewById(R.id.listview_group_detail);
+        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
 
+        textView_name.setText(groupName);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        getMemberList();
     }
-
 
     public void onClick(View view) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("SelectionMode", true);
-        Intent intent = new Intent(this, Friends.class);
+        bundle.putBoolean("search", false);
+        Intent intent = new Intent(this, OnlyFriendsView.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
@@ -119,6 +117,11 @@ public class GroupDetailView extends AppCompatActivity implements UIthread {
         swipeRefreshLayout.setRefreshing(false);
 
 
+    }
+
+    @Override
+    public void onRefresh() {
+        getMemberList();
     }
 
 

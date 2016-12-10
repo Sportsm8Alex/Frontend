@@ -23,37 +23,30 @@ import java.util.ArrayList;
 
 public class GroupsListFragment extends Fragment implements UIthread {
     private ArrayList<Information> groups;
-    Friends activity;
-    RecyclerView recyclerView;
-    GroupListAdapter adapter;
-    Boolean selectionMode;
+    private Friends activity;
+    private RecyclerView recyclerView;
+    private GroupListAdapter adapter;
+    private Boolean selectionMode;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.groups_fragment, container, false);
-        recyclerView = (RecyclerView) v.findViewById(R.id.group_recycler_view);
+        View view = inflater.inflate(R.layout.groups_fragment, container, false);
+        //Views
+        recyclerView = (RecyclerView) view.findViewById(R.id.group_recycler_view);
+        //variables
         groups = new ArrayList<>();
-
         activity = (Friends) getActivity();
-        selectionMode=activity.getSelectionMode();
-        activity.setReferenceGroupList(this);
-
-        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
+        adapter = new GroupListAdapter(getContext(),null,groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         updateUI("");
-        return v;
-    }
-    public void toggle(int pos) {
-        groups.get(pos).selected ^= true;
-        activity.setDataGroups(groups);
+        return view;
     }
 
     public void updateGroupList() {
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexGroups.php", "function", "getGroups"};
+        String[] params = {"IndexGroups.php", "function", "getGroups","email",email};
         Database db = new Database(this, getContext());
         db.execute(params);
     }
@@ -61,10 +54,6 @@ public class GroupsListFragment extends Fragment implements UIthread {
     @Override
     public void updateUI() {
 
-    }
-
-    public void activateSelectionMode(Boolean bool,int count){
-        activity.activateSelectionMode(bool,count);
     }
 
     @Override
@@ -76,10 +65,11 @@ public class GroupsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
+        adapter = new GroupListAdapter(getContext(),null,groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
+        activity.setReferencesGroups(groups,this,adapter);
         activity.setSwipeRefreshLayout(false);
     }
 }

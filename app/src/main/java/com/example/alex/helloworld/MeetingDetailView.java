@@ -36,12 +36,12 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MeetingDetailView extends AppCompatActivity implements UIthread {
+public class MeetingDetailView extends AppCompatActivity implements UIthread,SwipeRefreshLayout.OnRefreshListener {
 
-    ListView listView;
-    String meetingID,startTime,endTime,sportID;
-    ArrayList<Information> members,Selection;
-    SwipeRefreshLayout swipeRefreshLayout;
+    private ListView listView;
+    private String meetingID,startTime,endTime,sportID;
+    private ArrayList<Information> members,Selection;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,13 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread {
         setContentView(R.layout.activity_meeting_detail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Views
         listView = (ListView) findViewById(R.id.listview_meeting_detail);
+        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
+        TextView textView_time = (TextView) findViewById(R.id.time_meeting_detail);
+        TextView textView_date = (TextView) findViewById(R.id.time_meetingdetail);
+        TextView textView_sportID = (TextView) findViewById(R.id.activity_name_detailview);
+        //Variables
         Bundle b = getIntent().getExtras();
         meetingID = b.getString("MeetingID");
         startTime = b.getString("startTime");
@@ -58,26 +64,16 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
         DateTime dt = formatter.parseDateTime(startTime);
         DateTime dt2 = formatter.parseDateTime(endTime);
-        TextView textView = (TextView) findViewById(R.id.time_meeting_detail);
-        TextView textView2 = (TextView) findViewById(R.id.time_meetingdetail);
-        textView.setText(dt.toString("HH:mm")+"-"+dt2.toString("HH:mm"));
-        textView2.setText(dt.toString("dd.MM.YYYY"));
-        TextView textView3 = (TextView) findViewById(R.id.activity_name_detailview);
         Resources res = getResources();
         String[] array = res.getStringArray(R.array.sportarten);
-        textView3.setText(array[Integer.valueOf(sportID)]);
-        System.out.print(meetingID);
+        //Set Views
+        textView_time.setText(dt.toString("HH:mm")+"-"+dt2.toString("HH:mm"));
+        textView_date.setText(dt.toString("dd.MM.YYYY"));
+        textView_sportID.setText(array[Integer.valueOf(sportID)]);
+
         getMemberList();
-        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getMemberList();
-            }
-        });
-
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
-
 
     public void onClick(View view) {
         Bundle bundle = new Bundle();
@@ -142,12 +138,17 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread {
 
     }
 
+    @Override
+    public void onRefresh() {
+        getMemberList();
+    }
+
 
     class ListViewAdapter extends BaseAdapter{
 
         ArrayList<Information> list;
         Context context;
-        public ListViewAdapter(Context context,ArrayList<Information> listItem) {
+        ListViewAdapter(Context context,ArrayList<Information> listItem) {
             list=listItem;
             this.context = context;
         }
@@ -177,7 +178,6 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread {
                 row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
             }
             return row;
-
         }
     }
 }

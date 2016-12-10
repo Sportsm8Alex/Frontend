@@ -70,7 +70,7 @@
             android:name=".CalendarActivity.KalendarActivity"
             android:label="@string/kalendar_activity" />
         <activity
-            android:name=".Friends.SearchNewFriends"
+            android:name=".Friends.OnlyFriendsView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

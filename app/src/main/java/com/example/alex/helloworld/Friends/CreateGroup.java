@@ -1,6 +1,8 @@
 package com.example.alex.helloworld.Friends;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,8 +24,8 @@ import java.util.Arrays;
 
 public class CreateGroup extends Activity implements TextWatcher, UIthread {
 
-    ArrayList<Information> groupmembers;
-    String groupname;
+    private ArrayList<Information> groupmembers;
+    private String groupname;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,29 +34,33 @@ public class CreateGroup extends Activity implements TextWatcher, UIthread {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         getWindow().setLayout((int) (width * .8), (int) (width * .8));
+        //Declaration Views
         EditText groupname = (EditText) findViewById(R.id.editText_new_group);
-        groupname.addTextChangedListener(this);
+        //Declaration Variables
         Bundle bundle = getIntent().getExtras();
         groupmembers = (ArrayList<Information>) bundle.getSerializable("GroupList");
+        //Init Listeners
+        groupname.addTextChangedListener(this);
         groupname.setSingleLine(true);
     }
 
 
     public void onClick(View view) {
+        SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
         ArrayList<String> paramsArrayList = new ArrayList<>(
-                Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname)
+                Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname,"member",email)
         );
         for (int i = 0; i < groupmembers.size(); i++) {
-            if (groupmembers.get(i).selected) {
-                paramsArrayList.add("member" + i);
-                paramsArrayList.add(groupmembers.get(i).email);
-            }
+            paramsArrayList.add("member" + i);
+            paramsArrayList.add(groupmembers.get(i).email);
         }
         String[] params = new String[paramsArrayList.size()];
         params = paramsArrayList.toArray(params);
 
         Database db = new Database(this, getBaseContext());
         db.execute(params);
+        setResult(RESULT_OK);
         finish();
     }
 
