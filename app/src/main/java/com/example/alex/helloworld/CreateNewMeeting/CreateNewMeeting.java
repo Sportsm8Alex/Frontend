@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,7 +33,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -42,7 +42,7 @@ import java.util.Arrays;
 
 public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TextWatcher, UIthread {
 
-    int numP = 4, minHours = 2;
+    int minMemberCount = 4, minHours = 2;
     Button SelectedButton;
 
     int sportart_ID = -1;
@@ -55,8 +55,9 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
     private DateTimeFormatter formatter;
     private Button startTime_b, endTime_b, date_b;
     private String extraInfoString;
-    private TextView text_minHour;
-    private TextView text_minParti;
+    private NumberPicker numHours, minMember;
+    private int step = 0;
+    Boolean bBegin = false, bEnd = false, bDate = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
-        getWindow().setLayout((int) (width * .8), (int) (width * .8));
+        getWindow().setLayout((int) (width * .9), (int) (width * .9));
 
         //sportartID
         Bundle b = getIntent().getExtras();
@@ -78,40 +79,48 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
         datetime = new DateTime();
         startTime = new MutableDateTime();
-        startTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        startTime.set(DateTimeFieldType.year(), 0);
         endTime = new MutableDateTime();
-        endTime.set(DateTimeFieldType.secondOfMinute(), 0);
-        endTime.set(DateTimeFieldType.year(), 0);
         additionalInfos = (EditText) findViewById(R.id.editText_additional);
         additionalInfos.setSingleLine();
         additionalInfos.addTextChangedListener(this);
-        text_minHour = (TextView) findViewById(R.id.textview_num_hour);
-        text_minHour.setText(minHours + "");
-        text_minParti = (TextView) findViewById(R.id.textview_num);
-        text_minParti.setText(numP + "");
         startTime_b = (Button) findViewById(R.id.button_beginn);
         endTime_b = (Button) findViewById(R.id.button_ende);
         date_b = (Button) findViewById(R.id.button_datum);
-        startTime_b.setText(startTime.toString("HH:mm"));
-        endTime_b.setText(startTime.toString("HH:mm"));
-        date_b.setText(datetime.toString("MM.dd.YY"));
 
+        numHours = (NumberPicker) findViewById(R.id.numberPicker_hours);
+        minMember = (NumberPicker) findViewById(R.id.numberPicker_minMember);
+        numHours.setMinValue(0);
+        numHours.setMaxValue(24);
+        numHours.setValue(minHours);
+        numHours.setWrapSelectorWheel(false);
+        minMember.setMinValue(0);
+        minMember.setMaxValue(100);
+        minMember.setValue(minMemberCount);
+        minMember.setWrapSelectorWheel(false);
+        SelectedButton = (Button) findViewById(R.id.button_beginn);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, datetime.getHourOfDay(), datetime.getMinuteOfHour(), true);
+        timePickerDialog.show();
 
     }
 
     public void timeButtons(View view) {
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, datetime.getHourOfDay(), datetime.getMinuteOfHour(), true);
-        timePickerDialog.show();
+        TimePickerDialog timePickerDialog;
         SelectedButton = (Button) view;
         switch (view.getId()) {
             case R.id.button_ende:
+                step = 1;
+                timePickerDialog = new TimePickerDialog(this, this, endTime.getHourOfDay(), endTime.getMinuteOfHour(), true);
+                timePickerDialog.show();
                 endOrStart = false;
                 break;
             case R.id.button_beginn:
+                step = 0;
+                timePickerDialog = new TimePickerDialog(this, this, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true);
+                timePickerDialog.show();
                 endOrStart = true;
                 break;
         }
+
 
     }
 
@@ -123,39 +132,22 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
 
     }
 
-    public void memberCountButton(View view) {
-        Button minus = (Button) findViewById(R.id.button_minus);
-        switch (view.getId()) {
-            case R.id.button_plus:
-                numP++;
-                text_minParti.setText("" + numP);
-                minus.setEnabled(true);
-                break;
-            case R.id.button_minus:
-                if (numP > 0) {
-                    numP--;
-                    if (numP == 0) {
-                        minus.setEnabled(false);
-                    }
-                }
-                text_minParti.setText("" + numP);
-                break;
-        }
-    }
 
     public void cancelButton(View v) {
         finish();
     }
 
     public void okButton(View v) {
+        minMemberCount = minMember.getValue();
+        minHours = numHours.getValue();
 
-        if (startTime.get(DateTimeFieldType.millisOfSecond()) == 0 && endTime.get(DateTimeFieldType.millisOfSecond()) == 0 && startTime.get(DateTimeFieldType.year()) != 0 && numP != 0) {
+        if (bBegin && bEnd && bDate && startTime.get(DateTimeFieldType.year()) != 0 && minMemberCount != 0) {
             if (startTime.isBefore(endTime)) {
 
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", numP + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID)
+                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", minMemberCount + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID)
                 );
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -194,20 +186,22 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 e.printStackTrace();
             }
             for (int j = 0; j < temp.size(); j++) {
-                Boolean tempBool= false;
-                int tempInt =0;
+                Boolean tempBool = false;
+                int tempInt = 0;
                 for (int h = 0; h < Selection.size(); h++) {
                     if (temp.get(j).email.equals(Selection.get(h).email)) {
                         tempBool = true;
                     }
                 }
-                if(!tempBool){
+                if (!tempBool) {
                     Selection.add(temp.get(j));
-                    tempBool=false;
+                    tempBool = false;
                 }
             }
 
         }
+        TextView textView = (TextView) findViewById(R.id.number_added);
+        textView.setText(Selection.size() + " Teilnehmer");
 
     }
 
@@ -219,29 +213,9 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         startActivityForResult(intent, 1);
     }
 
-    public void minTimeButton(View view) {
-        Button minus = (Button) findViewById(R.id.button_minus_hour);
-        switch (view.getId()) {
-            case R.id.button_plus_hour:
-                minHours++;
-                text_minHour.setText("" + minHours);
-                minus.setEnabled(true);
-                break;
-            case R.id.button_minus_hour:
-                if (minHours > 0) {
-                    minHours--;
-                    if (minHours == 0) {
-                        minus.setEnabled(false);
-                    }
-                }
-                text_minHour.setText("" + minHours);
-                break;
-        }
-    }
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
+        bDate = true;
         startTime.setDate(year, month + 1, dayOfMonth);
         endTime.setDate(year, month + 1, dayOfMonth);
         SelectedButton.setText(endTime.toString("dd.MM.YYYY"));
@@ -250,16 +224,26 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         if (endOrStart) {
+            bBegin = true;
             startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             startTime.set(DateTimeFieldType.minuteOfHour(), minute);
-            startTime.set(DateTimeFieldType.millisOfSecond(), 0);
             SelectedButton.setText(startTime.toString("HH:mm"));
 
         } else {
+            bEnd = true;
             endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
             endTime.set(DateTimeFieldType.minuteOfHour(), minute);
-            endTime.set(DateTimeFieldType.millisOfSecond(), 0);
             SelectedButton.setText(endTime.toString("HH:mm"));
+        }
+        if (step == 0) {
+            step++;
+            endOrStart = false;
+            SelectedButton = (Button) findViewById(R.id.button_ende);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, datetime.getHourOfDay(), datetime.getMinuteOfHour(), true);
+            timePickerDialog.show();
+        } else if (step == 1) {
+            step++;
+            dateButton(findViewById(R.id.button_datum));
         }
     }
 
@@ -271,8 +255,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
                 SelectionGroup = (ArrayList<Information>) bundle.getSerializable("groupList");
-                TextView textView = (TextView) findViewById(R.id.number_added);
-                textView.setText(Selection.size() + " Teilnehmer");
+
             }
         }
         mergeGroupsAndFriends();

@@ -69,7 +69,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
 
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        TextView groupname;
+        TextView groupname,number;
         ArrayList<Information> informations = new ArrayList<>();
         Context contxt;
 
@@ -79,6 +79,7 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
             this.informations = info;
             this.contxt = ctx;
             this.groupname = (TextView) itemView.findViewById(R.id.group_name);
+            this.number = (TextView) itemView.findViewById(R.id.number_group);
             itemView.setOnLongClickListener(this);
             itemView.setOnClickListener(this);
             itemView.setSelected(false);

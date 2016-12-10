@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="loginColor">#00FF00</color>
     <color name="whiteText">#FFFFFF</color>
+    <color name="blackText">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="orange">#FF9800</color>
     <color name="weiss">#FFFFFF</color>

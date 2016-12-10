@@ -13,8 +13,9 @@
         android:layout_alignParentStart="true"
         android:layout_margin="8dp"
         android:onClick="timeButtons"
-        android:text="@string/text_beginning" />
+        android:text="@string/text_beginning">
 
+    </Button>
 
     <Button
         android:id="@+id/button_ende"
@@ -67,28 +68,13 @@
                 android:layout_height="wrap_content"
                 android:text="Teilnemer:"
                 android:textSize="10sp" />
-            <Button
-                android:id="@+id/button_plus"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:onClick="memberCountButton"
-                android:text="+" />
 
-            <TextView
-                android:id="@+id/textview_num"
+
+            <NumberPicker
+                android:id="@+id/numberPicker_minMember"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0" />
-
-
-            <Button
-                android:id="@+id/button_minus"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:onClick="memberCountButton"
-                android:text="-"/>
+                android:layout_height="150dp"
+                android:descendantFocusability="blocksDescendants" />
 
 
         </LinearLayout>
@@ -131,86 +117,72 @@
                 android:text="Stunden"
                 android:textSize="10sp" />
 
-            <Button
-                android:id="@+id/button_plus_hour"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:onClick="minTimeButton"
-                android:text="+" />
-
-            <TextView
-                android:id="@+id/textview_num_hour"
+            <NumberPicker
+                android:id="@+id/numberPicker_hours"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0" />
 
-
-            <Button
-                android:id="@+id/button_minus_hour"
-                style="@style/Widget.AppCompat.Button.Borderless"
-
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:onClick="minTimeButton"
-                android:text="-" />
+                android:layout_height="150dp"
+                android:descendantFocusability="blocksDescendants" />
 
 
         </LinearLayout>
 
     </LinearLayout>
 
-
-    <Button
-        android:id="@+id/button_cancel"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
-        android:onClick="cancelButton"
-        android:text="@string/text_cancel"
-        android:textColor="@color/colorPrimary" />
-
-    <Button
-        android:id="@+id/button2"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="4dp"
-        android:layout_marginRight="8dp"
-        android:onClick="okButton"
-        android:text="@string/text_ok"
-        android:textColor="@color/colorPrimary" />
-
-
-    <EditText
-        android:id="@+id/editText_additional"
-        style="@style/Widget.AppCompat.AutoCompleteTextView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button_cancel"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:backgroundTint="@android:color/transparent"
-        android:cursorVisible="false"
-        android:hint="Ort, Habe Ball etc..."
-        android:maxLines="1" />
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/editText_additional"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@android:color/darker_gray" />
+        <EditText
+            android:id="@+id/editText_additional"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:backgroundTint="@android:color/transparent"
+            android:cursorVisible="false"
+            android:hint="Ort, Habe Ball etc..."
+            android:maxLines="1"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/button_cancel"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:onClick="cancelButton"
+                android:text="@string/text_cancel"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/button2"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:onClick="okButton"
+                android:text="@string/text_ok"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

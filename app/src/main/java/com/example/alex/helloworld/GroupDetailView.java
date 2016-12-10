@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
 
@@ -55,8 +56,8 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
 
     public void onClick(View view) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean("SelectionMode", true);
-        Intent intent = new Intent(this, Friends.class);
+        bundle.putBoolean("search", false);
+        Intent intent = new Intent(this, OnlyFriendsView.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }

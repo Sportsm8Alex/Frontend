@@ -2,6 +2,7 @@ package com.example.alex.helloworld.Friends;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,7 +26,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     private GroupsListFragment groupsListFragment;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textView_selected_count;
-    private ImageButton decline_selection,page_button;
+    private ImageButton decline_selection, page_button;
     private Boolean addToMeetingMode, newGroupMode = false;
     private ViewPager pager;
     private ViewPagerAdapter viewPagerAdapter;
@@ -33,12 +34,15 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     private CharSequence Titles[] = {"Friends", "Groups"};
     private int NumOfTabs = 2;
 
+    Toolbar toolbar;
+    AppBarLayout.LayoutParams params;
+    AppBarLayout.LayoutParams params2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Declarations Variables
@@ -70,6 +74,11 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         });
         tabs.setViewPager(pager);
         page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
     }
 
     public void onClick(View view) {
@@ -77,6 +86,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
             case R.id.discard_selection_button:
                 textView_selected_count.setVisibility(View.GONE);
                 decline_selection.setVisibility(View.GONE);
+                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
                 newGroupMode = false;
                 page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
                 friendsListFragment.removeSelection();
@@ -85,7 +95,10 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 if (newGroupMode) {
                     createGroup();
                 } else if (!addToMeetingMode) {
-                    Intent intent = new Intent(this, SearchNewFriends.class);
+                    Bundle b = new Bundle();
+                    b.putBoolean("search", true);
+                    Intent intent = new Intent(this, OnlyFriendsView.class);
+                    intent.putExtras(b);
                     startActivity(intent);
                 } else if (addToMeetingMode) {
                     finishSelection();
@@ -131,25 +144,37 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         bundle.putSerializable("GroupList", selection);
         Intent intent = new Intent(this, CreateGroup.class);
         intent.putExtras(bundle);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent, 1);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       if(resultCode== RESULT_OK){
-           friendsListFragment.removeSelection();
-           textView_selected_count.setVisibility(View.GONE);
-           decline_selection.setVisibility(View.GONE);
-           newGroupMode = false;
-       }
+        if (resultCode == RESULT_OK) {
+            friendsListFragment.removeSelection();
+            textView_selected_count.setVisibility(View.GONE);
+            decline_selection.setVisibility(View.GONE);
+            newGroupMode = false;
+        }
     }
 
-    public void activateGroupSelectionMode(Boolean bool,int count){
-        textView_selected_count.setVisibility(View.VISIBLE);
-        textView_selected_count.setText(getString(R.string.text_selected, count));
-        decline_selection.setVisibility(View.VISIBLE);
-        page_button.setImageResource(R.drawable.ic_group_add_white_24dp);
-        newGroupMode = bool;
+    public void activateGroupSelectionMode(Boolean bool, int count) {
+        if (bool) {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+            params.setScrollFlags(0);
+            params2.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+            textView_selected_count.setVisibility(View.VISIBLE);
+            textView_selected_count.setText(getString(R.string.text_selected, count));
+            decline_selection.setVisibility(View.VISIBLE);
+            page_button.setImageResource(R.drawable.ic_group_add_white_24dp);
+            newGroupMode = bool;
+        } else {
+            newGroupMode = false;
+            textView_selected_count.setVisibility(View.GONE);
+            decline_selection.setVisibility(View.GONE);
+            params2.setScrollFlags(0);
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+        }
     }
 
     public void updateCount(int count) {
@@ -205,16 +230,15 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
     @Override
     public void onPageSelected(int position) {
-        if(position==1) {
+        if (position == 1) {
             page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
-            if(newGroupMode) {
+            if (newGroupMode) {
                 friendsListFragment.removeSelection();
                 textView_selected_count.setVisibility(View.GONE);
                 decline_selection.setVisibility(View.GONE);
                 newGroupMode = false;
             }
-
-        }else if(position ==2){
+        } else if (position == 2) {
             page_button.setImageResource(R.drawable.ic_group_add_white_24dp);
         }
     }

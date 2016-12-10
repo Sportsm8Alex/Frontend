@@ -20,10 +20,11 @@ import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
@@ -34,12 +35,12 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private ArrayList<Information> data, backup;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
-    private SearchNewFriends searchNewFriends;
+    private OnlyFriendsView searchNewFriends;
     private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
     private int count = 0;
 
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, SearchNewFriends searchNewFriends, Boolean addToMeetingMode, Boolean newFriendsMode) {
+    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, OnlyFriendsView searchNewFriends, Boolean addToMeetingMode, Boolean newFriendsMode) {
         this.context = context;
         this.data = data;
         this.backup = data;
@@ -84,6 +85,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         } else {
             holder.friendsrequest.setVisibility(View.GONE);
         }
+
 
         //Loads profile Picture with Ion Library in an AsyncTask
         Picasso.with(context)
@@ -142,7 +144,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             accept = (ImageButton) itemView.findViewById(R.id.accept_friendship);
             decline = (ImageButton) itemView.findViewById(R.id.decline_friendship);
             cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
-            profileP = (ImageView) itemView.findViewById(R.id.profile_picture);
+            profileP = (ImageView) itemView.findViewById(R.id.profile_picture3);
             username = (TextView) itemView.findViewById(R.id.username_text);
             email = (TextView) itemView.findViewById(R.id.user_email);
             relativeLayoutCardview = (RelativeLayout) itemView.findViewById(R.id.rL_cardview);
@@ -164,7 +166,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 case R.id.cardview_friends:
                     if (!addFriendMode) {
                         if ((addToMeetingMode || creatGroupMode) && Integer.valueOf(data.get(getAdapterPosition()).confirmed) == 1) {
-                            friendsListFragment.toggle(getAdapterPosition());
                             if (!view.isSelected()) {
                                 count++;
                                 relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
@@ -175,7 +176,18 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                                 count--;
 
                             }
-                            friendsListFragment.updateCount(count);
+                            if (searchNewFriends == null) {
+                                friendsListFragment.toggle(getAdapterPosition());
+                                friendsListFragment.updateCount(count);
+                                if(count==0){
+                                    creatGroupMode=false;
+                                    friendsListFragment.activateGroupSelectionMode(false,count);
+                                }
+                            } else {
+                                searchNewFriends.toggle(getAdapterPosition());
+                            }
+
+
                         }
                     } else {
                         String friendemail = searchNewFriends.getEmail(getAdapterPosition());
