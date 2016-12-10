@@ -23,6 +23,7 @@ import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
 
 import java.util.ArrayList;
 
+//Implements ClickListenerInterface
 public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
     private ArrayList<Information> friends, groups;
     private FriendsListFragment friendsListFragment;
@@ -41,7 +42,9 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     AppBarLayout.LayoutParams params;
     AppBarLayout.LayoutParams params2;
 
+    //Actionmode
     private ActionMode actionMode;
+    //private Class ActionModeCallBack is for handling action for selected Items
     private Friends.ActionModeCallBack actionModeCallBack = new Friends.ActionModeCallBack();
     private FriendsListAdapter adapterReference;
     private GroupListAdapter adapterReferenceGroup;
@@ -93,32 +96,24 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
     }
 
+    /**
+     * Handles clicks inside activity
+     *
+     * @param view
+     */
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.discard_selection_button:
-                textView_selected_count.setVisibility(View.GONE);
-                decline_selection.setVisibility(View.GONE);
-                params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
-                page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
-                break;
-            case R.id.add_new_friend:
-                if (newGroupMode) {
-                    createGroup();
-                } else if (!addToMeetingMode) {
-                    Bundle b = new Bundle();
-                    b.putBoolean("search", true);
-                    Intent intent = new Intent(this, OnlyFriendsView.class);
-                    intent.putExtras(b);
-                    startActivity(intent);
-                } else if (addToMeetingMode) {
-                    finishSelection();
-                }
-                break;
-        }
+        Bundle b = new Bundle();
+        b.putBoolean("search", true);
+        Intent intent = new Intent(this, OnlyFriendsView.class);
+        intent.putExtras(b);
+        startActivity(intent);
+
     }
 
+    /**
+     * For when Activity is called, from CreateNewMeeting
+     */
     private void finishSelection() {
-
         ArrayList<Information> selectionfriends = new ArrayList<>();
         ArrayList<Information> selectiongroups = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
@@ -131,8 +126,6 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 selectiongroups.add(groups.get(i));
             }
         }
-
-
         Bundle bundle = new Bundle();
         bundle.putSerializable("partyList", selectionfriends);
         bundle.putSerializable("groupList", selectiongroups);
@@ -142,8 +135,10 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         finish();
     }
 
+    /**
+     * Creates new Group from Friendselection
+     */
     private void createGroup() {
-
         ArrayList<Information> selection = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
@@ -157,15 +152,6 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         startActivityForResult(intent, 1);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            textView_selected_count.setVisibility(View.GONE);
-            decline_selection.setVisibility(View.GONE);
-            newGroupMode = false;
-        }
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -177,16 +163,20 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         return super.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * Refreshes friends and groups on swipe down
+     */
     @Override
     public void onRefresh() {
         friendsListFragment.updateFriendsList();
         groupsListFragment.updateGroupList();
-        textView_selected_count.setVisibility(View.GONE);
-        decline_selection.setVisibility(View.GONE);
     }
 
-
+    /**
+     * Exits actionMode, when Grouppage is selected.
+     *
+     * @param position friends = 1, groups = 2
+     */
     @Override
     public void onPageSelected(int position) {
         if (position == 1 && actionMode != null && !addToMeetingMode) {
@@ -197,10 +187,21 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
     }
 
+    /**
+     * Help function, for stopping loadinganimation, when updateUI from FriendslistFragment is finished
+     *
+     * @param bool false = stop loading; true = continue loading
+     */
     public void setSwipeRefreshLayout(boolean bool) {
         swipeRefreshLayout.setRefreshing(bool);
     }
 
+    /**
+     * Clicklistener Interface Method. Gets called, when a friendcard is clicked
+     *
+     * @param position  position of clicked Item
+     * @param fromGroup origin of methodCall. true: GroupAdapter.java; false: FriendsAdapter
+     */
     @Override
     public void onItemClicked(int position, Boolean fromGroup) {
         if (!fromGroup) {
@@ -214,19 +215,32 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         }
     }
 
+    /**
+     * Clicklistener Interface Method. Gets called, when a friendcard is long clicked. Starts selectionMode (actionmode), when a confirmed friend is clicked.
+     *
+     * @param position  position of clicked Item
+     * @param fromGroup origin of methodCall. true: GroupAdapter.java; false: FriendsAdapter
+     * @return
+     */
     @Override
     public boolean onItemLongClicked(int position, Boolean fromGroup) {
         if (actionMode == null && Integer.valueOf(friends.get(position).confirmed) == 1) {
-            int i=0;
-            while(Integer.valueOf(friends.get(i).confirmed)==0){
+            int i = 0;
+            while (Integer.valueOf(friends.get(i).confirmed) == 0) {
                 i++;
             }
-            adapterReference.removeRange(0,i);
+            adapterReference.removeRange(0, i);
             actionMode = startSupportActionMode(actionModeCallBack);
         }
         return false;
     }
 
+    /**
+     * Handles the Itemselection. Updates count and colors the card.
+     *
+     * @param position  position of clicked Item
+     * @param fromGroup origin of methodCall. true: GroupAdapter.java; false: FriendsAdapter
+     */
     private void toggleSelection(int position, Boolean fromGroup) {
         if (!fromGroup) adapterReference.toggleSelection(position);
         else adapterReferenceGroup.toggleSelection(position);
@@ -239,20 +253,34 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         }
     }
 
+    /**
+     * This method is for setting the friend references. It gets called from Friendslistfragment with getActivity()
+     *
+     * @param friends             data of Friends
+     * @param friendsListFragment Reference to friendsListFragment
+     * @param adapter             Reference to FriendsListAdapter
+     */
     public void setReferencesFriends(ArrayList<Information> friends, FriendsListFragment friendsListFragment, FriendsListAdapter adapter) {
         this.adapterReference = adapter;
         adapterReference.setClicklistener(this);
         this.friendsListFragment = friendsListFragment;
         this.friends = friends;
-        if(addToMeetingMode){
-            int i=0;
-            while(Integer.valueOf(friends.get(i).confirmed)==0){
+        if (addToMeetingMode) {
+            int i = 0;
+            while (Integer.valueOf(friends.get(i).confirmed) == 0) {
                 i++;
             }
-            adapter.removeRange(0,i);
+            adapter.removeRange(0, i);
         }
     }
 
+    /**
+     * This method is for setting the friend references. It gets called from Friendslistfragment with getActivity()
+     *
+     * @param groups             data of groups
+     * @param groupsListFragment Reference to groupListFragment
+     * @param adapter            Reference to GroupListAdapter
+     */
     public void setReferencesGroups(ArrayList<Information> groups, GroupsListFragment groupsListFragment, GroupListAdapter adapter) {
         this.adapterReferenceGroup = adapter;
         this.adapterReferenceGroup.setSelectionMode(addToMeetingMode);
@@ -261,9 +289,19 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         this.groupsListFragment = groupsListFragment;
     }
 
-
+    /**
+     * Is creating an contextual Actionbar.
+     */
     private class ActionModeCallBack implements android.support.v7.view.ActionMode.Callback {
 
+        /**
+         * Called when action mode is first created.
+         * inflates menu layout inside contextual actionbar
+         *
+         * @param mode
+         * @param menu
+         * @return
+         */
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
@@ -275,6 +313,13 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
             return false;
         }
 
+        /**
+         * Called to report a user click on an action button.
+         *
+         * @param mode
+         * @param item clicked Button
+         * @return
+         */
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
@@ -291,6 +336,11 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
             }
         }
 
+        /**
+         * Called when an action mode is about to be exited and destroyed.
+         *
+         * @param mode
+         */
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             if (addToMeetingMode) {
@@ -301,7 +351,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         }
     }
 
-//Unused Override Methods
+    //Unused Override Methods
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

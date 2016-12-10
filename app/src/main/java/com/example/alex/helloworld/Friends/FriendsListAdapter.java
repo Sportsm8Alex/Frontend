@@ -40,7 +40,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     private OnlyFriendsView searchNewFriends;
     private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
     private int count = 0;
-
+    //Instance of clickListener for handling clickevents through Friends.java
     private ClickListener clickListener;
 
 
@@ -50,6 +50,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         this.context = context;
         this.data = data;
         this.backup = data;
+        //Is for when, adapter is used for searching new Friends
         this.addFriendMode = addFriendMode;
         inflater = LayoutInflater.from(context);
 
@@ -64,8 +65,11 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        //sets Background light blue, when card is selected
         holder.relativeLayoutCardview.setBackgroundColor(isSelected(position) ? ContextCompat.getColor(context, R.color.lightblue) : ContextCompat.getColor(context, R.color.cardview_light_background));
+        //shows imagebutton, when used inside search new Friends view
         holder.addToFriends.setVisibility(addFriendMode ? View.VISIBLE:View.GONE);
+        //shows friendsrequestbar, for unconfirmed Friends
         holder.friendsrequest.setVisibility(Integer.valueOf(data.get(position).confirmed) == 0&&!addFriendMode? View.VISIBLE : View.GONE);
 
         //Loads profile Picture with Ion Library in an AsyncTask
@@ -93,7 +97,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         data.remove(position);
         notifyItemRemoved(position);
     }
-
+    //removes cards. Used for removing unconfirmed friends while selecting friends
     public void removeRange(int positionStart, int itemCount) {
         for (int i = 0; i < itemCount; ++i) {
             data.remove(positionStart);
@@ -105,7 +109,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     public int getItemCount() {
         return data.size();
     }
-
+    //called by setRefeernceMethod in Friends.java to connect Clicklistener
     public void setClicklistener(Friends clicklistener) {
         this.clickListener = clicklistener;
     }
@@ -142,6 +146,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
             accept.setOnClickListener(this);
             addToFriends.setOnClickListener(this);
             decline.setOnClickListener(this);
+            //attaching OnitemClicklistener to every Card
             this.listener = listener;
 
 
@@ -171,7 +176,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
                     break;
-                case R.id.cardview_friends:
+                case R.id.cardview_friends:  //OnItemClickEvent calls Interface method to handle click inside Friends.java
                     if (listener != null) {
                         listener.onItemClicked(getAdapterPosition(), false);
                     }
@@ -183,7 +188,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         @Override
         public boolean onLongClick(View view) {
             if (listener != null) {
-                return listener.onItemLongClicked(getAdapterPosition(), false);
+                return listener.onItemLongClicked(getAdapterPosition(), false); //Calls Interfacemethod to handle click inside Friends.java
             }
             return false;
         }

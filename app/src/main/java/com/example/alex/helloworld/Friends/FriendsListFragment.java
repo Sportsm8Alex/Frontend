@@ -69,8 +69,11 @@ public class FriendsListFragment extends Fragment implements UIthread {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
+
+        //Method to set all connections between Friends,Friendslistfragment, Friendslistadapter and Clicklistener
         activity.setReferencesFriends(friends,this,adapter);
         adapter.notifyDataSetChanged();
+        //stops loading animation
         activity.setSwipeRefreshLayout(false);
 
     }
