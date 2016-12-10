@@ -5,20 +5,21 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
-
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
-
 import java.util.ArrayList;
 
 public class FriendsListFragment extends Fragment implements UIthread {
@@ -29,17 +30,15 @@ public class FriendsListFragment extends Fragment implements UIthread {
     private Boolean selectionMode;
     private Friends activity;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         //Declaration Variables
         friends = new ArrayList<>();
         activity = (Friends) getActivity();
-        selectionMode = activity.getAddToMeetingMode();
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
-
-        activity.setReferenceFriendsList(this);
         updateUI("");
         return view;
     }
@@ -50,27 +49,6 @@ public class FriendsListFragment extends Fragment implements UIthread {
         String[] params = {"IndexFriendship.php", "function", "getFriends", "email", email};
         Database db = new Database(this, getContext());
         db.execute(params);
-    }
-
-    public void toggle(int pos) {
-        friends.get(pos).selected ^= true;
-        activity.setDataFriends(friends);
-    }
-
-    public void activateGroupSelectionMode(Boolean bool, int count){
-        activity.activateGroupSelectionMode(bool,count);
-    }
-
-    public void updateCount(int count) {
-        activity.updateCount(count);
-    }
-
-    public void removeSelection() {
-        for(int i =0;i<friends.size();i++){
-            friends.get(i).selected=false;
-        }
-        adapter.resetData(friends);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -87,14 +65,16 @@ public class FriendsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new FriendsListAdapter(getContext(), friends, this, null, selectionMode, false);
+        adapter = new FriendsListAdapter(getContext(), null, friends,false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Friends activity = (Friends) getActivity();
-        activity.setDataFriends(friends);
+        activity.setReferencesFriends(friends,this,adapter);
         adapter.notifyDataSetChanged();
         activity.setSwipeRefreshLayout(false);
+
     }
+
 
 
 

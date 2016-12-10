@@ -1,5 +1,6 @@
 package com.example.alex.helloworld.Friends;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
@@ -25,9 +26,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> {
+public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyViewHolder> {
 
 
     private final static int FADE_DURATION = 500;
@@ -39,53 +41,32 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
     private int count = 0;
 
+    private ClickListener clickListener;
 
-    public FriendsListAdapter(Context context, ArrayList<Information> data, FriendsListFragment friendsListFragment, OnlyFriendsView searchNewFriends, Boolean addToMeetingMode, Boolean newFriendsMode) {
+
+    public FriendsListAdapter(Context context, ClickListener clickListener, ArrayList<Information> data, Boolean addFriendMode) {
+        super();
+        this.clickListener = clickListener;
         this.context = context;
         this.data = data;
         this.backup = data;
-        this.friendsListFragment = friendsListFragment;
-        this.searchNewFriends = searchNewFriends;
-        this.addToMeetingMode = addToMeetingMode;
-        this.addFriendMode = newFriendsMode;
+        this.addFriendMode = addFriendMode;
         inflater = LayoutInflater.from(context);
 
-    }
-
-    public void setDataBackup() {
-        data = backup;
-        notifyDataSetChanged();
-    }
-
-    public void resetData(ArrayList<Information> data) {
-        this.data = data;
-        addToMeetingMode = false;
-        count = 0;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_friends_view, parent, false);
-        return new MyViewHolder(view, context);
+        return new MyViewHolder(view, context, clickListener);
     }
 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
-        if (data.get(position).selected) {
-            holder.relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-            holder.itemView.setSelected(true);
-        } else if (!data.get(position).selected) {
-            holder.relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-            holder.itemView.setSelected(false);
-        }
-        if (Integer.valueOf(data.get(position).confirmed) == 0 && !addFriendMode) {
-            holder.friendsrequest.setVisibility(View.VISIBLE);
-        } else {
-            holder.friendsrequest.setVisibility(View.GONE);
-        }
-
+        holder.relativeLayoutCardview.setBackgroundColor(isSelected(position) ? ContextCompat.getColor(context, R.color.lightblue) : ContextCompat.getColor(context, R.color.cardview_light_background));
+        holder.addToFriends.setVisibility(addFriendMode ? View.VISIBLE:View.GONE);
+        holder.friendsrequest.setVisibility(Integer.valueOf(data.get(position).confirmed) == 0&&!addFriendMode? View.VISIBLE : View.GONE);
 
         //Loads profile Picture with Ion Library in an AsyncTask
         Picasso.with(context)
@@ -94,22 +75,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                 .error(R.drawable.dickbutt)
                 // .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
                 .into(holder.profileP);
-       /*  Ion.with(context)
-                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath)
-                .noCache()
-                .withBitmap()
-                .placeholder(R.drawable.dickbutt)
-                .error(R.drawable.dickbutt)
-                .intoImageView(holder.profileP);
 
-
-        Ion.with(holder.profileP)
-                .placeholder(R.drawable.dickbutt)
-                .error(R.drawable.dickbutt)
-                .load("http://sportsm8.bplaced.net" + data.get(position).PPpath);*/
         holder.username.setText(data.get(position).username);
         holder.email.setText(data.get(position).email);
-        setScaleAnimation(holder.itemView);
+        // setScaleAnimation(holder.itemView);
 
     }
 
@@ -120,9 +89,25 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     }
 
+    public void removeItem(int position) {
+        data.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void removeRange(int positionStart, int itemCount) {
+        for (int i = 0; i < itemCount; ++i) {
+            data.remove(positionStart);
+        }
+        notifyItemRangeRemoved(positionStart, itemCount);
+    }
+
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void setClicklistener(Friends clicklistener) {
+        this.clickListener = clicklistener;
     }
 
 
@@ -132,17 +117,20 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         ImageView profileP;
         CardView cardView;
         Context contxt;
-        ImageButton accept, decline;
+        ImageButton accept, decline, addToFriends;
         LinearLayout friendsrequest;
         RelativeLayout relativeLayoutCardview;
 
+        ClickListener listener;
 
-        public MyViewHolder(final View itemView, Context ctx) {
+
+        public MyViewHolder(final View itemView, Context ctx, ClickListener listener) {
             super(itemView);
             this.contxt = ctx;
             friendsrequest = (LinearLayout) itemView.findViewById(R.id.linearL_friendsrequest);
             accept = (ImageButton) itemView.findViewById(R.id.accept_friendship);
             decline = (ImageButton) itemView.findViewById(R.id.decline_friendship);
+            addToFriends = (ImageButton) itemView.findViewById(R.id.add_to_friends);
             cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture3);
             username = (TextView) itemView.findViewById(R.id.username_text);
@@ -152,7 +140,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
             accept.setOnClickListener(this);
+            addToFriends.setOnClickListener(this);
             decline.setOnClickListener(this);
+            this.listener = listener;
 
 
         }
@@ -162,50 +152,29 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             Database db = new Database(this, context);
             SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             String emailString = sharedPrefs.getString("email", "");
+            String[] params;
             switch (view.getId()) {
-                case R.id.cardview_friends:
-                    if (!addFriendMode) {
-                        if ((addToMeetingMode || creatGroupMode) && Integer.valueOf(data.get(getAdapterPosition()).confirmed) == 1) {
-                            if (!view.isSelected()) {
-                                count++;
-                                relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                                view.setSelected(true);
-                            } else if (view.isSelected()) {
-                                relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                                view.setSelected(false);
-                                count--;
-
-                            }
-                            if (searchNewFriends == null) {
-                                friendsListFragment.toggle(getAdapterPosition());
-                                friendsListFragment.updateCount(count);
-                                if(count==0){
-                                    creatGroupMode=false;
-                                    friendsListFragment.activateGroupSelectionMode(false,count);
-                                }
-                            } else {
-                                searchNewFriends.toggle(getAdapterPosition());
-                            }
-
-
-                        }
-                    } else {
-                        String friendemail = searchNewFriends.getEmail(getAdapterPosition());
-                        String[] params = {"IndexFriendship.php", "function", "setFriend", "email", emailString, "friendemail", friendemail};
-                        db.execute(params);
-                        searchNewFriends.finish();
-                    }
-                    break;
                 case R.id.accept_friendship:
-                    String[] params = {"IndexFriendship.php", "function", "confirmFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params);
                     friendsrequest.setVisibility(View.GONE);
+                    params = new String[]{"IndexFriendship.php", "function", "confirmFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
                     break;
                 case R.id.decline_friendship:
-                    String[] params2 = {"IndexFriendship.php", "function", "deleteFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params2);
+                    params = new String[]{"IndexFriendship.php", "function", "deleteFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
+                    break;
+                case R.id.add_to_friends:
+                    params = new String[]{"IndexFriendship.php", "function", "setFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    break;
+                case R.id.cardview_friends:
+                    if (listener != null) {
+                        listener.onItemClicked(getAdapterPosition(), false);
+                    }
                     break;
             }
         }
@@ -213,21 +182,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public boolean onLongClick(View view) {
-
-            if (!addFriendMode && !addToMeetingMode && Integer.valueOf(data.get(getAdapterPosition()).confirmed) == 1) { //No LongClick Action while adding new Friends or CreatingGroups
-                creatGroupMode = true;
-                friendsListFragment.toggle(getAdapterPosition());
-                if (!view.isSelected()) {
-                    count++;
-                    relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.lightblue));
-                    view.setSelected(true);
-                } else if (view.isSelected()) {
-                    relativeLayoutCardview.setBackgroundColor(ContextCompat.getColor(context, R.color.cardview_light_background));
-                    view.setSelected(false);
-                    count--;
-                }
-                friendsListFragment.activateGroupSelectionMode(true, count);
-                return true;
+            if (listener != null) {
+                return listener.onItemLongClicked(getAdapterPosition(), false);
             }
             return false;
         }
@@ -241,6 +197,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         public void updateUI(String answer) {
 
         }
+
     }
 
 
