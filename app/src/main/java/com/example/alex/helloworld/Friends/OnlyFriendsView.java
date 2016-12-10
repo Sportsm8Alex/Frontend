@@ -3,15 +3,21 @@ package com.example.alex.helloworld.Friends;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -28,18 +34,24 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class OnlyFriendsView extends AppCompatActivity implements UIthread, SearchView.OnQueryTextListener {
+import static android.support.design.R.styleable.ActionMode;
+
+public class OnlyFriendsView extends AppCompatActivity implements UIthread, SearchView.OnQueryTextListener, ClickListener {
 
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
     private ArrayList<Information> friends;
     private Boolean search = false;
 
+    private Toolbar toolbar;
+    private ActionMode actionMode;
+    private OnlyFriendsView.ActionModeCallBack actionModeCallBack = new OnlyFriendsView.ActionModeCallBack();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_new_friends);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Bundle b = getIntent().getExtras();
         search = b.getBoolean("search");
@@ -49,13 +61,14 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         searchView.setIconified(false);
         recyclerView = (RecyclerView) findViewById(R.id.add_new_friend_recyclerview);
         friends = new ArrayList<>();
-        adapter = new FriendsListAdapter(getBaseContext(), friends, null, this, false, true);
+        adapter = new FriendsListAdapter(getBaseContext(), null, friends, true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
 
         if (!search) {
             searchView.setVisibility(View.GONE);
             addMembers.setVisibility(View.VISIBLE);
+            actionMode = startSupportActionMode(actionModeCallBack);
             getFriends();
         }
     }
@@ -83,11 +96,9 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         Database db = new Database(this, getBaseContext());
         db.execute(params);
         updateUI();
-
-
     }
 
-    private void getFriends(){
+    private void getFriends() {
         SharedPreferences sharedPrefs = getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexFriendshipgetFriendsJSON", "");
         try {
@@ -96,13 +107,13 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
             e.printStackTrace();
         }
         Iterator<Information> itr = friends.iterator();
-        while(itr.hasNext()){
+        while (itr.hasNext()) {
             Information info = itr.next();
-            if(Integer.valueOf(info.getConfirmed())==0){
+            if (Integer.valueOf(info.getConfirmed()) == 0) {
                 itr.remove();
             }
         }
-        adapter = new FriendsListAdapter(getBaseContext(), friends, null, this, true, false);
+        adapter = new FriendsListAdapter(getBaseContext(), this, friends, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
     }
@@ -122,13 +133,9 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
             e.printStackTrace();
         }
 
-        adapter = new FriendsListAdapter(getBaseContext(), friends, null, this, false, true);
+        adapter = new FriendsListAdapter(getBaseContext(), this, friends, true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-    }
-
-    public String getEmail(int adapterPosition) {
-        return friends.get(adapterPosition).email;
     }
 
     @Override
@@ -142,9 +149,68 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         return false;
     }
 
-    public void toggle(int adapterPosition) {
-        friends.get(adapterPosition).selected^=true;
+
+    @Override
+    public void onItemClicked(int position, Boolean fromGroup) {
+        friends.get(position).selected ^= true;
+        toggleSelection(position, false);
     }
 
+    private void toggleSelection(int position, Boolean fromGroup) {
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+        actionMode.setTitle(String.valueOf(count));
+        actionMode.invalidate();
+    }
+
+
+    private class ActionModeCallBack implements android.support.v7.view.ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(android.support.v7.view.ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_add:
+                    ArrayList<Information> selectionfriends = new ArrayList<>();
+                    for (int i = 0; i < friends.size(); i++) {
+                        if (friends.get(i).selected) {
+                            selectionfriends.add(friends.get(i));
+                        }
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("partyList", selectionfriends);
+                    Intent intent = new Intent();
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            finish();
+        }
+
+
+    }
+
+
+    @Override
+    public boolean onItemLongClicked(int position, Boolean fromGroup) {
+        return false;
+    }
 
 }

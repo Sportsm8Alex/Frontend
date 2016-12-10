@@ -36,19 +36,11 @@ public class GroupsListFragment extends Fragment implements UIthread {
         //variables
         groups = new ArrayList<>();
         activity = (Friends) getActivity();
-        selectionMode=activity.getAddToMeetingMode();
-
-        activity.setReferenceGroupList(this);
-        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
+        adapter = new GroupListAdapter(getContext(),null,groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         updateUI("");
         return view;
-    }
-
-    public void toggle(int pos) {
-        groups.get(pos).selected ^= true;
-        activity.setDataGroups(groups);
     }
 
     public void updateGroupList() {
@@ -73,10 +65,11 @@ public class GroupsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new GroupListAdapter(getContext(), groups,this,selectionMode);
+        adapter = new GroupListAdapter(getContext(),null,groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
+        activity.setReferencesGroups(groups,this,adapter);
         activity.setSwipeRefreshLayout(false);
     }
 }
