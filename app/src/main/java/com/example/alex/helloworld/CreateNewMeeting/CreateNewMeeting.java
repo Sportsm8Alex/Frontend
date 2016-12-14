@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
@@ -207,7 +208,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
     public void addPartiMembersButton(View view) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SelectionMode", true);
-        Intent intent = new Intent(this, Friends.class);
+        Intent intent = new Intent(this, OnlyFriendsView.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
@@ -257,7 +258,9 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
 
             }
         }
-        mergeGroupsAndFriends();
+        TextView textView = (TextView) findViewById(R.id.number_added);
+        textView.setText(Selection.size() + " Teilnehmer");
+        //mergeGroupsAndFriends();
     }
 
     @Override

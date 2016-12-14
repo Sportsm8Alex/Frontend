@@ -24,9 +24,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
 import com.example.alex.helloworld.CreateNewMeeting.Sport;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
 import com.example.alex.helloworld.Z_Unused_Inactive.Invites;
 import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.activities.AccountPage;
@@ -44,6 +46,8 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    private ImageButton imageButtonToolbar;
+
     int i = 0;
 
     @Override
@@ -52,6 +56,7 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+        imageButtonToolbar = (ImageButton) findViewById(R.id.image_button_toolbar);
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +71,7 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
         //buttons();
         fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment  = new SportFragment();
+        fragment = new SportFragment();
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
@@ -75,22 +80,24 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                 findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener(){
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Intent intent;
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             //not correct way to do
                             // don't start new activities
                             case R.id.bottom_navigation_sports:
                                 fragment = new SportFragment();
+                                imageButtonToolbar.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_calender:
                                 fragment = new CalenderFragment();
-
+                                imageButtonToolbar.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_friends:
                                 fragment = new FriendFragment();
+                                imageButtonToolbar.setVisibility(View.VISIBLE);
                                 break;
                         }
                         final FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -138,7 +145,14 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                 Button btn = (Button) findViewById(R.id.email_changer);
                 btn.setText(array[i]);
                 i++;
-                i = i%7;
+                i = i % 7;
+                break;
+            case R.id.image_button_toolbar:
+                Bundle b = new Bundle();
+                b.putBoolean("search", true);
+                intent = new Intent(this, OnlyFriendsView.class);
+                intent.putExtras(b);
+                startActivity(intent);
                 break;
             default:
                 finish();
