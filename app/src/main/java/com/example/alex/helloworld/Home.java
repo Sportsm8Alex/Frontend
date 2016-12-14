@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -88,15 +90,26 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                             // don't start new activities
                             case R.id.bottom_navigation_sports:
                                 fragment = new SportFragment();
-                                imageButtonToolbar.setVisibility(View.GONE);
+                                imageButtonToolbar.animate()
+                                        .scaleX(0)
+                                        .scaleY(0)
+                                        .alpha(0.0f);
+                                AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+                                appBarLayout.setExpanded(true);
                                 break;
                             case R.id.bottom_navigation_calender:
                                 fragment = new CalenderFragment();
-                                imageButtonToolbar.setVisibility(View.GONE);
+                                imageButtonToolbar.animate()
+                                        .scaleX(0)
+                                        .scaleY(0)
+                                        .alpha(0.0f);
                                 break;
                             case R.id.bottom_navigation_friends:
                                 fragment = new FriendFragment();
-                                imageButtonToolbar.setVisibility(View.VISIBLE);
+                                imageButtonToolbar.animate()
+                                        .scaleX(1)
+                                        .scaleY(1)
+                                        .alpha(1.0f);
                                 break;
                         }
                         final FragmentTransaction transaction = fragmentManager.beginTransaction();

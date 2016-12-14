@@ -37,9 +37,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:background="@color/transparent"
+                        android:alpha="0"
                         android:onClick="onClick"
-                        android:src="@drawable/ic_person_add_white_24dp"
-                        android:visibility="gone" />
+                        android:src="@drawable/ic_person_add_white_24dp"/>
 
                 </RelativeLayout>
 
@@ -47,11 +47,10 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:elevation="4dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -60,11 +59,10 @@
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:itemBackground="@color/colorPrimary"
+            app:itemBackground="@color/darkgrey"
             app:itemIconTint="@drawable/bottom_navigation_selector"
             app:itemTextColor="@drawable/bottom_navigation_selector"
-            app:layout_anchorGravity="bottom"
-            app:layout_anchor="@id/fragment_container"
+            android:layout_gravity="bottom"
             app:menu="@menu/bottom_navigation_main" />
 
     </android.support.design.widget.CoordinatorLayout>
@@ -74,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
 
