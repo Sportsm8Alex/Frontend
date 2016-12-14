@@ -78,7 +78,6 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
         //bottom navigation
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
