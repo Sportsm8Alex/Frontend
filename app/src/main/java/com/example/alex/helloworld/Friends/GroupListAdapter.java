@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
+import com.example.alex.helloworld.FriendFragment;
 import com.example.alex.helloworld.GroupDetailView;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.MeetingDetailView;
@@ -72,7 +73,7 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
         return data.size();
     }
 
-    public void setClickListener(Friends clickListener) {
+    public void setClickListener(FriendFragment clickListener) {
         this.clickListener = clickListener;
     }
 

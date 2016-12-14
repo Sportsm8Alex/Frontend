@@ -31,7 +31,6 @@
         <item>Tricking</item>
 
 
-
     </string-array>
 
     <string-array name="emails">
@@ -97,4 +96,7 @@
     <string name="text_selected">"%d ausgewählt"</string>
     <string name="friendRequest">Freundschaftsanfrage</string>
     <string name="create_meeting">Create Meeting</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

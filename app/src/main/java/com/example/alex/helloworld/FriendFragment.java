@@ -1,30 +1,53 @@
-package com.example.alex.helloworld.Friends;
+package com.example.alex.helloworld;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.alex.helloworld.GroupDetailView;
-import com.example.alex.helloworld.Information;
-import com.example.alex.helloworld.R;
+import com.example.alex.helloworld.Friends.ClickListener;
+import com.example.alex.helloworld.Friends.CreateGroup;
+import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.Friends.FriendsListAdapter;
+import com.example.alex.helloworld.Friends.FriendsListFragment;
+import com.example.alex.helloworld.Friends.GroupListAdapter;
+import com.example.alex.helloworld.Friends.GroupsListFragment;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
+import com.example.alex.helloworld.Friends.ViewPagerAdapter;
 import com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout;
 
 import java.util.ArrayList;
 
-//Implements ClickListenerInterface
-public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
+import static android.app.Activity.RESULT_OK;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link FriendFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link FriendFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
+    Activity parentActivity;
     private ArrayList<Information> friends, groups;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
@@ -45,55 +68,122 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     //Actionmode
     private ActionMode actionMode;
     //private Class ActionModeCallBack is for handling action for selected Items
-    private Friends.ActionModeCallBack actionModeCallBack = new Friends.ActionModeCallBack();
+
+    private FriendFragment.ActionModeCallBack actionModeCallBack = new FriendFragment.ActionModeCallBack();
     private FriendsListAdapter adapterReference;
     private GroupListAdapter adapterReferenceGroup;
 
+
+    private OnFragmentInteractionListener mListener;
+
+    public FriendFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+
+     * @return A new instance of fragment FriendFragment.
+     */public static FriendFragment newInstance() {
+        FriendFragment fragment = new FriendFragment();
+
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        parentActivity = getActivity();
 
         //Declarations Variables
-        Bundle bundle = getIntent().getExtras();
+        //TODO: bundle is null (throws error)
+        Bundle bundle = parentActivity.getIntent().getExtras();
+        //throws error
         addToMeetingMode = bundle.getBoolean("SelectionMode");
         if (addToMeetingMode) {
-            actionMode = startSupportActionMode(actionModeCallBack);
+            actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
         }
-
         friends = new ArrayList<>();
         groups = new ArrayList<>();
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_friend, container, false);
         //Declarations Views
-        page_button = (ImageButton) findViewById(R.id.add_new_friend);
-        textView_selected_count = (TextView) findViewById(R.id.selected_friends_number);
-        decline_selection = (ImageButton) findViewById(R.id.discard_selection_button);
-        pager = (ViewPager) findViewById(R.id.pager);
-        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.friends_refresh);
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        ((AppCompatActivity)parentActivity).setSupportActionBar(toolbar);
+
+        page_button = (ImageButton) rootView.findViewById(R.id.add_new_friend);
+        textView_selected_count = (TextView) rootView.findViewById(R.id.selected_friends_number);
+        decline_selection = (ImageButton) rootView.findViewById(R.id.discard_selection_button);
+        pager = (ViewPager) rootView.findViewById(R.id.pager);
+        tabs = (SlidingTabLayout) rootView.findViewById(R.id.tabs);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.friends_refresh);
         //Hiding Keyboard on Startup
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        parentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         //Setting OnRefreshListener
         swipeRefreshLayout.setOnRefreshListener(this);
+
         //Setting up ViewPager
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumOfTabs);
+        viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), Titles, NumOfTabs);
         pager.addOnPageChangeListener(this);
         pager.setAdapter(viewPagerAdapter);
         tabs.setDistributeEvenly(true);
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
-                return ContextCompat.getColor(getBaseContext(), R.color.colorAccent);
+                return ContextCompat.getColor(parentActivity.getBaseContext(), R.color.colorAccent);
             }
         });
         tabs.setViewPager(pager);
         page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
+
+        return rootView;
+    }
+
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 
     /**
@@ -104,7 +194,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     public void onClick(View view) {
         Bundle b = new Bundle();
         b.putBoolean("search", true);
-        Intent intent = new Intent(this, OnlyFriendsView.class);
+        Intent intent = new Intent(parentActivity, OnlyFriendsView.class);
         intent.putExtras(b);
         startActivity(intent);
 
@@ -131,8 +221,8 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         bundle.putSerializable("groupList", selectiongroups);
         Intent intent = new Intent();
         intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
-        finish();
+        parentActivity.setResult(RESULT_OK, intent);
+        parentActivity.finish();
     }
 
     /**
@@ -147,11 +237,11 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("GroupList", selection);
-        Intent intent = new Intent(this, CreateGroup.class);
+        // change this
+        Intent intent = new Intent(parentActivity, CreateGroup.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -163,9 +253,6 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Refreshes friends and groups on swipe down
-     */
     @Override
     public void onRefresh() {
         friendsListFragment.updateFriendsList();
@@ -230,7 +317,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 i++;
             }
             adapterReference.removeRange(0, i);
-            actionMode = startSupportActionMode(actionModeCallBack);
+            actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
         }
         return false;
     }
@@ -262,8 +349,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
      */
     public void setReferencesFriends(ArrayList<Information> friends, FriendsListFragment friendsListFragment, FriendsListAdapter adapter) {
         this.adapterReference = adapter;
-        //throws error
-        //adapterReference.setClicklistener(this);
+        adapterReference.setClicklistener(this);
         this.friendsListFragment = friendsListFragment;
         this.friends = friends;
         if (addToMeetingMode) {
@@ -285,8 +371,8 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
     public void setReferencesGroups(ArrayList<Information> groups, GroupsListFragment groupsListFragment, GroupListAdapter adapter) {
         this.adapterReferenceGroup = adapter;
         this.adapterReferenceGroup.setSelectionMode(addToMeetingMode);
-        //throws error
-        //this.adapterReferenceGroup.setClickListener(this);
+
+        this.adapterReferenceGroup.setClickListener(this);
         this.groups = groups;
         this.groupsListFragment = groupsListFragment;
     }
@@ -346,7 +432,7 @@ public class Friends extends AppCompatActivity implements SwipeRefreshLayout.OnR
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             if (addToMeetingMode) {
-                finish();
+                parentActivity.finish();
             }
             adapterReference.clearSelection();
             actionMode = null;

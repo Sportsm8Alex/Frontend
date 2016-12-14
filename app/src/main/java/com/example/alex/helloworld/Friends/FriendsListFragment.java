@@ -36,6 +36,7 @@ public class FriendsListFragment extends Fragment implements UIthread {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         //Declaration Variables
         friends = new ArrayList<>();
+        //
         activity = (Friends) getActivity();
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
