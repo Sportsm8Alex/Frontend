@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
  */
 public class CalenderFragment extends Fragment implements UIthread{
 
-    SlidingTabLayout slidingTabLayout;
+    TabLayout slidingTabLayout;
     Activity parentActivity;
     private CharSequence Titles[] = {"Mo", "Di", "We", "Do", "Fr", "Sa", "So"};
 
@@ -72,20 +73,14 @@ public class CalenderFragment extends Fragment implements UIthread{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_calender, container, false);
-        slidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.tabLayout);
-        slidingTabLayout.setDistributeEvenly(true);
-        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return ContextCompat.getColor(parentActivity.getBaseContext(), R.color.colorAccent);
-            }
-        });
+        slidingTabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
+
 
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         //changed this method
         viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(),7));
 
-        slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setupWithViewPager(viewPager);
 
         SharedPreferences sharedPrefs = parentActivity.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
@@ -123,7 +118,7 @@ public class CalenderFragment extends Fragment implements UIthread{
     public void updateUI() {
         ViewPager viewPager = (ViewPager) parentActivity.findViewById(R.id.viewPager);
         viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
-        slidingTabLayout.setViewPager(viewPager);
+        slidingTabLayout.setupWithViewPager(viewPager);
 
         // needs to be adapted to keep current db info if refreshing not possible (no overwriting of sharedPreferences if no connection)
 

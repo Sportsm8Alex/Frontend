@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -54,10 +56,10 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView textView_selected_count;
     private ImageButton decline_selection, page_button;
-    private Boolean addToMeetingMode, newGroupMode = false;
+    private Boolean addToMeetingMode = false, newGroupMode = false;
     private ViewPager pager;
     private ViewPagerAdapter viewPagerAdapter;
-    private SlidingTabLayout tabs;
+    private TabLayout tabs;
     private CharSequence Titles[] = {"Friends", "Groups"};
     private int NumOfTabs = 2;
 
@@ -83,9 +85,10 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-
+     *
      * @return A new instance of fragment FriendFragment.
-     */public static FriendFragment newInstance() {
+     */
+    public static FriendFragment newInstance() {
         FriendFragment fragment = new FriendFragment();
 
         return fragment;
@@ -100,7 +103,7 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
         //TODO: bundle is null (throws error)
         Bundle bundle = parentActivity.getIntent().getExtras();
         //throws error
-        addToMeetingMode = bundle.getBoolean("SelectionMode");
+        //addToMeetingMode = bundle.getBoolean("SelectionMode");
         if (addToMeetingMode) {
             actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
         }
@@ -116,13 +119,13 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
         View rootView = inflater.inflate(R.layout.fragment_friend, container, false);
         //Declarations Views
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        ((AppCompatActivity)parentActivity).setSupportActionBar(toolbar);
+        ((AppCompatActivity) parentActivity).setSupportActionBar(toolbar);
 
         page_button = (ImageButton) rootView.findViewById(R.id.add_new_friend);
         textView_selected_count = (TextView) rootView.findViewById(R.id.selected_friends_number);
         decline_selection = (ImageButton) rootView.findViewById(R.id.discard_selection_button);
         pager = (ViewPager) rootView.findViewById(R.id.pager);
-        tabs = (SlidingTabLayout) rootView.findViewById(R.id.tabs);
+        tabs = (TabLayout) rootView.findViewById(R.id.tabs);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.friends_refresh);
         //Hiding Keyboard on Startup
         parentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -133,18 +136,11 @@ public class FriendFragment extends Fragment implements SwipeRefreshLayout.OnRef
         viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), Titles, NumOfTabs);
         pager.addOnPageChangeListener(this);
         pager.setAdapter(viewPagerAdapter);
-        tabs.setDistributeEvenly(true);
-        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return ContextCompat.getColor(parentActivity.getBaseContext(), R.color.colorAccent);
-            }
-        });
-        tabs.setViewPager(pager);
-        page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
+        tabs.setupWithViewPager(pager);
+//        page_button.setImageResource(R.drawable.ic_person_add_white_24dp);
 
-        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
+//        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+//        params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
 
         return rootView;
     }

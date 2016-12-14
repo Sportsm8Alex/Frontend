@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.alex.helloworld.FriendFragment;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
@@ -27,6 +28,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
     private RecyclerView recyclerView;
     private GroupListAdapter adapter;
     private Boolean selectionMode;
+    private FriendFragment friendFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
         recyclerView = (RecyclerView) view.findViewById(R.id.group_recycler_view);
         //variables
         groups = new ArrayList<>();
-        activity = (Friends) getActivity();
+        friendFragment =(FriendFragment) getParentFragment();
         adapter = new GroupListAdapter(getContext(),null,groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -69,7 +71,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
-        activity.setReferencesGroups(groups,this,adapter);
-        activity.setSwipeRefreshLayout(false);
+        friendFragment.setReferencesGroups(groups,this,adapter);
+        friendFragment.setSwipeRefreshLayout(false);
     }
 }
