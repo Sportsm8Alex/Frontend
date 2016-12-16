@@ -95,7 +95,6 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                                         .scaleY(0)
                                         .alpha(0.0f);
                                 AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
-                                findViewById(R.id.spinner2).setVisibility(View.FIND_VIEWS_WITH_TEXT);
                                 appBarLayout.setExpanded(true);
                                 findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
                                 break;
