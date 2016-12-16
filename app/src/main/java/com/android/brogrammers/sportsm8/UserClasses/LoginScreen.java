@@ -60,8 +60,8 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
     }
 
     @Override
-    public void updateUI() {
-        try {
+    public void updateUI(String xyz) {
+        /*try {
             ArrayList<Information> info = Database.jsonToArrayList(dbReturn);
             System.out.println("UPDATING UI");
             if (info.get(0).success == 0) {
@@ -71,7 +71,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
             }
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void login() {
@@ -89,39 +89,71 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
     }
 
     @Override
-    public void updateUI(String successString) {
-        JSONParser parser = new JSONParser();
-        JSONObject json = null;
-        String success = "";
+    public void updateUI() {
+
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
+        String loginJson = sharedPrefs.getString("IndexAccountsloginAccountJSON", "");
+
         try {
-            json = (JSONObject) parser.parse(successString);
-        } catch (ParseException e) {
+            org.json.JSONObject jsonObject = new org.json.JSONObject(loginJson);
+            int success = (int) jsonObject.get("success");
+
+            System.out.println("UPDATING UI");
+            if (success == 1) {
+
+                //save login information locally for session management
+                sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString("email", enteredEmail);
+                editor.apply();
+
+                //start home screen in case of successful login
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                this.finish();
+            }
+            else if (success == 0) {
+                Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
+            }
+        } catch (JSONException e) {
+            Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
-        success = Long.toString((Long) json.get("success"));
-        System.out.println("SUCCESS: " + success);
 
-        if (success.equalsIgnoreCase("1")) {
+            /*
+            IN CASE OF ParseException e
+            } else if (info.get(0).success.equalsIgnoreCase("exception") || info.get(0).success.equalsIgnoreCase("unsuccessful")) {
+                Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
+            }
+            */
 
-            //save login information locally for session management
-            //should the password be saved?
-            SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString("email", enteredEmail);
-            editor.putString("email", "Korbi@korbi.de");
-            // is already clear that success == 1
-            editor.putString("islogin", success);
-            editor.apply();
-
-            //start home screen in case of successful login
-            Intent intent = new Intent(LoginScreen.this, MainActivity.class);
-            startActivity(intent);
-            LoginScreen.this.finish();
-        } else if (success.equalsIgnoreCase("0")) {
-            Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-        } else if (success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")) {
-            Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
-        }
+//        JSONParser parser = new JSONParser();
+//        JSONObject json = null;
+//        String success = "";
+//        try {
+//            json = (JSONObject) parser.parse(loginJson);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        success = Long.toString((Long)json.get("success"));
+//
+//        if (success.equalsIgnoreCase("1")) {
+//
+//            //save login information locally for session management
+//            sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPrefs.edit();
+//            editor.putString("email", enteredEmail);
+//            editor.apply();
+//
+//            //start home screen in case of successful login
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//            this.finish();
+//        } else if (success.equalsIgnoreCase("0")) {
+//            Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
+//        } else if (success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")) {
+//            Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
+//        }
     }
 
     @Override

@@ -118,6 +118,7 @@ public class Database extends AsyncTask<String, String, String>{
         editor.apply();
 
         uiThread.updateUI(success);
+        uiThread.updateUI();
         //int daySelected = 0;
         //uiThread.updateUI();
     }
