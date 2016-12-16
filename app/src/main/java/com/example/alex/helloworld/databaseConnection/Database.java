@@ -31,6 +31,10 @@ import java.util.ArrayList;
  * Contains same fundamental function as DBconnnection; Provides functionality for activities to access database
  * dynamically through the UIthread interface
  */
+
+//#######################
+    //should have static update method that only change sharedPreferences! (Database.updateSharedPrefs)
+//######################
 public class Database extends AsyncTask<String, String, String>{
 
     public static final int CONNECTION_TIMEOUT=5000;
