@@ -33,8 +33,8 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
     private EditText password;
     protected String enteredUsername;
     private String dbReturn;
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
+    public static final int CONNECTION_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 15000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
     }
 
     public void buttonClick(View v) throws ExecutionException, InterruptedException {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.loginButton: {
                 enteredUsername = username.getText().toString();
                 String enteredPassword = password.getText().toString();
@@ -99,12 +99,13 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             }
         }
     }
+
     @Override
-    public void updateUI(){
+    public void updateUI() {
         try {
             ArrayList<Information> info = Database.jsonToArrayList(dbReturn);
             System.out.println("UPDATING UI");
-            if(info.get(0).success == 0){
+            if (info.get(0).success == 0) {
                 Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                 startActivity(intent);
                 LoginScreen.this.finish();
@@ -114,36 +115,36 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
         }
     }
 
-    public void login(){
-            enteredUsername = username.getText().toString();
-            String enteredPassword = password.getText().toString();
+    public void login() {
+        enteredUsername = username.getText().toString();
+        String enteredPassword = password.getText().toString();
 
-            String[] params = {"IndexAccounts.php", "function", "loginAccount", "username", enteredUsername, "password", enteredPassword };
-            Database db = new Database(this, this.getApplicationContext());
-            db.execute(params);
+        String[] params = {"IndexAccounts.php", "function", "loginAccount", "username", enteredUsername, "password", enteredPassword};
+        Database db = new Database(this, this.getApplicationContext());
+        db.execute(params);
     }
 
     @Override
-    public void updateUI(String successString){
+    public void updateUI(String successString) {
         JSONParser parser = new JSONParser();
         JSONObject json = null;
-        String success ="";
+        String success = "";
         try {
             json = (JSONObject) parser.parse(successString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         success = Long.toString((Long) json.get("success"));
-        System.out.println("SUCCESS: "+success);
+        System.out.println("SUCCESS: " + success);
 
-        if(success.equalsIgnoreCase("1")){
+        if (success.equalsIgnoreCase("1")) {
 
-                    //save login information locally for session management
-                    //should the password be saved?
-                    SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+            //save login information locally for session management
+            //should the password be saved?
+            SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putString("username", enteredUsername);
-            editor.putString("email","Korbi@korbi.de");
+            editor.putString("email", "Korbi@korbi.de");
             // is already clear that success == 1
             editor.putString("islogin", success);
             editor.apply();
@@ -152,122 +153,11 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             Intent intent = new Intent(LoginScreen.this, MainActivity.class);
             startActivity(intent);
             LoginScreen.this.finish();
-        }
-        else if(success.equalsIgnoreCase("0")){
+        } else if (success.equalsIgnoreCase("0")) {
             Toast.makeText(LoginScreen.this, "Invalid username or password", Toast.LENGTH_LONG).show();
-        }
-        else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
+        } else if (success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")) {
             Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
         }
     }
 
-
-/**not needed anymore
- *
-    private class AsyncLogin extends AsyncTask<String, String, String>{
-        ProgressDialog progressDialog = new ProgressDialog(LoginScreen.this);
-        HttpURLConnection conn;
-        URL url = null;
-
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            //this method will be running on the UI thread
-            progressDialog.setMessage("\tLoading");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        @Override
-        protected String doInBackground(String... params){
-            try{
-                //"http://10.0.2.2/android_user_api/Backend/index.php"
-                url = new URL("http://sportsm8.bplaced.net:80/MySQLadmin/include/IndexAccounts.php");
-            }
-            catch(MalformedURLException e){
-                e.printStackTrace();
-                System.out.println("URL not found");
-                return "exception";
-            }
-
-            try {
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout((READ_TIMEOUT));
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
-                //setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                //Append parameters so they can be written
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", params[0])
-                        .appendQueryParameter("password", params[1]);
-                String query = builder.build().getEncodedQuery();
-
-                //Open connection for sending data
-
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-            }
-            catch(IOException e1){
-                e1.printStackTrace();
-                System.out.println("URL not found");
-                return "exception";
-            }
-            try{
-                InputStream input = conn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                StringBuilder successString = new StringBuilder();
-                String line;
-                String success ="";
-
-                while ((line = reader.readLine()) != null) {
-                    successString.append(line);
-                    System.out.println(successString.toString());
-                }
-                try {
-                    JSONParser parser = new JSONParser();
-                    JSONObject json = (JSONObject) parser.parse(successString.toString());
-                    success = Long.toString((Long) json.get("success"));
-                    System.out.println("SUCCESS: "+success);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return success;
-            }
-            catch(IOException e2) {
-                e2.printStackTrace();
-                return "exception";
-            }
-            finally{
-                conn.disconnect();
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String success){
-            //this is running on the UI thread
-            progressDialog.dismiss();
-
-            if(success.equalsIgnoreCase("1")){
-                Intent intent = new Intent(LoginScreen.this, MainActivity.class);
-                startActivity(intent);
-                LoginScreen.this.finish();
-
-            }
-            else if(success.equalsIgnoreCase("")){
-                Toast.makeText(LoginScreen.this, "Invalid username or password", Toast.LENGTH_LONG).show();
-
-            }
-            else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
-                Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
-            }
-        }
-    } */
 }
