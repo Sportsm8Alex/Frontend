@@ -120,7 +120,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         ImageView profileP;
         CardView cardView;
         Context contxt;
-        ImageButton accept, decline, addToFriends;
+        ImageButton accept, decline, addToFriends,removeFriend;
         LinearLayout friendsrequest;
         RelativeLayout relativeLayoutCardview;
 
@@ -133,6 +133,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
             friendsrequest = (LinearLayout) itemView.findViewById(R.id.linearL_friendsrequest);
             accept = (ImageButton) itemView.findViewById(R.id.accept_friendship);
             decline = (ImageButton) itemView.findViewById(R.id.decline_friendship);
+            removeFriend = (ImageButton) itemView.findViewById(R.id.remove_friend);
             addToFriends = (ImageButton) itemView.findViewById(R.id.add_to_friends);
             cardView = (CardView) itemView.findViewById(R.id.cardview_friends);
             profileP = (ImageView) itemView.findViewById(R.id.profile_picture3);
@@ -142,6 +143,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             itemView.setSelected(false);
+            removeFriend.setOnClickListener(this);
             accept.setOnClickListener(this);
             addToFriends.setOnClickListener(this);
             decline.setOnClickListener(this);
@@ -171,6 +173,12 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
                     break;
                 case R.id.add_to_friends:
                     params = new String[]{"IndexFriendship.php", "function", "setFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
+                    db.execute(params);
+                    data.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    break;
+                case R.id.remove_friend:
+                    params = new String[]{"IndexFriendship.php", "function", "removeFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
                     db.execute(params);
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();

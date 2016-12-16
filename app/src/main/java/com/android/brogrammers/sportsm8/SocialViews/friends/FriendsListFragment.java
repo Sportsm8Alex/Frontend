@@ -27,7 +27,7 @@ public class FriendsListFragment extends Fragment implements UIthread {
     private ArrayList<Information> friends;
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
-
+    private BottomNavigationView bottomNavigationView;
     private FragmentSocial fragmentSocial;
 
 
@@ -42,19 +42,9 @@ public class FriendsListFragment extends Fragment implements UIthread {
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         updateUI("");
-        recyclerView.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(dy>0){
-                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.animate().translationY(500);
-                }else if(dy<0){
-                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.animate().translationY(0);
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        recyclerView.addOnScrollListener(new onScrollListener());
+        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+        updateUI("");
         return view;
     }
 
@@ -91,6 +81,17 @@ public class FriendsListFragment extends Fragment implements UIthread {
         //stops loading animation
         fragmentSocial.setSwipeRefreshLayout(false);
 
+    }
+    private class onScrollListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (dy > 0) {
+                bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+            } else if (dy < 0) {
+                bottomNavigationView.animate().translationY(0).setDuration(100);
+            }
+            super.onScrolled(recyclerView, dx, dy);
+        }
     }
 
 

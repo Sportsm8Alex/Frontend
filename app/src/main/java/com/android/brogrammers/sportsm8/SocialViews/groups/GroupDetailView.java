@@ -27,10 +27,10 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GroupDetailView extends AppCompatActivity implements UIthread,SwipeRefreshLayout.OnRefreshListener {
+public class GroupDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
     private ListView listView;
-    private ArrayList<Information> members,Selection;
+    private ArrayList<Information> members, Selection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String GroupID, groupName;
     private TextView textView_name;
@@ -46,9 +46,9 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
         GroupID = b.getString("GroupID");
         groupName = b.getString("GroupName");
         //Views
-        textView_name =(TextView) findViewById(R.id.group_name_detailview);
+        textView_name = (TextView) findViewById(R.id.group_name_detailview);
         listView = (ListView) findViewById(R.id.listview_group_detail);
-        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
 
         textView_name.setText(groupName);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -56,11 +56,23 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
     }
 
     public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("search", false);
-        Intent intent = new Intent(this, OnlyFriendsView.class);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 1);
+        switch (view.getId()) {
+            case R.id.add_members_to_group:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("search", false);
+                Intent intent = new Intent(this, OnlyFriendsView.class);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 1);
+                break;
+            case R.id.leave_group_button:
+                Database db = new Database(this,getBaseContext());
+                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                String email = sharedPrefs.getString("email", "");
+                String[] params = {"IndexGroups.php","function","leaveGroup","GroupID",GroupID,"email",email};
+                db.execute(params);
+                finish();
+                break;
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -71,7 +83,7 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
                 Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
 
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexGroups.php", "function", "adMembersToGroup", "GroupID",GroupID));
+                        Arrays.asList("IndexGroups.php", "function", "adMembersToGroup", "GroupID", GroupID));
 
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -79,7 +91,7 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
                 }
                 String[] params = new String[paramsArrayList.size()];
                 params = paramsArrayList.toArray(params);
-                Database db = new Database(this,getBaseContext());
+                Database db = new Database(this, getBaseContext());
                 db.execute(params);
 
             }
@@ -111,10 +123,10 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
         for (int i = 0; i < members.size(); i++) {
             emails.add(members.get(i).email);
         }
-        ListViewAdapter arrayAdapter = new ListViewAdapter(this,members);
+        ListViewAdapter arrayAdapter = new ListViewAdapter(this, members);
         listView.setAdapter(arrayAdapter);
         TextView textView = (TextView) findViewById(R.id.group_size_detailview);
-        textView.setText(members.size()+"");
+        textView.setText(members.size() + "");
         swipeRefreshLayout.setRefreshing(false);
 
 
@@ -126,12 +138,13 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
     }
 
 
-    class ListViewAdapter extends BaseAdapter{
+    class ListViewAdapter extends BaseAdapter {
 
         ArrayList<Information> list;
         Context context;
-        public ListViewAdapter(Context context,ArrayList<Information> listItem) {
-            list=listItem;
+
+        public ListViewAdapter(Context context, ArrayList<Information> listItem) {
+            list = listItem;
             this.context = context;
         }
 
@@ -153,10 +166,10 @@ public class GroupDetailView extends AppCompatActivity implements UIthread,Swipe
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = inflater.inflate(android.R.layout.simple_list_item_1,viewGroup,false);
+            View row = inflater.inflate(android.R.layout.simple_list_item_1, viewGroup, false);
             TextView textView = (TextView) row.findViewById(android.R.id.text1);
             textView.setText(list.get(i).email);
-            if(Integer.valueOf(list.get(i).confirmed) == 1){
+            if (Integer.valueOf(list.get(i).confirmed) == 1) {
                 row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
             }
             return row;

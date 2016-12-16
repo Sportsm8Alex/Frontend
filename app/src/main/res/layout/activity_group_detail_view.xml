@@ -37,6 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:id="@+id/add_members_to_group"
                     android:layout_margin="16dp"
                     android:background="@color/colorPrimary"
                     android:onClick="onClick"

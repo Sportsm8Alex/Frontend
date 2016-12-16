@@ -237,8 +237,6 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -260,7 +258,6 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
             actionMode.finish();
             actionMode = null;
         }
-
     }
 
     /**

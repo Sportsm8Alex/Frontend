@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                         .scaleX(0)
                                         .scaleY(0)
                                         .alpha(0.0f);
+                                imageButtonToolbar.setVisibility(View.GONE);
                                 AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
                                 appBarLayout.setExpanded(true);
                                 findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                         .scaleX(0)
                                         .scaleY(0)
                                         .alpha(0.0f);
+                                imageButtonToolbar.setVisibility(View.GONE);
                                 findViewById(R.id.spinner2).setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_friends:
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                         .scaleX(1)
                                         .scaleY(1)
                                         .alpha(1.0f);
+                                imageButtonToolbar.setVisibility(View.VISIBLE);
                                 findViewById(R.id.spinner2).setVisibility(View.GONE);
                                 break;
                         }

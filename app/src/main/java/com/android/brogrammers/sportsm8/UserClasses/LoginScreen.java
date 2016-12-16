@@ -105,6 +105,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
                 sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("email", enteredEmail);
+                editor.putString("islogin","1");
                 editor.apply();
 
                 //start home screen in case of successful login

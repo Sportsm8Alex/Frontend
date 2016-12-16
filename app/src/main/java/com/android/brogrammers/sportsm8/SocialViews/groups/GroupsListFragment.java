@@ -28,6 +28,7 @@ public class GroupsListFragment extends Fragment implements UIthread {
     private RecyclerView recyclerView;
     private GroupListAdapter adapter;
     private FragmentSocial fragmentSocial;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,31 +37,20 @@ public class GroupsListFragment extends Fragment implements UIthread {
         recyclerView = (RecyclerView) view.findViewById(R.id.group_recycler_view);
         //variables
         groups = new ArrayList<>();
-        fragmentSocial =(FragmentSocial) getParentFragment();
-        adapter = new GroupListAdapter(getContext(),null,groups);
+        fragmentSocial = (FragmentSocial) getParentFragment();
+        adapter = new GroupListAdapter(getContext(), null, groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         updateUI("");
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(dy>0){
-                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.animate().translationY(500);
-                }else if(dy<0){
-                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.animate().translationY(0);
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        recyclerView.addOnScrollListener(new onScrollListener());
+        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         return view;
     }
 
     public void updateGroupList() {
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexGroups.php", "function", "getGroups","email",email};
+        String[] params = {"IndexGroups.php", "function", "getGroups", "email", email};
         Database db = new Database(this, getContext());
         db.execute(params);
     }
@@ -79,11 +69,24 @@ public class GroupsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new GroupListAdapter(getContext(),null,groups);
+        adapter = new GroupListAdapter(getContext(), null, groups);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter.notifyDataSetChanged();
-        fragmentSocial.setReferencesGroups(groups,this,adapter);
+        fragmentSocial.setReferencesGroups(groups, this, adapter);
         fragmentSocial.setSwipeRefreshLayout(false);
     }
+
+    private class onScrollListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (dy > 0) {
+                bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+            } else if (dy < 0) {
+                bottomNavigationView.animate().translationY(0).setDuration(100);
+            }
+            super.onScrolled(recyclerView, dx, dy);
+        }
+    }
+
 }

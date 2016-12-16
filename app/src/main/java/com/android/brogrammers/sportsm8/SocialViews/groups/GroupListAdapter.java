@@ -1,5 +1,6 @@
 package com.android.brogrammers.sportsm8.SocialViews.groups;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -75,7 +76,6 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
         this.clickListener = clickListener;
     }
 
-
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView groupname, number;
         Context contxt;
@@ -113,6 +113,7 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
                     break;
             }
         }
+
 
         @Override
         public boolean onLongClick(View view) {
