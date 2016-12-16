@@ -33,10 +33,11 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
         username = (EditText)findViewById(R.id.eUsername);
         password = (EditText)findViewById(R.id.ePassword);
         email = (EditText)findViewById((R.id.ePassword));
-        Button registerButton = (Button)findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
+    }
+    
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.registerButton:
                 enteredUsername = username.getText().toString();
                 String enteredPassword = password.getText().toString();
                 String enteredEmail = email.getText().toString();
@@ -48,8 +49,13 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
                 //request server authentication
                 register();
-            }
-        });
+                break;
+            case R.id.cancel_button:
+                Intent intent = new Intent(getApplicationContext(),LoginScreen.class);
+                startActivity(intent);
+                finish();
+                break;
+        }
     }
 
     public void register(){
@@ -97,6 +103,8 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
         }
 
     }
+
+
 
     /* not needed anymore
 
