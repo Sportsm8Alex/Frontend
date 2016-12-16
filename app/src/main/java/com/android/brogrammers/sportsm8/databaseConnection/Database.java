@@ -108,7 +108,7 @@ public class Database extends AsyncTask<String, String, String>{
         }
         return success;
     }
-    protected void onPostExecute(String success) {
+    protected void onPostExecute(String success){
         //save database information locally
         // updateUI(success)
 
@@ -117,10 +117,17 @@ public class Database extends AsyncTask<String, String, String>{
         editor.putString(filename+function+"JSON", success);
         editor.apply();
 
-        uiThread.updateUI(success);
+
         uiThread.updateUI();
-        //int daySelected = 0;
-        //uiThread.updateUI();
+        JSONObject jsonObject = null;
+        String phpSuccess="";
+        try {
+            jsonObject = new JSONObject(success);
+            phpSuccess  = jsonObject.get("success").toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        uiThread.updateUI(phpSuccess);
     }
 
     public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {
