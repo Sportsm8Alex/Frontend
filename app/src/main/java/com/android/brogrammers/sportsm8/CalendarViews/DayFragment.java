@@ -2,6 +2,7 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,4 +50,6 @@ public class DayFragment extends Fragment {
         recyclerView.setAdapter(rvAdapter);
         return view;
     }
+
+
 }
