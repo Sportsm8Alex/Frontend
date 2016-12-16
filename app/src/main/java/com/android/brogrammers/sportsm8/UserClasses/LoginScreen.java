@@ -27,11 +27,11 @@ import java.util.concurrent.ExecutionException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LoginScreen extends AppCompatActivity implements UIthread {
+public class LoginScreen extends AppCompatActivity implements UIthread, View.OnClickListener{
 
-    protected EditText username;
+    protected EditText email;
     private EditText password;
-    protected String enteredUsername;
+    protected String enteredEmail;
     private String dbReturn;
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
@@ -41,62 +41,21 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
-        username = (EditText) findViewById(R.id.eUsername);
+        email = (EditText) findViewById(R.id.eEmail);
         password = (EditText) findViewById(R.id.ePassword);
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-        Button registerButton = (Button) findViewById(R.id.registerButton);
+
+        findViewById(R.id.loginButton).setOnClickListener(this);
+        findViewById(R.id.registerButton).setOnClickListener(this);
 
         //try to read local database if a user is already logged in
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String loginJson = sharedPrefs.getString("islogin", "");
-        String prevUsername = sharedPrefs.getString("username", "");
-        System.out.println("logged in user is: " + prevUsername);
 
-        //better check?
-        if (!prevUsername.equals("") && loginJson.equalsIgnoreCase("1")) {
+        if (loginJson.equalsIgnoreCase("1")) {
             System.out.println("session continued");
             Intent intent = new Intent(LoginScreen.this, MainActivity.class);
             startActivity(intent);
             LoginScreen.this.finish();
-        }
-
-    }
-
-    public void buttonClick(View v) throws ExecutionException, InterruptedException {
-        switch (v.getId()) {
-            case R.id.loginButton: {
-                enteredUsername = username.getText().toString();
-                String enteredPassword = password.getText().toString();
-
-                if (enteredUsername.equals("") || enteredPassword.equals("")) {
-                    Toast.makeText(LoginScreen.this, "Username and password required", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                //request server authentication
-                login();
-                /*
-                //request server authentification
-
-                //new AsyncLogin().execute(enteredUsername, enteredPassword);
-                String[] params = {"IndexAccounts.php", "function", "loginAccount", "username", enteredUsername, "password", enteredPassword};
-                Database db = new Database(this, this.getApplicationContext());
-                dbReturn = db.execute(params).get();
-                System.out.println("CONNECTED TO DB");
-                //
-                //Getting nonsense from db currently
-                //
-                */
-                break;
-            }
-            case R.id.registerButton: {
-                Intent intent = new Intent(LoginScreen.this, RegisterActivity.class);
-                startActivity(intent);
-                LoginScreen.this.finish();
-                break;
-            }
-            default: {
-                break;
-            }
         }
     }
 
@@ -116,10 +75,15 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
     }
 
     public void login() {
-        enteredUsername = username.getText().toString();
+        enteredEmail = email.getText().toString();
         String enteredPassword = password.getText().toString();
 
-        String[] params = {"IndexAccounts.php", "function", "loginAccount", "username", enteredUsername, "password", enteredPassword};
+        if (enteredEmail.equals("") || enteredPassword.equals("")) {
+            Toast.makeText(LoginScreen.this, "email and password required", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String[] params = {"IndexAccounts.php", "function", "loginAccount", "email", enteredEmail, "password", enteredPassword};
         Database db = new Database(this, this.getApplicationContext());
         db.execute(params);
     }
@@ -143,7 +107,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             //should the password be saved?
             SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putString("username", enteredUsername);
+            editor.putString("email", enteredEmail);
             editor.putString("email", "Korbi@korbi.de");
             // is already clear that success == 1
             editor.putString("islogin", success);
@@ -154,10 +118,28 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             startActivity(intent);
             LoginScreen.this.finish();
         } else if (success.equalsIgnoreCase("0")) {
-            Toast.makeText(LoginScreen.this, "Invalid username or password", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
         } else if (success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")) {
             Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.loginButton: {
+                login();
+                break;
+            }
+            case R.id.registerButton: {
+                Intent intent = new Intent(this, RegisterActivity.class);
+                startActivity(intent);
+                this.finish();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
 }

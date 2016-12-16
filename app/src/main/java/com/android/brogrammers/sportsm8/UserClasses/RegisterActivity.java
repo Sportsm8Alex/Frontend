@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
         String enteredPassword = password.getText().toString();
         String enteredEmail = email.getText().toString();
 
-        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", enteredUsername, "password", enteredPassword, "email", enteredEmail};
+        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "email", enteredUsername, "password", enteredPassword, "email", enteredEmail};
         Database db = new Database(this, this.getApplicationContext());
         db.execute(params);
     }
@@ -89,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
         }
         else if(success.equalsIgnoreCase("")){
-            Toast.makeText(RegisterActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
 
         }
         else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
@@ -136,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
                 //Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", params[0])
+                        .appendQueryParameter("email", params[0])
                         .appendQueryParameter("password", params[1])
                         .appendQueryParameter("email", params[2]);
                 String query = builder.build().getEncodedQuery();
@@ -204,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
             }
             else if(success.equalsIgnoreCase("")){
-                Toast.makeText(RegisterActivity.this, "Invalid username or password", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
 
             }
             else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
