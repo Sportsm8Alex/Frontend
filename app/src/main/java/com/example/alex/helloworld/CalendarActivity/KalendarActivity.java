@@ -69,6 +69,8 @@ public class KalendarActivity extends AppCompatActivity implements UIthread {
         //###################################################
         //Create updating spinner to show its still loading
 
+        //
+
     }
 
     @Override
