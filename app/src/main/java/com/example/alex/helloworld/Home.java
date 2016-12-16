@@ -96,6 +96,7 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                                         .alpha(0.0f);
                                 AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
                                 appBarLayout.setExpanded(true);
+                                findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
                                 break;
                             case R.id.bottom_navigation_calender:
                                 fragment = new CalenderFragment();
@@ -103,6 +104,7 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                                         .scaleX(0)
                                         .scaleY(0)
                                         .alpha(0.0f);
+                                findViewById(R.id.spinner2).setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_friends:
                                 fragment = new FriendFragment();
@@ -110,6 +112,7 @@ public class Home extends AppCompatActivity implements CalenderFragment.OnFragme
                                         .scaleX(1)
                                         .scaleY(1)
                                         .alpha(1.0f);
+                                findViewById(R.id.spinner2).setVisibility(View.GONE);
                                 break;
                         }
                         final FragmentTransaction transaction = fragmentManager.beginTransaction();

@@ -81,7 +81,7 @@ public class SportFragment extends Fragment implements UIthread, View.OnClickLis
         Button fungame = (Button) rootView.findViewById(R.id.button_funGame);
         fungame.setOnClickListener(this);
         //toolbar problem needs to be solved first
-        //createList();
+        createList();
         return rootView;
     }
 

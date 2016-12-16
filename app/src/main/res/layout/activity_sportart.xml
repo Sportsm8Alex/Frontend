@@ -29,7 +29,7 @@
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/spinner23"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
