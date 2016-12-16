@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.alex.helloworld">
+    package="com.android.brogrammers.sportsm8">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserClasses.LoginScreen">
+        <activity android:name="com.android.brogrammers.sportsm8.UserClasses.LoginScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,35 +18,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.android.brogrammers.sportsm8.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UserClasses.RegisterActivity" />
+        <activity android:name="com.android.brogrammers.sportsm8.UserClasses.RegisterActivity" />
 
         <activity
-            android:name=".SocialViews.groups.CreateGroup"
+            android:name="com.android.brogrammers.sportsm8.SocialViews.groups.CreateGroup"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".ActivitiesViews.CreateNewMeeting"
+            android:name="com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".UserClasses.AccountPage"
+            android:name="com.android.brogrammers.sportsm8.UserClasses.AccountPage"
             android:label="@string/title_activity_account_page"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.android.brogrammers.sportsm8.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.alex.helloworld.MainActivity" />
+                android:value="com.android.brogrammers.sportsm8.MainActivity" />
         </activity>
         <activity
-            android:name=".SocialViews.friends.OnlyFriendsView"
+            android:name="com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CalendarViews.MeetingDetailView"
+            android:name="com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".SocialViews.groups.GroupDetailView"
+            android:name="com.android.brogrammers.sportsm8.SocialViews.groups.GroupDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

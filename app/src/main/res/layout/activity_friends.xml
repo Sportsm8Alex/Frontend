@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.alex.helloworld.SocialViews.Friends">
+    tools:context="com.android.brogrammers.sportsm8.SocialViews.Friends">
 
 
     <android.support.design.widget.AppBarLayout
@@ -67,7 +67,7 @@
         </android.support.v7.widget.Toolbar>
 
 
-        <com.example.alex.helloworld.SlidingTabLayout.SlidingTabLayout
+        <com.android.brogrammers.sportsm8.SlidingTabLayout.SlidingTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
