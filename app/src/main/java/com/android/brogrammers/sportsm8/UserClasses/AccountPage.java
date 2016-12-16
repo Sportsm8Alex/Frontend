@@ -36,7 +36,7 @@ public class AccountPage extends AppCompatActivity implements View.OnClickListen
 
         //load userInformation from local database
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String username = sharedPrefs.getString("username","");
+        String username = sharedPrefs.getString("email","");
         usernameText.setText(username);
 
 
