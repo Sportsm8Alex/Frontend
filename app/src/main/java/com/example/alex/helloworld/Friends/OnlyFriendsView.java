@@ -42,7 +42,6 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
     private FriendsListAdapter adapter;
     private ArrayList<Information> friends;
     private Boolean search = false;
-
     private Toolbar toolbar;
     private ActionMode actionMode;
     private OnlyFriendsView.ActionModeCallBack actionModeCallBack = new OnlyFriendsView.ActionModeCallBack();

@@ -2,6 +2,7 @@ package com.example.alex.helloworld.CalendarActivity;
 
 import android.icu.text.IDNA;
 import android.os.Parcelable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  */
 
 public class MeetingsFragment extends Fragment {
-
+    RecyclerView recyclerView;
 
     public static MeetingsFragment newInstance(int position, ArrayList<Information> meetingsOnDay){
 
@@ -45,12 +46,10 @@ public class MeetingsFragment extends Fragment {
 
         //#############
         //It doesnt seem to find the recyclerView!?
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         RecyclerView.Adapter rvAdapter = new RecyclerViewAdapter(getContext(), (ArrayList<Information>)this.getArguments().getSerializable("meetingsOnDay"));
         recyclerView.setAdapter(rvAdapter);
-
-
         return view;
     }
 }

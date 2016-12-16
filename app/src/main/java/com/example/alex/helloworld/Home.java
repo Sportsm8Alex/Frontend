@@ -4,11 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,24 +24,31 @@ import android.view.Display;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.alex.helloworld.CalendarActivity.KalendarActivity;
 import com.example.alex.helloworld.CreateNewMeeting.Sport;
+import com.example.alex.helloworld.Friends.OnlyFriendsView;
 import com.example.alex.helloworld.Z_Unused_Inactive.Invites;
 import com.example.alex.helloworld.UserClasses.LoginScreen;
 import com.example.alex.helloworld.activities.AccountPage;
 import com.example.alex.helloworld.Friends.Friends;
+import com.example.alex.helloworld.databaseConnection.UIthread;
 
 /**
  * Created by alex on 10/30/2016.
  */
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements CalenderFragment.OnFragmentInteractionListener, SportFragment.OnFragmentInteractionListener, FriendFragment.OnFragmentInteractionListener {
 
-
+    private Fragment fragment;
+    private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+
+    private ImageButton imageButtonToolbar;
 
     int i = 0;
 
@@ -45,6 +58,8 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
+        imageButtonToolbar = (ImageButton) findViewById(R.id.image_button_toolbar);
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +68,57 @@ public class Home extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
         navigationView();
-        buttons();
+        //buttons();
+        fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new SportFragment();
+        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+
+        //bottom navigation
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Intent intent;
+                        switch (item.getItemId()) {
+                            //not correct way to do
+                            // don't start new activities
+                            case R.id.bottom_navigation_sports:
+                                fragment = new SportFragment();
+                                imageButtonToolbar.animate()
+                                        .scaleX(0)
+                                        .scaleY(0)
+                                        .alpha(0.0f);
+                                AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+                                appBarLayout.setExpanded(true);
+                                break;
+                            case R.id.bottom_navigation_calender:
+                                fragment = new CalenderFragment();
+                                imageButtonToolbar.animate()
+                                        .scaleX(0)
+                                        .scaleY(0)
+                                        .alpha(0.0f);
+                                break;
+                            case R.id.bottom_navigation_friends:
+                                fragment = new FriendFragment();
+                                imageButtonToolbar.animate()
+                                        .scaleX(1)
+                                        .scaleY(1)
+                                        .alpha(1.0f);
+                                break;
+                        }
+                        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.fragment_container, fragment).commit();
+
+                        return true;
+                    }
+                }
+        );
     }
 
 
@@ -93,7 +157,14 @@ public class Home extends AppCompatActivity {
                 Button btn = (Button) findViewById(R.id.email_changer);
                 btn.setText(array[i]);
                 i++;
-                i = i%7;
+                i = i % 7;
+                break;
+            case R.id.image_button_toolbar:
+                Bundle b = new Bundle();
+                b.putBoolean("search", true);
+                intent = new Intent(this, OnlyFriendsView.class);
+                intent.putExtras(b);
+                startActivity(intent);
                 break;
             default:
                 finish();
@@ -236,5 +307,9 @@ public class Home extends AppCompatActivity {
         calendar.setHeight(widthh / 2);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
 

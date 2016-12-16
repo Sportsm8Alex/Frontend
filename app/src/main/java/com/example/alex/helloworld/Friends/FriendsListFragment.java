@@ -4,16 +4,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.alex.helloworld.FriendFragment;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
@@ -21,6 +26,7 @@ import com.example.alex.helloworld.databaseConnection.UIthread;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FriendsListFragment extends Fragment implements UIthread {
 
@@ -30,16 +36,33 @@ public class FriendsListFragment extends Fragment implements UIthread {
     private Boolean selectionMode;
     private Friends activity;
 
+    private FriendFragment friendFragment;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
         //Declaration Variables
         friends = new ArrayList<>();
-        activity = (Friends) getActivity();
+        //
+        friendFragment = (FriendFragment) getParentFragment();
+     // Fragment fragment = getFragmentManager().findFragmentById(R.id.friends_tab_fragment);
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         updateUI("");
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(dy>0){
+                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+                    bottomNavigationView.animate().translationY(500);
+                }else if(dy<0){
+                    BottomNavigationView bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+                    bottomNavigationView.animate().translationY(0);
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         return view;
     }
 
@@ -68,13 +91,13 @@ public class FriendsListFragment extends Fragment implements UIthread {
         adapter = new FriendsListAdapter(getContext(), null, friends,false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Friends activity = (Friends) getActivity();
+
 
         //Method to set all connections between Friends,Friendslistfragment, Friendslistadapter and Clicklistener
-        activity.setReferencesFriends(friends,this,adapter);
+        friendFragment.setReferencesFriends(friends,this,adapter);
         adapter.notifyDataSetChanged();
         //stops loading animation
-        activity.setSwipeRefreshLayout(false);
+        friendFragment.setSwipeRefreshLayout(false);
 
     }
 

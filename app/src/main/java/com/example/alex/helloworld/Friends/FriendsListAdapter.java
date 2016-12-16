@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.alex.helloworld.FriendFragment;
 import com.example.alex.helloworld.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
@@ -110,7 +111,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         return data.size();
     }
     //called by setRefeernceMethod in Friends.java to connect Clicklistener
-    public void setClicklistener(Friends clicklistener) {
+    public void setClicklistener(FriendFragment clicklistener) {
         this.clickListener = clicklistener;
     }
 
