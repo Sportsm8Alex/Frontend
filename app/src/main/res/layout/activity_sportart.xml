@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
-        tools:context="com.example.alex.helloworld.CreateNewMeeting.Sport">
+        tools:context="com.example.alex.helloworld.ActivitiesViews.Sport">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -55,10 +55,10 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@drawable/kreuz" />
+            app:srcCompat="@drawable/ic_add_black_36dp" />
 
 
-        <include layout="@layout/content_sportart" />
+        <include layout="@layout/fragment_activities" />
 
     </android.support.design.widget.CoordinatorLayout>
 

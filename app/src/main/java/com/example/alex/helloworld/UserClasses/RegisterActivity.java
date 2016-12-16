@@ -8,10 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.alex.helloworld.MainActivity;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
-import com.example.alex.helloworld.Z_Unused_Inactive.MainActivity;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -28,7 +29,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_activity);
+        setContentView(R.layout.activity_register);
         username = (EditText)findViewById(R.id.eUsername);
         password = (EditText)findViewById(R.id.ePassword);
         email = (EditText)findViewById((R.id.ePassword));

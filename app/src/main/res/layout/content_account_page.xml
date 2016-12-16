@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alex.helloworld.activities.AccountPage"
+    tools:context="com.example.alex.helloworld.UserClasses.AccountPage"
     tools:showIn="@layout/activity_account_page">
 
 

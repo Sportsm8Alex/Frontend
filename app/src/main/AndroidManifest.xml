@@ -18,67 +18,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Home"
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Z_Unused_Inactive.MainActivity" />
         <activity android:name=".UserClasses.RegisterActivity" />
+
         <activity
-            android:name=".CreateNewMeeting.Sport"
-            android:label="@string/title_activity_sportart"
-            android:parentActivityName=".Home"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.alex.helloworld.Home" />
-        </activity>
-        <activity
-            android:name=".Z_Unused_Inactive.Invites"
-            android:label="@string/title_activity_einladungen"
-            android:parentActivityName=".Home"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.alex.helloworld.Home" />
-        </activity>
-        <activity
-            android:name=".Z_Unused_Inactive.GamePickerLiga"
+            android:name=".SocialViews.groups.CreateGroup"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".Z_Unused_Inactive.AddSport"
+            android:name=".ActivitiesViews.CreateNewMeeting"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".Friends.CreateGroup"
-            android:theme="@style/AppTheme.Custom1" />
-        <activity
-            android:name=".CreateNewMeeting.CreateNewMeeting"
-            android:theme="@style/AppTheme.Custom1" />
-        <activity android:name=".Z_Unused_Inactive.CalendarActivity" />
-        <activity
-            android:name=".activities.AccountPage"
+            android:name=".UserClasses.AccountPage"
             android:label="@string/title_activity_account_page"
-            android:parentActivityName=".Home"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.alex.helloworld.Home" />
+                android:value="com.example.alex.helloworld.MainActivity" />
         </activity>
         <activity
-            android:name=".Friends.Friends"
+            android:name=".SocialViews.friends.OnlyFriendsView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CalendarActivity.KalendarActivity"
-            android:label="@string/kalendar_activity" />
-        <activity
-            android:name=".Friends.OnlyFriendsView"
-            android:label=""
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MeetingDetailView"
+            android:name=".CalendarViews.MeetingDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".GroupDetailView"
+            android:name=".SocialViews.groups.GroupDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

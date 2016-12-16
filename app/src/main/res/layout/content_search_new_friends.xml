@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.alex.helloworld.Friends.OnlyFriendsView"
+    tools:context="com.example.alex.helloworld.SocialViews.friends.OnlyFriendsView"
     tools:showIn="@layout/activity_search_new_friends">
 
     <android.support.v7.widget.RecyclerView

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.example.alex.helloworld.Information;
 import com.google.gson.Gson;
 
 import org.json.JSONException;

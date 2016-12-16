@@ -15,8 +15,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
 
-import com.example.alex.helloworld.Home;
-import com.example.alex.helloworld.Information;
+import com.example.alex.helloworld.MainActivity;
+import com.example.alex.helloworld.databaseConnection.Information;
 import com.example.alex.helloworld.R;
 import com.example.alex.helloworld.databaseConnection.Database;
 import com.example.alex.helloworld.databaseConnection.UIthread;
@@ -40,7 +40,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_screen);
+        setContentView(R.layout.activity_login_screen);
         username = (EditText) findViewById(R.id.eUsername);
         password = (EditText) findViewById(R.id.ePassword);
         Button loginButton = (Button) findViewById(R.id.loginButton);
@@ -55,7 +55,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
         //better check?
         if (!prevUsername.equals("") && loginJson.equalsIgnoreCase("1")) {
             System.out.println("session continued");
-            Intent intent = new Intent(LoginScreen.this, Home.class);
+            Intent intent = new Intent(LoginScreen.this, MainActivity.class);
             startActivity(intent);
             LoginScreen.this.finish();
         }
@@ -105,7 +105,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             ArrayList<Information> info = Database.jsonToArrayList(dbReturn);
             System.out.println("UPDATING UI");
             if(info.get(0).success == 0){
-                Intent intent = new Intent(LoginScreen.this, Home.class);
+                Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                 startActivity(intent);
                 LoginScreen.this.finish();
             }
@@ -149,7 +149,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             editor.apply();
 
             //start home screen in case of successful login
-            Intent intent = new Intent(LoginScreen.this, Home.class);
+            Intent intent = new Intent(LoginScreen.this, MainActivity.class);
             startActivity(intent);
             LoginScreen.this.finish();
         }
@@ -256,7 +256,7 @@ public class LoginScreen extends AppCompatActivity implements UIthread {
             progressDialog.dismiss();
 
             if(success.equalsIgnoreCase("1")){
-                Intent intent = new Intent(LoginScreen.this, Home.class);
+                Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                 startActivity(intent);
                 LoginScreen.this.finish();
 
