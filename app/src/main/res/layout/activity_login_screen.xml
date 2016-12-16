@@ -23,19 +23,18 @@
                 android:src="@drawable/ic_person_black_36dp" />
 
             <EditText
-                android:id="@+id/ePassword"
+                android:id="@+id/eEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#ffffff"
                 android:ems="10"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -44,13 +43,13 @@
                 android:src="@drawable/ic_lock_black_36dp" />
 
             <EditText
-                android:id="@+id/eEmail"
+                android:id="@+id/ePassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#ffffff"
                 android:ems="10"
-                android:hint="@string/username"
-                android:inputType="textEmailAddress" />
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
         </LinearLayout>
 
         <Button
@@ -59,11 +58,12 @@
             android:layout_height="wrap_content"
             android:onClick="buttonClick"
             android:text="@string/login" />
+
         <Button
             android:id="@+id/registerButton"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:onClick="buttonClick"
             android:text="@string/register" />
     </LinearLayout>
