@@ -4,8 +4,8 @@
     android:id="@+id/fragment_sport"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    >
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <ImageView
         android:id="@+id/imageView_sportart"
         android:layout_width="match_parent"
@@ -31,17 +31,22 @@
             android:paddingTop="8dp">
 
             <LinearLayout
+                android:id="@+id/ll_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/ll_buttons"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/button_funGame"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/button_title_funGame" />
+
+                <Button
+                    android:id="@+id/email_switcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/button_training"

@@ -53,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
         android:orientation="horizontal"
+        android:id="@+id/ll_main"
         android:weightSum="3">
 
         <LinearLayout
@@ -128,6 +129,13 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:id="@+id/checkbox_dynamic"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_main"
+        android:text="Dynamic Meeting?"/>
 
     <LinearLayout
         android:layout_width="match_parent"

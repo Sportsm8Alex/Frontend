@@ -30,51 +30,36 @@
             android:layout_margin="8dp"
             android:text="DD.MM.YYYY" />
 
+
+        <TextView
+            android:id="@+id/myTime_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_margin="8dp"
+            android:text="HH:MM - HH:MM" />
+
         <TextView
             android:id="@+id/meeting_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:text="Activity"
             android:textSize="28sp" />
 
-        <LinearLayout
+
+        <TextView
             android:id="@+id/ll_time"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_below="@id/meeting_name"
-            android:gravity="center"
+            android:text="HH:MM - HH:MM"
             android:layout_marginBottom="8dp"
-            android:weightSum="5">
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/startzeit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="64dp"
-                android:text="HH:MM"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:text="-"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/stoppzeit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="64dp"
-                android:text="HH:MM"
-                android:textSize="20sp" />
-
-
-        </LinearLayout>
 
         <View
             android:id="@+id/divider"
@@ -107,6 +92,15 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/accept_meeting_button"
                 android:text="Keine Zeit"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/other_time"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:text="Andere Zeit"
                 android:textColor="@color/colorPrimary" />
         </RelativeLayout>
 

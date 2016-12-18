@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,7 +72,8 @@ public class Database extends AsyncTask<String, String, String>{
 
         try {
             //http://10.0.2.2:8080/android_user_api/Backend/
-            URL url = new URL("http://sportsm8.bplaced.net:80/MySQLadmin/include/"+params[0]);
+            //URL url = new URL("http://sportsm8.bplaced.net:80/MySQLadmin/include/"+params[0]);
+            URL url = new URL("http://sportsm8.bplaced.net:80/php/dynamicphp/include/"+params[0]);
             System.out.println(url.toString());
 
             conn = (HttpURLConnection) url.openConnection();

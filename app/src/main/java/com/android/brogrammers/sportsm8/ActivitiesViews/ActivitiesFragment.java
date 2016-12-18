@@ -49,6 +49,8 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    int i =0;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,6 +61,7 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment ActivitiesFragment.
      */
     public static ActivitiesFragment newInstance(String param1, String param2) {
@@ -81,6 +84,11 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         fungame.setOnClickListener(this);
         //toolbar problem needs to be solved first
         createList();
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        String email = sharedPrefs.getString("email", "");
+        Button btn = (Button) rootView.findViewById(R.id.email_switcher);
+        btn.setOnClickListener(this);
+        btn.setText(email);
         return rootView;
     }
 
@@ -122,13 +130,23 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         void onFragmentInteraction(Uri uri);
     }
 
-    public void onClick(View view){
-        switch(view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case (R.id.button_funGame):
                 funGame(view);
                 break;
             case (R.id.button_training):
                 funGame(view);
+                break;
+            case R.id.email_switcher:
+                String[] emails = getContext().getResources().getStringArray(R.array.emails);
+                SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString("email", emails[i]);
+                editor.apply();
+                Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
+                btn.setText(emails[i]);
+                i++;
                 break;
         }
     }

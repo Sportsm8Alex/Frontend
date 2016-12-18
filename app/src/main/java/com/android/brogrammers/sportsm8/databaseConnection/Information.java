@@ -13,8 +13,10 @@ public class Information implements Serializable {
     public String email, PPpath,username,friend;
 
     //meetingInformation
-    public String MeetingID, startTime, endTime,status, meetingActivity;
-    public String confirmed ="0";
+    public int MeetingID,confirmed=0,minParticipants,begin,duration,dynamic;
+    public String startTime, endTime,status, meetingActivity;
+    public int[] timeArray=new int[24];
+    public Boolean meetingIsGood=false;
 
     //GroupInformation
     public String GroupID, GroupName;
@@ -31,7 +33,7 @@ public class Information implements Serializable {
         return username;
     }
 
-    public String getConfirmed(){return confirmed;}
+    public int getConfirmed(){return confirmed;}
 
     public void setUsername(String username) {
         this.username = username;

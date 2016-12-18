@@ -42,7 +42,7 @@ public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshL
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
     private CharSequence Titles[] = {"Mo", "Di", "We", "Do", "Fr", "Sa", "So"};
-
+    private ViewPager viewPager;
 
     private OnFragmentInteractionListener mListener;
 
@@ -75,7 +75,7 @@ public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshL
         slidingTabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
 
 
-        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         //changed this method
         viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
 
@@ -137,7 +137,6 @@ public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshL
 
     @Override
     public void onRefresh() {
-
         getMeetings();
     }
 
