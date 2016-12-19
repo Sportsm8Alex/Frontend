@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,9 +26,10 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.SocialViews.friends.FriendsListAdapter;
 import com.android.brogrammers.sportsm8.SocialViews.friends.FriendsListFragment;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.SocialViews.groups.CreateGroup;
+import com.android.brogrammers.sportsm8.SocialViews.groups.CreateGroupDialog;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupListAdapter;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupsListFragment;
+import com.android.brogrammers.sportsm8.UserClasses.EditUserInformation;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 
@@ -232,12 +234,20 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
                 selection.add(friends.get(i));
             }
         }
+
+        CreateGroupDialog createGroupDialog = new CreateGroupDialog();
         Bundle bundle = new Bundle();
+        bundle.putSerializable("GroupList", selection);
+        createGroupDialog.setArguments(bundle);
+        createGroupDialog.show(getChildFragmentManager(),"createGroup");
+
+
+       /* Bundle bundle = new Bundle();
         bundle.putSerializable("GroupList", selection);
         // change this
         Intent intent = new Intent(parentActivity, CreateGroup.class);
         intent.putExtras(bundle);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 1);*/
     }
 
     @Override

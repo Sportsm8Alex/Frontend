@@ -110,8 +110,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 temp = true;
             } else if (temp && timeArray[i] < meetingsOnDay.get(position).minParticipants) {
                 if (i - begin - 1 > dur) {
-                    startTime.setHourOfDay(begin);
-                    endTime.setHourOfDay(i - 1);
+                    startTime.setHourOfDay(begin+1);
+                    endTime.setHourOfDay(i);
                     meetingsOnDay.get(position).startTime = startTime.toString("YYYY-MM-dd HH:mm:ss");
                     meetingsOnDay.get(position).endTime = endTime.toString("YYYY-MM-dd HH:mm:ss");
                     dur = begin - i - 1;

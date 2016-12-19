@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UserClasses.LoginScreen"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,9 +26,6 @@
         <activity
             android:name=".UserClasses.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SocialViews.groups.CreateGroup"
-            android:theme="@style/AppTheme.Custom1" />
         <activity
             android:name=".ActivitiesViews.CreateNewMeeting"
             android:theme="@style/AppTheme.Custom1" />

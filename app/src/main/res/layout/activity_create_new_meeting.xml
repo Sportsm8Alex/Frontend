@@ -135,6 +135,7 @@
         android:id="@+id/checkbox_dynamic"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"
+        android:layout_centerHorizontal="true"
         android:text="Dynamic Meeting?"/>
 
     <LinearLayout

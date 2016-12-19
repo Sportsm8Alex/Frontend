@@ -138,7 +138,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
     @Override
     public void updateUI(String answer) {
         ViewPager viewPager = (ViewPager) parentActivity.findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ViewPagerAdapter(getFragmentManager(),getContext(), 7));
+        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
         slidingTabLayout.setupWithViewPager(viewPager);
         swipeRefreshLayout.setRefreshing(false);
     }

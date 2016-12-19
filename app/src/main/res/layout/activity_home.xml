@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/bottom_navigation">
+    android:layout_above="@+id/bottom_navigation"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -31,11 +31,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <Spinner
+                    <TextView
+                        android:id="@+id/toolbar_title"
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="sans-serif-medium"
+                        android:visibility="gone"
+                        android:text="Title"
+                        android:textColor="@color/whiteText"
+                        android:textSize="20sp" />
+
+                    <Spinner
+                        android:id="@+id/spinner2"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                       android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                        android:id="@+id/spinner2"/>
+                        android:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
                     <ImageButton
                         android:id="@+id/image_button_toolbar"
@@ -43,10 +53,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginRight="16dp"
-                        android:background="@color/transparent"
                         android:alpha="0"
+                        android:background="@color/transparent"
                         android:onClick="onClick"
-                        android:src="@drawable/ic_person_add_white_24dp"/>
+                        android:src="@drawable/ic_person_add_white_24dp" />
 
                 </RelativeLayout>
 
@@ -66,10 +76,10 @@
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             app:itemBackground="@color/darkgrey"
             app:itemIconTint="@drawable/bottom_navigation_selector"
             app:itemTextColor="@drawable/bottom_navigation_selector"
-            android:layout_gravity="bottom"
             app:menu="@menu/bottom_navigation_main" />
 
     </android.support.design.widget.CoordinatorLayout>

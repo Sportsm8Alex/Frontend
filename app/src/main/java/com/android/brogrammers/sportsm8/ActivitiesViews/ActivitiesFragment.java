@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * Use the {@link ActivitiesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivitiesFragment extends Fragment implements UIthread, View.OnClickListener {
+public class ActivitiesFragment extends Fragment implements UIthread,View.OnClickListener {
 
     Activity parentActivity;
     ArrayList<Information> sportIDs;
@@ -79,14 +79,13 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_meetings, container, false);
-        Button fungame = (Button) rootView.findViewById(R.id.button_funGame);
-        fungame.setOnClickListener(this);
+        View rootView = inflater.inflate(R.layout.fragment_activities, container, false);
         //toolbar problem needs to be solved first
         createList();
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
         Button btn = (Button) rootView.findViewById(R.id.email_switcher);
+        rootView.findViewById(R.id.button_create_meeting).setOnClickListener(this);
         btn.setOnClickListener(this);
         btn.setText(email);
         return rootView;
@@ -132,10 +131,7 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case (R.id.button_funGame):
-                funGame(view);
-                break;
-            case (R.id.button_training):
+            case (R.id.button_create_meeting):
                 funGame(view);
                 break;
             case R.id.email_switcher:
@@ -185,9 +181,7 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
     }
 
     private void update(int sID) {
-
-        Button training = (Button) parentActivity.findViewById(R.id.button_training);
-        Button fSpiel = (Button) parentActivity.findViewById(R.id.button_funGame);
+        Button fSpiel = (Button) parentActivity.findViewById(R.id.button_create_meeting);
         ImageView iV = (ImageView) parentActivity.findViewById(R.id.imageView_sportart);
 
         Information temp = sportIDs.get(sID);
@@ -196,14 +190,11 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
 
         fSpiel.setVisibility(View.GONE);
-        training.setVisibility(View.GONE);
 
         if (Integer.valueOf(sportIDs.get(sID).team) == 1) {
             fSpiel.setVisibility(View.VISIBLE);
-            training.setVisibility(View.GONE);
         } else {
-            fSpiel.setVisibility(View.GONE);
-            training.setVisibility(View.VISIBLE);
+            fSpiel.setVisibility(View.VISIBLE);
         }
 
     }

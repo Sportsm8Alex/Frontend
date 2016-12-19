@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
@@ -28,6 +29,8 @@ import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by alex on 10/30/2016.
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
     private ActionBarDrawerToggle mToggle;
 
     private ImageButton imageButtonToolbar;
+    private TextView textView;
 
     int i = 0;
 
@@ -48,9 +52,10 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         imageButtonToolbar = (ImageButton) findViewById(R.id.image_button_toolbar);
+        textView = (TextView) findViewById(R.id.toolbar_title);
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                 AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
                                 appBarLayout.setExpanded(true);
                                 findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
+                                textView.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_calender:
                                 fragment = new CalenderFragment();
@@ -99,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                         .alpha(0.0f);
                                 imageButtonToolbar.setVisibility(View.GONE);
                                 findViewById(R.id.spinner2).setVisibility(View.GONE);
+                                textView.setVisibility(View.VISIBLE);
+                                textView.setText("Kalender");
                                 break;
                             case R.id.bottom_navigation_friends:
                                 fragment = new FragmentSocial();
@@ -108,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                         .alpha(1.0f);
                                 imageButtonToolbar.setVisibility(View.VISIBLE);
                                 findViewById(R.id.spinner2).setVisibility(View.GONE);
+                                textView.setVisibility(View.VISIBLE);
+                                textView.setText("Freunde");
                                 break;
                         }
                         final FragmentTransaction transaction = fragmentManager.beginTransaction();
