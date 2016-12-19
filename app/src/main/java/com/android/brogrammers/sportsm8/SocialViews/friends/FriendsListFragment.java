@@ -18,8 +18,10 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
+
 import java.util.ArrayList;
 
 public class FriendsListFragment extends Fragment implements UIthread {
@@ -38,7 +40,7 @@ public class FriendsListFragment extends Fragment implements UIthread {
         friends = new ArrayList<>();
         //
         fragmentSocial = (FragmentSocial) getParentFragment();
-     // Fragment fragment = getFragmentManager().findFragmentById(R.id.friends_tab_fragment);
+        // Fragment fragment = getFragmentManager().findFragmentById(R.id.friends_tab_fragment);
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         updateUI("");
@@ -70,31 +72,32 @@ public class FriendsListFragment extends Fragment implements UIthread {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        adapter = new FriendsListAdapter(getContext(), null, friends,false);
+        adapter = new FriendsListAdapter(getContext(), null, friends, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
         //Method to set all connections between Friends,Friendslistfragment, Friendslistadapter and Clicklistener
-        fragmentSocial.setReferencesFriends(friends,this,adapter);
+        fragmentSocial.setReferencesFriends(friends, this, adapter);
         adapter.notifyDataSetChanged();
         //stops loading animation
         fragmentSocial.setSwipeRefreshLayout(false);
 
     }
+
     private class onScrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (dy > 0) {
-                bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
-            } else if (dy < 0) {
-                bottomNavigationView.animate().translationY(0).setDuration(100);
+            if (bottomNavigationView != null) {
+                if (dy > 0) {
+                    bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+                } else if (dy < 0) {
+                    bottomNavigationView.animate().translationY(0).setDuration(100);
+                }
+                super.onScrolled(recyclerView, dx, dy);
             }
-            super.onScrolled(recyclerView, dx, dy);
         }
     }
-
-
 
 
 }

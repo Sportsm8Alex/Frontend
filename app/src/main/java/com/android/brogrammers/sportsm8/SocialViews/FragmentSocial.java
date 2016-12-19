@@ -96,10 +96,11 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         parentActivity = getActivity();
 
         //Declarations Variables
-        //TODO: bundle is null (throws error)
-        Bundle bundle = parentActivity.getIntent().getExtras();
-        //throws error
-        //addToMeetingMode = bundle.getBoolean("SelectionMode");
+        Bundle bundle = this.getArguments();
+        if(bundle!=null){
+            addToMeetingMode=bundle.getBoolean("addToMeetingMode");
+        }
+
         if (addToMeetingMode) {
             actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
         }
@@ -115,7 +116,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         View rootView = inflater.inflate(R.layout.fragment_social, container, false);
         //Declarations Views
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        ((AppCompatActivity) parentActivity).setSupportActionBar(toolbar);
+        //  ((AppCompatActivity) parentActivity).setSupportActionBar(toolbar);
 
         page_button = (ImageButton) rootView.findViewById(R.id.add_new_friend);
         textView_selected_count = (TextView) rootView.findViewById(R.id.selected_friends_number);
@@ -139,6 +140,10 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
 //        params2 = (AppBarLayout.LayoutParams) tabs.getLayoutParams();
 
         return rootView;
+    }
+
+    public void setAddToMeetingMode(Boolean bool){
+        addToMeetingMode=true;
     }
 
     public void onButtonPressed(Uri uri) {

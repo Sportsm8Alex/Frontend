@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
@@ -214,7 +215,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
     public void addPartiMembersButton(View view) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SelectionMode", true);
-        Intent intent = new Intent(this, OnlyFriendsView.class);
+        Intent intent = new Intent(this, SelectorContainer.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
     }
@@ -266,7 +267,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         }
         TextView textView = (TextView) findViewById(R.id.number_added);
         textView.setText(Selection.size() + " Teilnehmer");
-        //mergeGroupsAndFriends();
+        mergeGroupsAndFriends();
     }
 
     @Override

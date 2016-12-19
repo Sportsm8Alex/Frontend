@@ -80,12 +80,14 @@ public class GroupsListFragment extends Fragment implements UIthread {
     private class onScrollListener extends RecyclerView.OnScrollListener {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (dy > 0) {
-                bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
-            } else if (dy < 0) {
-                bottomNavigationView.animate().translationY(0).setDuration(100);
+            if (bottomNavigationView != null) {
+                if (dy > 0) {
+                    bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+                } else if (dy < 0) {
+                    bottomNavigationView.animate().translationY(0).setDuration(100);
+                }
+                super.onScrolled(recyclerView, dx, dy);
             }
-            super.onScrolled(recyclerView, dx, dy);
         }
     }
 

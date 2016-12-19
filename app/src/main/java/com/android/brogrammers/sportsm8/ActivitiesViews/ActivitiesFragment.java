@@ -147,6 +147,7 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
                 Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
                 btn.setText(emails[i]);
                 i++;
+                i=i%emails.length;
                 break;
         }
     }

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +39,7 @@ import java.util.ArrayList;
  * Use the {@link CalenderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshLayout.OnRefreshListener {
+public class CalenderFragment extends Fragment implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
     TabLayout slidingTabLayout;
     Activity parentActivity;
@@ -101,6 +104,11 @@ public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshL
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -130,7 +138,7 @@ public class CalenderFragment extends Fragment implements UIthread,SwipeRefreshL
     @Override
     public void updateUI(String answer) {
         ViewPager viewPager = (ViewPager) parentActivity.findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
+        viewPager.setAdapter(new ViewPagerAdapter(getFragmentManager(),getContext(), 7));
         slidingTabLayout.setupWithViewPager(viewPager);
         swipeRefreshLayout.setRefreshing(false);
     }
