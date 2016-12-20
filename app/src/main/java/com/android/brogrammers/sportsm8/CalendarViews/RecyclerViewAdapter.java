@@ -35,10 +35,10 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread, TimePickerDialog.OnTimeSetListener {
 
-    Context context;
-    ArrayList<Information> meetingsOnDay;
-    DateTimeFormatter formatter;
-    int begin;
+    private Context context;
+    private ArrayList<Information> meetingsOnDay;
+    private DateTimeFormatter formatter;
+    private int begin;
 
     public RecyclerViewAdapter(Context context, ArrayList<Information> meetingsOnDay) {
         this.context = context;
@@ -65,6 +65,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         meetingsViewHolder.textview.setText(timeE.toString("dd.MM.YYYY"));
         Resources res = context.getResources();
         String[] array = res.getStringArray(R.array.sportarten);
+        //TODO: Change php to Json_Check_numeric and Attribute in Information to int
         int x = Integer.valueOf(meetingsOnDay.get(position).sportID);
         if (x == 8008) {
             meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
@@ -74,29 +75,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final Information infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
             meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
-            if (meetingsOnDay.get(position).meetingIsGood) {
-                meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-                meetingsViewHolder.time.setTextColor(ContextCompat.getColor(context, R.color.green));
-            }
-            if (meetingsOnDay.get(position).duration != 0) {
-                meetingsViewHolder.myTime.setVisibility(View.VISIBLE);
-                int end = meetingsOnDay.get(position).begin + meetingsOnDay.get(position).duration;
-                meetingsViewHolder.myTime.setText(meetingsOnDay.get(position).begin + ":00 - " + end + ":00");
-                meetingsViewHolder.decline.setVisibility(View.GONE);
-                meetingsViewHolder.accept.setVisibility(View.GONE);
-                meetingsViewHolder.otherTime.setVisibility(View.GONE);
-                meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+            if (meetingsOnDay.get(position).meetingIsGood && meetingsOnDay.get(position).duration != 0) {
+                setCardReady(meetingsViewHolder, position);
+            } else if (meetingsOnDay.get(position).duration == 0) {
+                setCardUndecided(meetingsViewHolder, position);
+            }else if(meetingsOnDay.get(position).duration!=0){
+                setCardWaiting(meetingsViewHolder,position);
             }
         } else {
             if (Integer.valueOf(meetingsOnDay.get(position).status) == 0 && meetingsOnDay.get(position).confirmed == 1) {
-                meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-                meetingsViewHolder.accept.setVisibility(View.GONE);
-                meetingsViewHolder.decline.setVisibility(View.GONE);
+                setCardWaiting(meetingsViewHolder, position);
             } else if (Integer.valueOf(meetingsOnDay.get(position).status) == 1 && meetingsOnDay.get(position).confirmed == 1) {
-                meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-                meetingsViewHolder.accept.setVisibility(View.GONE);
-                meetingsViewHolder.decline.setVisibility(View.GONE);
-
+                setCardReady(meetingsViewHolder, position);
             }
         }
         onClickEvents(meetingsViewHolder, position, infoData);
@@ -138,7 +128,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 b.putString("startTime", meetingsOnDay.get(position).startTime);
                 b.putString("endTime", meetingsOnDay.get(position).endTime);
                 b.putString("sportID", meetingsOnDay.get(position).sportID);
-                b.putString("activity",meetingsOnDay.get(position).meetingActivity);
+                b.putString("activity", meetingsOnDay.get(position).meetingActivity);
                 intent.putExtras(b);
                 context.startActivity(intent);
             }
@@ -146,8 +136,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         meetingsViewHolder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirm(position, infoData, v, meetingsViewHolder);
-                meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                confirm(position);
+                //TODO: Check if minParticipants are reached after accepting
+                setCardWaiting(meetingsViewHolder,position);
             }
         });
         meetingsViewHolder.decline_2.setOnClickListener(new View.OnClickListener() {
@@ -184,9 +175,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             @Override
                             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                                 setOtherTime(begin, i, position);
-                                meetingsViewHolder.decline.setVisibility(View.GONE);
-                                meetingsViewHolder.accept.setVisibility(View.GONE);
-                                meetingsViewHolder.otherTime.setVisibility(View.GONE);
+                                setCardWaiting(meetingsViewHolder,position);
                             }
                         }, 0, 0, true).show();
                     }
@@ -220,25 +209,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyItemRemoved(position);
     }
 
-    public void confirm(int pos, Information infoData, View view, MeetingsViewHolder meetingsViewHolder) {
+    public void confirm(int pos) {
         SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
         if (meetingsOnDay.get(pos).dynamic == 0) {
             String[] params = {"IndexMeetings.php", "function", "confirmAtt", "meetingID", meetingsOnDay.get(pos).MeetingID + "", "email", email};
             Database db = new Database(this, context);
             db.execute(params);
-            view.setVisibility(View.GONE);
-            meetingsViewHolder.decline.setVisibility(View.GONE);
             meetingsOnDay.get(pos).confirmed = 1;
         } else {
             DateTime timeS = formatter.parseDateTime(meetingsOnDay.get(pos).startTime);
             DateTime timeE = formatter.parseDateTime(meetingsOnDay.get(pos).endTime);
             setOtherTime(timeS.getHourOfDay(), timeE.getHourOfDay(), pos);
-            meetingsViewHolder.otherTime.setVisibility(View.GONE);
-            meetingsViewHolder.accept.setVisibility(View.GONE);
-            meetingsViewHolder.decline.setVisibility(View.GONE);
         }
-        meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
     }
 
     @Override
@@ -255,6 +238,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void updateUI(String answer) {
 
     }
+//Help Methods for setting view attributes to declutter Code
+    private void setCardWaiting(MeetingsViewHolder viewHolder, int position) {
+        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+        viewHolder.accept.setVisibility(View.GONE);
+        viewHolder.decline.setVisibility(View.GONE);
+        viewHolder.otherTime.setVisibility(View.GONE);
+        if(meetingsOnDay.get(position).dynamic==1)setMyTime(viewHolder,position);
+    }
+
+    private void setCardUndecided(MeetingsViewHolder viewHolder, int position) {
+        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
+        viewHolder.accept.setVisibility(View.VISIBLE);
+        viewHolder.decline.setVisibility(View.VISIBLE);
+    }
+
+    private void setCardReady(MeetingsViewHolder viewHolder, int position) {
+        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+        viewHolder.accept.setVisibility(View.GONE);
+        viewHolder.decline.setVisibility(View.GONE);
+        viewHolder.otherTime.setVisibility(View.GONE);
+        if(meetingsOnDay.get(position).dynamic==1)setMyTime(viewHolder,position);
+    }
+
+    private void setMyTime(MeetingsViewHolder viewHolder,int position){
+        viewHolder.myTime.setVisibility(View.VISIBLE);
+        int end = meetingsOnDay.get(position).begin + meetingsOnDay.get(position).duration;
+        viewHolder.myTime.setText(meetingsOnDay.get(position).begin + ":00 - " + end + ":00");
+    }
 
 
     class MeetingsViewHolder extends RecyclerView.ViewHolder {
@@ -267,15 +278,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public MeetingsViewHolder(View itemView) {
             super(itemView);
             meetingName = (TextView) itemView.findViewById(R.id.meeting_name);
-            indicator = itemView.findViewById(R.id.indicator_view);
-            decline_2 = (Button) itemView.findViewById(R.id.decline_meeting_button_2);
-            cardView = (CardView) itemView.findViewById(R.id.meeting_card);
-            textview = (TextView) itemView.findViewById(R.id.date_textview);
             time = (TextView) itemView.findViewById(R.id.ll_time);
+            textview = (TextView) itemView.findViewById(R.id.date_textview);
+            myTime = (TextView) itemView.findViewById(R.id.myTime_textView);
+            decline_2 = (Button) itemView.findViewById(R.id.decline_meeting_button_2);
             accept = (Button) itemView.findViewById(R.id.accept_meeting_button);
             decline = (Button) itemView.findViewById(R.id.decline_meeting_button);
             otherTime = (Button) itemView.findViewById(R.id.other_time);
-            myTime = (TextView) itemView.findViewById(R.id.myTime_textView);
+            cardView = (CardView) itemView.findViewById(R.id.meeting_card);
+            indicator = itemView.findViewById(R.id.indicator_view);
         }
     }
 }
