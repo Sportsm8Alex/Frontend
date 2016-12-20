@@ -50,7 +50,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
     int sportart_ID = -1;
     ArrayList<Information> Selection = new ArrayList<>();
     ArrayList<Information> SelectionGroup = new ArrayList<>();
-    private EditText additionalInfos;
+    private EditText additionalInfos,customMeetingEditText;
     private Boolean start;
     private MutableDateTime startTime, endTime;
     private DateTime datetime;
@@ -72,17 +72,24 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
-        getWindow().setLayout((int) (width * .9), width);
+        int height = dm.heightPixels;
+        getWindow().setLayout((int) (width * .9),(int) (height * .7) );
 
         //sportartID
         Bundle b = getIntent().getExtras();
         if (b != null) {
             sportart_ID = b.getInt("sportID");
         }
+        if(sportart_ID==8008){
+            findViewById(R.id.edittext_custom_meeting).setVisibility(View.VISIBLE);
+        }
         formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
         datetime = new DateTime();
         startTime = new MutableDateTime();
         endTime = new MutableDateTime();
+        customMeetingEditText = (EditText) findViewById(R.id.edittext_custom_meeting);
+        customMeetingEditText.setSingleLine();
+        customMeetingEditText.addTextChangedListener(this);
         additionalInfos = (EditText) findViewById(R.id.editText_additional);
         additionalInfos.setSingleLine();
         additionalInfos.addTextChangedListener(this);
@@ -280,8 +287,7 @@ public class CreateNewMeeting extends Activity implements DatePickerDialog.OnDat
 
     @Override
     public void afterTextChanged(Editable editable) {
-        extraInfoString = additionalInfos.getText().toString();
-        Toast.makeText(CreateNewMeeting.this, extraInfoString, Toast.LENGTH_SHORT).show();
+        extraInfoString = customMeetingEditText.getText().toString();
     }
 
     @Override

@@ -4,56 +4,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button_beginn"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/edittext_custom_meeting"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:visibility="gone"
         android:layout_margin="8dp"
-        android:onClick="timeButtons"
-        android:text="@string/text_beginning">
-
-    </Button>
-
-    <Button
-        android:id="@+id/button_ende"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_margin="8dp"
-        android:onClick="timeButtons"
-        android:text="@string/text_end" />
+        android:hint="Was willst du tun?" />
 
-    <Button
-        android:id="@+id/button_datum"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_time_buttons"
+        android:layout_below="@id/edittext_custom_meeting"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
-        android:onClick="dateButton"
-        android:text="@string/text_date" />
+        android:gravity="center"
+        android:weightSum="6">
+
+        <Button
+            android:id="@+id/button_beginn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:onClick="timeButtons"
+            android:text="@string/text_beginning">
+
+        </Button>
+
+        <Button
+            android:id="@+id/button_ende"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:onClick="timeButtons"
+            android:text="@string/text_end" />
+
+        <Button
+            android:id="@+id/button_datum"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:onClick="dateButton"
+            android:text="@string/text_date" />
+    </LinearLayout>
 
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/button_beginn"
+        android:layout_below="@id/ll_time_buttons"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
+        android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
+        android:baselineAligned="false"
         android:orientation="horizontal"
-        android:id="@+id/ll_main"
         android:weightSum="3">
 
         <LinearLayout
@@ -131,12 +148,12 @@
     </LinearLayout>
 
     <CheckBox
-        android:layout_width="wrap_content"
         android:id="@+id/checkbox_dynamic"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"
         android:layout_centerHorizontal="true"
-        android:text="Dynamic Meeting?"/>
+        android:text="Dynamic Meeting?" />
 
     <LinearLayout
         android:layout_width="match_parent"

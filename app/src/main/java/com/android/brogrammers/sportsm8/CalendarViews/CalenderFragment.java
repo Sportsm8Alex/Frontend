@@ -60,8 +60,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
      * @return A new instance of fragment CalenderFragment.
      */
     public static CalenderFragment newInstance(String param1, String param2) {
-        CalenderFragment fragment = new CalenderFragment();
-        return fragment;
+        return new CalenderFragment();
     }
 
     @Override

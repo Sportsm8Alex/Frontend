@@ -35,7 +35,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
 
     private ListView listView;
     private int meetingID;
-    private String startTime, endTime, sportID;
+    private String startTime, endTime, sportID,activity;
     private ArrayList<Information> members, Selection;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -57,6 +57,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         startTime = b.getString("startTime");
         endTime = b.getString("endTime");
         sportID = b.getString("sportID");
+        activity = b.getString("activity");
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
         DateTime dt = formatter.parseDateTime(startTime);
         DateTime dt2 = formatter.parseDateTime(endTime);
@@ -65,8 +66,11 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         //Set Views
         textView_time.setText(dt.toString("HH:mm") + "-" + dt2.toString("HH:mm"));
         textView_date.setText(dt.toString("dd.MM.YYYY"));
-        textView_sportID.setText(array[Integer.valueOf(sportID)]);
-
+        if(Integer.valueOf(sportID)==8008) {
+           textView_sportID.setText(activity);
+        }else{
+            textView_sportID.setText(array[Integer.valueOf(sportID)]);
+        }
         getMemberList();
         swipeRefreshLayout.setOnRefreshListener(this);
     }

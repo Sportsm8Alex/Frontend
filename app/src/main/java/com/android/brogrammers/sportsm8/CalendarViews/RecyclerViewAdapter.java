@@ -66,12 +66,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Resources res = context.getResources();
         String[] array = res.getStringArray(R.array.sportarten);
         int x = Integer.valueOf(meetingsOnDay.get(position).sportID);
-        meetingsViewHolder.meetingName.setText(array[x]);
+        if (x == 8008) {
+            meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
+        } else {
+            meetingsViewHolder.meetingName.setText(array[x]);
+        }
         final Information infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
             meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
             if (meetingsOnDay.get(position).meetingIsGood) {
                 meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+                meetingsViewHolder.time.setTextColor(ContextCompat.getColor(context, R.color.green));
             }
             if (meetingsOnDay.get(position).duration != 0) {
                 meetingsViewHolder.myTime.setVisibility(View.VISIBLE);
@@ -83,11 +88,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
             }
         } else {
-            if (Integer.valueOf(meetingsOnDay.get(position).status) == 0&&meetingsOnDay.get(position).confirmed==1) {
+            if (Integer.valueOf(meetingsOnDay.get(position).status) == 0 && meetingsOnDay.get(position).confirmed == 1) {
                 meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
                 meetingsViewHolder.accept.setVisibility(View.GONE);
                 meetingsViewHolder.decline.setVisibility(View.GONE);
-            } else if (Integer.valueOf(meetingsOnDay.get(position).status) == 1&&meetingsOnDay.get(position).confirmed==1) {
+            } else if (Integer.valueOf(meetingsOnDay.get(position).status) == 1 && meetingsOnDay.get(position).confirmed == 1) {
                 meetingsViewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
                 meetingsViewHolder.accept.setVisibility(View.GONE);
                 meetingsViewHolder.decline.setVisibility(View.GONE);
@@ -110,7 +115,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 temp = true;
             } else if (temp && timeArray[i] < meetingsOnDay.get(position).minParticipants) {
                 if (i - begin - 1 > dur) {
-                    startTime.setHourOfDay(begin+1);
+                    startTime.setHourOfDay(begin + 1);
                     endTime.setHourOfDay(i);
                     meetingsOnDay.get(position).startTime = startTime.toString("YYYY-MM-dd HH:mm:ss");
                     meetingsOnDay.get(position).endTime = endTime.toString("YYYY-MM-dd HH:mm:ss");
@@ -133,6 +138,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 b.putString("startTime", meetingsOnDay.get(position).startTime);
                 b.putString("endTime", meetingsOnDay.get(position).endTime);
                 b.putString("sportID", meetingsOnDay.get(position).sportID);
+                b.putString("activity",meetingsOnDay.get(position).meetingActivity);
                 intent.putExtras(b);
                 context.startActivity(intent);
             }
@@ -224,10 +230,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             view.setVisibility(View.GONE);
             meetingsViewHolder.decline.setVisibility(View.GONE);
             meetingsOnDay.get(pos).confirmed = 1;
-        }else{
+        } else {
             DateTime timeS = formatter.parseDateTime(meetingsOnDay.get(pos).startTime);
             DateTime timeE = formatter.parseDateTime(meetingsOnDay.get(pos).endTime);
-            setOtherTime(timeS.getHourOfDay(),timeE.getHourOfDay(),pos);
+            setOtherTime(timeS.getHourOfDay(), timeE.getHourOfDay(), pos);
             meetingsViewHolder.otherTime.setVisibility(View.GONE);
             meetingsViewHolder.accept.setVisibility(View.GONE);
             meetingsViewHolder.decline.setVisibility(View.GONE);

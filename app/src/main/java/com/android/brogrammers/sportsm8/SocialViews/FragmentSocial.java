@@ -87,9 +87,8 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
      * @return A new instance of fragment FragmentSocial.
      */
     public static FragmentSocial newInstance() {
-        FragmentSocial fragment = new FragmentSocial();
 
-        return fragment;
+        return new FragmentSocial();
     }
 
     @Override
