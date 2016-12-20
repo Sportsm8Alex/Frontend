@@ -12,8 +12,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UserClasses.LoginScreen"
-            android:windowSoftInputMode="stateVisible|adjustPan"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +50,11 @@
             android:name=".SocialViews.groups.GroupDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SocialViews.SelectorContainer"></activity>
+        <activity android:name=".SocialViews.SelectorContainer" />
+        <activity
+            android:name=".ActivitiesViews.CreateNewMeeting2"
+            android:label="@string/title_activity_create_new_meeting2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

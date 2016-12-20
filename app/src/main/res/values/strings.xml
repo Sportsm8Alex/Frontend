@@ -104,4 +104,9 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="leave_group">Gruppe verlassen</string>
+    <string name="title_activity_create_new_meeting2">CreateNewMeeting2</string>
+    <string name="save">speichern</string>
+    <string name="add_friends_to_meeting">Freunde hinzufügen</string>
+    <string name="minium_party_size">Mindestanzahl Teilnemer:</string>
+    <string name="minimum_meeting_time">Mindestzeit:</string>
 </resources>

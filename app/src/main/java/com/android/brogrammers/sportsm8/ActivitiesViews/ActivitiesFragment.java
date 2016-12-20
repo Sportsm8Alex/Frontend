@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * Use the {@link ActivitiesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivitiesFragment extends Fragment implements UIthread,View.OnClickListener {
+public class ActivitiesFragment extends Fragment implements UIthread, View.OnClickListener {
 
     Activity parentActivity;
     ArrayList<Information> sportIDs;
@@ -49,7 +49,7 @@ public class ActivitiesFragment extends Fragment implements UIthread,View.OnClic
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
-    int i =0;
+    int i = 0;
 
 
     private OnFragmentInteractionListener mListener;
@@ -65,8 +65,7 @@ public class ActivitiesFragment extends Fragment implements UIthread,View.OnClic
      * @return A new instance of fragment ActivitiesFragment.
      */
     public static ActivitiesFragment newInstance(String param1, String param2) {
-        ActivitiesFragment fragment = new ActivitiesFragment();
-        return fragment;
+        return new ActivitiesFragment();
     }
 
     @Override
@@ -132,7 +131,7 @@ public class ActivitiesFragment extends Fragment implements UIthread,View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case (R.id.button_create_meeting):
-                funGame(view);
+                createMeeting(view);
                 break;
             case R.id.email_switcher:
                 String[] emails = getContext().getResources().getStringArray(R.array.emails);
@@ -143,16 +142,16 @@ public class ActivitiesFragment extends Fragment implements UIthread,View.OnClic
                 Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
                 btn.setText(emails[i]);
                 i++;
-                i=i%emails.length;
+                i = i % emails.length;
                 break;
         }
     }
 
-    public void funGame(View v) {
+    public void createMeeting(View v) {
         Bundle b = new Bundle();
-        b.putInt("sportID", sportID);
+        b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
         b.putBoolean("liga", false);
-        Intent intent = new Intent(parentActivity, CreateNewMeeting.class);
+        Intent intent = new Intent(parentActivity, CreateNewMeeting2.class);
         intent.putExtras(b);
         startActivity(intent);
     }
@@ -185,10 +184,15 @@ public class ActivitiesFragment extends Fragment implements UIthread,View.OnClic
         ImageView iV = (ImageView) parentActivity.findViewById(R.id.imageView_sportart);
 
         Information temp = sportIDs.get(sID);
-        Resources res = getResources();
+        Resources res = parentActivity.getResources();
         TypedArray draws = res.obtainTypedArray(R.array.sportDrawables);
-        iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
+        if(Integer.valueOf(temp.sportID)!=8008) {
+            iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
+        }else{
+            iV.setImageDrawable(getResources().getDrawable(R.drawable.custommeeting));
+        }
 
+        draws.recycle();
         fSpiel.setVisibility(View.GONE);
 
         if (Integer.valueOf(sportIDs.get(sID).team) == 1) {
