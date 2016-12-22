@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -74,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         final Information infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
-            meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
+            //meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
             if (meetingsOnDay.get(position).meetingIsGood && meetingsOnDay.get(position).duration != 0) {
                 setCardReady(meetingsViewHolder, position);
             } else if (meetingsOnDay.get(position).duration == 0) {
@@ -157,7 +158,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         meetingsViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (meetingsOnDay.get(position).duration != 0) {
+                if (meetingsOnDay.get(position).duration != 0||meetingsOnDay.get(position).confirmed==1) {
                     meetingsViewHolder.decline_2.setVisibility(View.VISIBLE);
                 }
                 return true;
@@ -241,6 +242,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //Help Methods for setting view attributes to declutter Code
     private void setCardWaiting(MeetingsViewHolder viewHolder, int position) {
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+        viewHolder.badge.setImageResource(R.drawable.waiting);
         viewHolder.accept.setVisibility(View.GONE);
         viewHolder.decline.setVisibility(View.GONE);
         viewHolder.otherTime.setVisibility(View.GONE);
@@ -248,12 +250,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private void setCardUndecided(MeetingsViewHolder viewHolder, int position) {
+        viewHolder.badge.setImageResource(R.drawable.unanswered);
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
         viewHolder.accept.setVisibility(View.VISIBLE);
         viewHolder.decline.setVisibility(View.VISIBLE);
     }
 
     private void setCardReady(MeetingsViewHolder viewHolder, int position) {
+        viewHolder.badge.setImageResource(R.drawable.confirmed_white);
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
         viewHolder.accept.setVisibility(View.GONE);
         viewHolder.decline.setVisibility(View.GONE);
@@ -274,6 +278,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView textview, time, meetingName, myTime;
         Button decline, decline_2, accept, otherTime;
         CardView cardView;
+        ImageView badge;
 
         public MeetingsViewHolder(View itemView) {
             super(itemView);
@@ -287,6 +292,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             otherTime = (Button) itemView.findViewById(R.id.other_time);
             cardView = (CardView) itemView.findViewById(R.id.meeting_card);
             indicator = itemView.findViewById(R.id.indicator_view);
+            badge = (ImageView) itemView.findViewById(R.id.status_badge);
         }
     }
 }

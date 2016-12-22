@@ -9,16 +9,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -39,6 +44,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Text;
 
 import java.awt.font.NumericShaper;
 import java.util.ArrayList;
@@ -48,7 +54,7 @@ import java.util.Arrays;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread, View.OnClickListener {
+public class CreateNewMeeting2 extends Activity implements TextWatcher, android.support.v7.widget.SearchView.OnQueryTextListener, UIthread, View.OnClickListener {
 
     int minMemberCount = 4, minHours = 2;
     Button selectedButton;
@@ -56,10 +62,10 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
     int sportart_ID = -1;
     ArrayList<Information> Selection = new ArrayList<>();
     ArrayList<Information> SelectionGroup = new ArrayList<>();
-    private EditText additionalInfos, editTextChooseActivity;
+    private SearchView editTextChooseActivity;
     private Boolean start;
     private MutableDateTime startTime, endTime;
-    private DateTime datetime,backUpStartTime,backUpEndTime;
+    private DateTime datetime, backUpStartTime, backUpEndTime;
     private DateTimeFormatter formatter;
     private Button startTime_b, endTime_b, date_b;
     private TextView minTimeTextView, minPartySizeTextView;
@@ -82,16 +88,30 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
         if (b != null) {
             sportart_ID = b.getInt("sportID");
         }
-        if (sportart_ID == 8008) {
-            findViewById(R.id.edittext_custom_meeting).setVisibility(View.VISIBLE);
-        }
+
         formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
         datetime = new DateTime();
         startTime = new MutableDateTime();
         endTime = new MutableDateTime();
 
-        editTextChooseActivity = (EditText) findViewById(R.id.edittext_choose_activity);
-        editTextChooseActivity.addTextChangedListener(this);
+        //SearchView
+        if (sportart_ID == 8008) {
+            editTextChooseActivity = (SearchView) findViewById(R.id.edittext_choose_activity);
+            editTextChooseActivity.setOnQueryTextListener(this);
+            editTextChooseActivity.setIconifiedByDefault(false);
+            editTextChooseActivity.setIconified(false);
+            editTextChooseActivity.setQueryHint("Was willst du tun?");
+            editTextChooseActivity.setVisibility(View.VISIBLE);
+            editTextChooseActivity.clearFocus();
+            ImageView searchViewIcon = (ImageView) editTextChooseActivity.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+            searchViewIcon.setImageDrawable(null);
+        }else{
+            TextView activityName = (TextView)findViewById(R.id.activity_name);
+            Resources res = getResources();
+            String[] array = res.getStringArray(R.array.sportarten);
+            activityName.setText(array[sportart_ID]);
+        }
+
 
         startTimeButton = (Button) findViewById(R.id.button_begin_time);
         endTimeButton = (Button) findViewById(R.id.button_end_time);
@@ -114,10 +134,10 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
         checkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked){
+                if (checked) {
                     startTimeButton.setText(startTime.toString("HH:00"));
                     endTimeButton.setText(endTime.toString("HH:00"));
-                }else{
+                } else {
                     startTimeButton.setText(startTime.toString("HH:mm"));
                     endTimeButton.setText(endTime.toString("HH:mm"));
                 }
@@ -129,11 +149,11 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
         endDateButton.setText(datetime.toString("EE., dd. MMM. yyyy"));
         startTimeButton.setText(datetime.toString("HH:mm"));
         endTimeButton.setText(datetime.toString("HH:mm"));
-        minTimeTextView.setText(minHours+"");
-        minPartySizeTextView.setText(minMemberCount+"");
+        minTimeTextView.setText(minHours + "");
+        minPartySizeTextView.setText(minMemberCount + "");
 
         //startCycle
-       onClick(startTimeButton);
+        onClick(startTimeButton);
     }
 
     @Override
@@ -155,25 +175,26 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
                 finish();
                 break;
             case R.id.save_meeting:
-                createMeeting();
+                createMeeting(view);
                 break;
             case R.id.button_add_friends:
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("SelectionMode", true);
+                bundle.putSerializable("Selection",Selection);
                 Intent intent = new Intent(this, SelectorContainer.class);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);
                 break;
             case R.id.button_min_meeting_time:
-                createNumberPickerDialog("Wie viele Stunden?",minHours, 24, false);
+                createNumberPickerDialog("Wie viele Stunden?", minHours, 24, false);
                 break;
             case R.id.button_min_party_size:
-                createNumberPickerDialog("Ab wie vielen Leuten?",minMemberCount ,Selection.size(), true);
+                createNumberPickerDialog("Ab wie vielen Leuten?", minMemberCount, Selection.size(), true);
                 break;
         }
     }
 
-    private void createNumberPickerDialog(String message,int current ,int max, final Boolean partySize) {
+    private void createNumberPickerDialog(String message, int current, int max, final Boolean partySize) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final NumberPicker numberPicker = new NumberPicker(this);
         numberPicker.setMaxValue(max);
@@ -185,12 +206,12 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (partySize) {
                     minMemberCount = numberPicker.getValue();
-                    minPartySizeTextView.setText(minMemberCount+"");
-                    minPartySizeTextView.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.green));
-                }else{
+                    minPartySizeTextView.setText(minMemberCount + "");
+                    minPartySizeTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.green));
+                } else {
                     minHours = numberPicker.getValue();
-                    minTimeTextView.setText(minHours+"");
-                    minTimeTextView.setTextColor(ContextCompat.getColor(getBaseContext(),R.color.green));
+                    minTimeTextView.setText(minHours + "");
+                    minTimeTextView.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.green));
                 }
 
             }
@@ -211,9 +232,10 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
                         startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
                         startTime.set(DateTimeFieldType.minuteOfHour(), minute);
                         startTimeButton.setText(startTime.toString("HH:mm"));
-                        if(checkSwitch.isChecked())startTimeButton.setText(startTime.toString("HH:00"));
-                        bBegin=true;
-                        if(step ==0){
+                        if (checkSwitch.isChecked())
+                            startTimeButton.setText(startTime.toString("HH:00"));
+                        bBegin = true;
+                        if (step == 0) {
                             step++;
                             onClick(endTimeButton);
                         }
@@ -226,11 +248,13 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
                         endTime.set(DateTimeFieldType.minuteOfHour(), minute);
-                        if(checkSwitch.isChecked()){}
+                        if (checkSwitch.isChecked()) {
+                        }
                         endTimeButton.setText(endTime.toString("HH:mm"));
-                        if(checkSwitch.isChecked())endTimeButton.setText(endTime.toString("HH:00"));
-                        bEnd=true;
-                        if(step ==1){
+                        if (checkSwitch.isChecked())
+                            endTimeButton.setText(endTime.toString("HH:00"));
+                        bEnd = true;
+                        if (step == 1) {
                             step++;
                             onClick(startDateButton);
                         }
@@ -252,7 +276,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
                         endTime.setDate(year, month + 1, dayOfMonth);
                         startDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
                         endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
-                        bDate=true;
+                        bDate = true;
                     }
                 }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
                 break;
@@ -275,9 +299,9 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
         finish();
     }
 
-    public void createMeeting() {
+    public void createMeeting(View view) {
 
-        if (bBegin && bEnd && bDate && minMemberCount != 0&&minHours!=0) {
+        if (bBegin && bEnd && bDate && minMemberCount != 0 && minHours != 0) {
             if (startTime.isBefore(endTime)) {
                 if (checkSwitch.isChecked()) {
                     dynamic = 1;
@@ -367,7 +391,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
 
     @Override
     public void afterTextChanged(Editable editable) {
-        extraInfoString = editTextChooseActivity.getText().toString();
+
     }
 
     @Override
@@ -381,4 +405,14 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, UIthread
     }
 
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        extraInfoString = newText;
+        return false;
+    }
 }

@@ -48,7 +48,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
     Activity parentActivity;
-    private ArrayList<Information> friends, groups;
+    private ArrayList<Information> friends, groups, selection;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -98,10 +98,13 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
 
         //Declarations Variables
         Bundle bundle = this.getArguments();
-        if(bundle!=null){
-            addToMeetingMode=bundle.getBoolean("addToMeetingMode");
+        if (bundle != null) {
+            addToMeetingMode = bundle.getBoolean("addToMeetingMode");
+            try {
+                selection = (ArrayList<Information>) bundle.getSerializable("Selection");
+            } catch (NullPointerException e) {
+            }
         }
-
         if (addToMeetingMode) {
             actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
         }
@@ -143,8 +146,8 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         return rootView;
     }
 
-    public void setAddToMeetingMode(Boolean bool){
-        addToMeetingMode=true;
+    public void setAddToMeetingMode(Boolean bool) {
+        addToMeetingMode = true;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -238,7 +241,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         Bundle bundle = new Bundle();
         bundle.putSerializable("GroupList", selection);
         createGroupDialog.setArguments(bundle);
-        createGroupDialog.show(getChildFragmentManager(),"createGroup");
+        createGroupDialog.show(getChildFragmentManager(), "createGroup");
 
 
        /* Bundle bundle = new Bundle();
@@ -358,6 +361,16 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
                 i++;
             }
             adapter.removeRange(0, i);
+        }
+        adapterReference.setSelected(selection);
+        if (selection != null) {
+            for (int i = 0; i < selection.size(); i++) {
+                for (int j = 0; j < friends.size(); j++) {
+                    if (friends.get(j).email.equals(selection.get(i).email)) {
+                        friends.get(j).selected = true;
+                    }
+                }
+            }
         }
     }
 

@@ -37,6 +37,7 @@ public class DayFragment extends Fragment {
         return dayFragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

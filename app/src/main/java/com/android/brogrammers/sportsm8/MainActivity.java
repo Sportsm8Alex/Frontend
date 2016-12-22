@@ -9,10 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,8 +30,8 @@ import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
-
-import org.w3c.dom.Text;
+import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 /**
  * Created by alex on 10/30/2016.
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
     private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private BottomNavigationView bottomNavigationView;
 
     private ImageButton imageButtonToolbar;
     private TextView textView;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
         fragmentTransaction.commit();
 
         //bottom navigation
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+        bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -128,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                 }
         );
     }
+
+
 
 
     public void onClick(View v) {
@@ -245,5 +248,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
 }
 

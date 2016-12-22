@@ -9,6 +9,9 @@ import android.os.Bundle;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
+
+import java.util.ArrayList;
 
 public class SelectorContainer extends AppCompatActivity implements FragmentSocial.OnFragmentInteractionListener {
 
@@ -22,7 +25,7 @@ public class SelectorContainer extends AppCompatActivity implements FragmentSoci
         fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragment = new FragmentSocial();
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
         bundle.putBoolean("addToMeetingMode",true);
         fragment.setArguments(bundle);
         fragmentTransaction.add(R.id.selector_container, fragment);

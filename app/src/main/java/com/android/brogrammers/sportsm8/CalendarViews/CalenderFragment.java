@@ -46,6 +46,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
     SwipeRefreshLayout swipeRefreshLayout;
     private CharSequence Titles[] = {"Mo", "Di", "We", "Do", "Fr", "Sa", "So"};
     private ViewPager viewPager;
+    Boolean hasStop = false;
 
     private OnFragmentInteractionListener mListener;
 
@@ -132,6 +133,20 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
 
         // needs to be adapted to keep current db info if refreshing not possible (no overwriting of sharedPreferences if no connection)
 
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            super.onDestroy();
+        }catch (NullPointerException npe){
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

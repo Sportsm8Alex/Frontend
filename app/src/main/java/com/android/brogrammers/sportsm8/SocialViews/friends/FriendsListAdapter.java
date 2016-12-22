@@ -67,9 +67,9 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         //sets Background light blue, when card is selected
         holder.relativeLayoutCardview.setBackgroundColor(isSelected(position) ? ContextCompat.getColor(context, R.color.lightblue) : ContextCompat.getColor(context, R.color.cardview_light_background));
         //shows imagebutton, when used inside search new Friends view
-        holder.addToFriends.setVisibility(addFriendMode ? View.VISIBLE:View.GONE);
+        holder.addToFriends.setVisibility(addFriendMode ? View.VISIBLE : View.GONE);
         //shows friendsrequestbar, for unconfirmed Friends
-        holder.friendsrequest.setVisibility(Integer.valueOf(data.get(position).confirmed) == 0&&!addFriendMode? View.VISIBLE : View.GONE);
+        holder.friendsrequest.setVisibility(Integer.valueOf(data.get(position).confirmed) == 0 && !addFriendMode ? View.VISIBLE : View.GONE);
 
         //Loads profile Picture with Ion Library in an AsyncTask
         Picasso.with(context)
@@ -92,10 +92,23 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     }
 
+    public void setSelected(ArrayList<Information> selection) {
+        if (selection != null) {
+            for (int i = 0; i < selection.size(); i++) {
+                for (int j = 0; j < data.size(); j++) {
+                    if (data.get(j).email.equals(selection.get(i).email)) {
+                        toggleSelection(j);
+                    }
+                }
+            }
+        }
+    }
+
     public void removeItem(int position) {
         data.remove(position);
         notifyItemRemoved(position);
     }
+
     //removes cards. Used for removing unconfirmed friends while selecting friends
     public void removeRange(int positionStart, int itemCount) {
         for (int i = 0; i < itemCount; ++i) {
@@ -108,6 +121,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     public int getItemCount() {
         return data.size();
     }
+
     //called by setRefeernceMethod in Friends.java to connect Clicklistener
     public void setClicklistener(FragmentSocial clicklistener) {
         this.clickListener = clicklistener;
@@ -120,7 +134,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         ImageView profileP;
         CardView cardView;
         Context contxt;
-        ImageButton accept, decline, addToFriends,removeFriend;
+        ImageButton accept, decline, addToFriends, removeFriend;
         LinearLayout friendsrequest;
         RelativeLayout relativeLayoutCardview;
 
