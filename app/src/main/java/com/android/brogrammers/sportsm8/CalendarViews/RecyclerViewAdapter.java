@@ -1,6 +1,6 @@
 package com.android.brogrammers.sportsm8.CalendarViews;
 
-import android.app.TimePickerDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,8 +21,10 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -34,12 +36,12 @@ import java.util.ArrayList;
  * Created by Korbi on 10/30/2016.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread, TimePickerDialog.OnTimeSetListener {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread {
 
     private Context context;
     private ArrayList<Information> meetingsOnDay;
     private DateTimeFormatter formatter;
-    private int begin;
+    private int begin,beginMinute;
 
     public RecyclerViewAdapter(Context context, ArrayList<Information> meetingsOnDay) {
         this.context = context;
@@ -75,13 +77,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         final Information infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
-            //meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
+            meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
             if (meetingsOnDay.get(position).meetingIsGood && meetingsOnDay.get(position).duration != 0) {
                 setCardReady(meetingsViewHolder, position);
             } else if (meetingsOnDay.get(position).duration == 0) {
                 setCardUndecided(meetingsViewHolder, position);
-            }else if(meetingsOnDay.get(position).duration!=0){
-                setCardWaiting(meetingsViewHolder,position);
+            } else if (meetingsOnDay.get(position).duration != 0) {
+                setCardWaiting(meetingsViewHolder, position);
             }
         } else {
             if (Integer.valueOf(meetingsOnDay.get(position).status) == 0 && meetingsOnDay.get(position).confirmed == 1) {
@@ -100,14 +102,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Boolean temp = false;
         int begin = 0;
         int dur = 0;
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 96; i++) {
             if (!temp && timeArray[i] >= meetingsOnDay.get(position).minParticipants) {
-                begin = i;
+                begin = i+1;
                 temp = true;
             } else if (temp && timeArray[i] < meetingsOnDay.get(position).minParticipants) {
                 if (i - begin - 1 > dur) {
-                    startTime.setHourOfDay(begin + 1);
-                    endTime.setHourOfDay(i);
+                    startTime.setHourOfDay((begin/4));
+                    startTime.setMinuteOfHour(begin%4*15);
+                    endTime.setHourOfDay(i/4);
+                    endTime.setMinuteOfHour(i%4*15);
                     meetingsOnDay.get(position).startTime = startTime.toString("YYYY-MM-dd HH:mm:ss");
                     meetingsOnDay.get(position).endTime = endTime.toString("YYYY-MM-dd HH:mm:ss");
                     dur = begin - i - 1;
@@ -139,7 +143,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 confirm(position);
                 //TODO: Check if minParticipants are reached after accepting
-                setCardWaiting(meetingsViewHolder,position);
+                setCardWaiting(meetingsViewHolder, position);
             }
         });
         meetingsViewHolder.decline_2.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +162,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         meetingsViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (meetingsOnDay.get(position).duration != 0||meetingsOnDay.get(position).confirmed==1) {
+                if (meetingsOnDay.get(position).duration != 0 || meetingsOnDay.get(position).confirmed == 1) {
                     meetingsViewHolder.decline_2.setVisibility(View.VISIBLE);
                 }
                 return true;
@@ -168,7 +172,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         meetingsViewHolder.otherTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        begin = hourOfDay;
+                        beginMinute = minute;
+                        TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePickerDialog view, int endHourOfDay, int endMinute, int second) {
+                                setOtherTime(begin,beginMinute, endHourOfDay,endMinute, position);
+                                setCardWaiting(meetingsViewHolder, position);
+                            }
+                        }, 0, 0, true);
+                        tdp2.setTimeInterval(1, 15);
+                        tdp2.show(((Activity)context).getFragmentManager(),"tag");
+                    }
+                }, 0, 0, true);
+                tdp.setTimeInterval(1, 15);
+                tdp.show(((Activity)context).getFragmentManager(),"tag");
+
+
+               /* new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         begin = i;
@@ -176,27 +200,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             @Override
                             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                                 setOtherTime(begin, i, position);
-                                setCardWaiting(meetingsViewHolder,position);
+                                setCardWaiting(meetingsViewHolder, position);
                             }
                         }, 0, 0, true).show();
                     }
-                }, 0, 0, true).show();
+                }, 0, 0, true).show();*/
 
             }
         });
     }
 
-    public void setOtherTime(int begin, int end, int position) {
+    public void setOtherTime(int begin,int beginMinute, int end,int endMinute, int position) {
         SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
         Database db = new Database(this, context);
-        String[] params = {"IndexMeetings.php", "function", "setOtherTime", "start", begin + "", "duration", end - begin + "", "meetingID", meetingsOnDay.get(position).MeetingID + "", "email", email};
+        int beginDatabase=begin*4+(beginMinute/15);
+        int durationDatabase=((end*4)+endMinute/15)-((begin*4)+beginMinute/15);
+        String[] params = {"IndexMeetings.php", "function", "setOtherTime", "start", beginDatabase+"", "duration", durationDatabase+"", "meetingID", meetingsOnDay.get(position).MeetingID + "", "email", email};
         db.execute(params);
-    }
-
-    @Override
-    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-
     }
 
     private void removeItem(int pos, Information infoData, View view) {
@@ -221,7 +242,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         } else {
             DateTime timeS = formatter.parseDateTime(meetingsOnDay.get(pos).startTime);
             DateTime timeE = formatter.parseDateTime(meetingsOnDay.get(pos).endTime);
-            setOtherTime(timeS.getHourOfDay(), timeE.getHourOfDay(), pos);
+            setOtherTime(timeS.getHourOfDay(),timeS.getMinuteOfHour(), timeE.getHourOfDay(),timeE.getMinuteOfHour(), pos);
         }
     }
 
@@ -239,14 +260,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void updateUI(String answer) {
 
     }
-//Help Methods for setting view attributes to declutter Code
+
+    //Help Methods for setting view attributes to declutter Code
     private void setCardWaiting(MeetingsViewHolder viewHolder, int position) {
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
         viewHolder.badge.setImageResource(R.drawable.waiting);
         viewHolder.accept.setVisibility(View.GONE);
         viewHolder.decline.setVisibility(View.GONE);
         viewHolder.otherTime.setVisibility(View.GONE);
-        if(meetingsOnDay.get(position).dynamic==1)setMyTime(viewHolder,position);
+        if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
     }
 
     private void setCardUndecided(MeetingsViewHolder viewHolder, int position) {
@@ -262,13 +284,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.accept.setVisibility(View.GONE);
         viewHolder.decline.setVisibility(View.GONE);
         viewHolder.otherTime.setVisibility(View.GONE);
-        if(meetingsOnDay.get(position).dynamic==1)setMyTime(viewHolder,position);
+        if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
     }
 
-    private void setMyTime(MeetingsViewHolder viewHolder,int position){
+    private void setMyTime(MeetingsViewHolder viewHolder, int position) {
         viewHolder.myTime.setVisibility(View.VISIBLE);
         int end = meetingsOnDay.get(position).begin + meetingsOnDay.get(position).duration;
-        viewHolder.myTime.setText(meetingsOnDay.get(position).begin + ":00 - " + end + ":00");
+        MutableDateTime start = new MutableDateTime();
+        start.setHourOfDay(meetingsOnDay.get(position).begin/4);
+        start.setMinuteOfHour(meetingsOnDay.get(position).begin%4*15);
+        MutableDateTime endTime = new MutableDateTime();
+        endTime.setHourOfDay(end/4);
+        endTime.setHourOfDay(end%4*15);
+        viewHolder.myTime.setText(start.toString("HH:mm - ")+endTime.toString("HH:mm"));
     }
 
 

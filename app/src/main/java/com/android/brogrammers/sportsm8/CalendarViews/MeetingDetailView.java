@@ -23,6 +23,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
@@ -179,7 +180,14 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             if (list.get(i).duration != 0) {
                 row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
                 username.setText(list.get(i).username);
-                time.setText(list.get(i).begin + ":00 - " + end + ":00");
+                //time.setText(list.get(i).begin + ":00 - " + end + ":00");
+                MutableDateTime start = new MutableDateTime();
+                start.setHourOfDay(list.get(i).begin/4);
+                start.setMinuteOfHour(list.get(i).begin%4*15);
+                MutableDateTime endTime = new MutableDateTime();
+                endTime.setHourOfDay(end/4);
+                endTime.setMinuteOfHour(end%4*15);
+                time.setText(start.toString("HH:mm - ")+endTime.toString("HH:mm"));
             } else {
                 username.setText(list.get(i).username);
             }

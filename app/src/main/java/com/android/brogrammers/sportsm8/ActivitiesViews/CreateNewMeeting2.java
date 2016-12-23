@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +35,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -135,8 +135,8 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
-                    startTimeButton.setText(startTime.toString("HH:00"));
-                    endTimeButton.setText(endTime.toString("HH:00"));
+                    startTimeButton.setText(startTime.toString("HH:"+(startTime.getMinuteOfHour()-startTime.getMinuteOfHour()%15)));
+                    endTimeButton.setText(endTime.toString("HH:"+(endTime.getMinuteOfHour()-endTime.getMinuteOfHour()%15)));
                 } else {
                     startTimeButton.setText(startTime.toString("HH:mm"));
                     endTimeButton.setText(endTime.toString("HH:mm"));
@@ -226,7 +226,22 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
     public void timeButtons(View view) {
         switch (view.getId()) {
             case R.id.button_begin_time:
-                new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+                        startTime.set(DateTimeFieldType.minuteOfHour(), minute);
+                        startTimeButton.setText(startTime.toString("HH:mm"));
+                        bBegin = true;
+                        if (step == 0) {
+                            step++;
+                            onClick(endTimeButton);
+                        }
+                    }
+                },startTime.getHourOfDay(),startTime.getMinuteOfHour(),true);
+               if(checkSwitch.isChecked()) tdp.setTimeInterval(1,15);
+                tdp.show(getFragmentManager(),"TimePickerDialog");
+               /* new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
@@ -240,10 +255,25 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
                             onClick(endTimeButton);
                         }
                     }
-                }, endTime.getHourOfDay(), endTime.getMinuteOfHour(), true).show();
+                }, endTime.getHourOfDay(), endTime.getMinuteOfHour(), true).show();*/
                 break;
             case R.id.button_end_time:
-                new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+                        endTime.set(DateTimeFieldType.minuteOfHour(), minute);
+                        endTimeButton.setText(endTime.toString("HH:mm"));
+                        bEnd = true;
+                        if (step == 1) {
+                            step++;
+                            onClick(startDateButton);
+                        }
+                    }
+                },startTime.getHourOfDay(),startTime.getMinuteOfHour(),true);
+                if(checkSwitch.isChecked()) tdp2.setTimeInterval(1,15);
+                tdp2.show(getFragmentManager(),"TimePickerDialog");
+               /* new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
                         endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
@@ -259,7 +289,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
                             onClick(startDateButton);
                         }
                     }
-                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true).show();
+                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true).show();*/
                 break;
         }
 
@@ -269,7 +299,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
     public void dateButton(View view) {
         switch (view.getId()) {
             case R.id.button_begin_date:
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(this,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                         startTime.setDate(year, month + 1, dayOfMonth);
@@ -305,8 +335,8 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
             if (startTime.isBefore(endTime)) {
                 if (checkSwitch.isChecked()) {
                     dynamic = 1;
-                    startTime.setMinuteOfHour(0);
-                    endTime.setMinuteOfHour(0);
+                    startTime.setMinuteOfHour((startTime.getMinuteOfHour()-startTime.getMinuteOfHour()%15));
+                    endTime.setMinuteOfHour((endTime.getMinuteOfHour()-endTime.getMinuteOfHour()%15));
                 }
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
