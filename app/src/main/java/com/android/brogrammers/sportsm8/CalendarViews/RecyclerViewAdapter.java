@@ -295,7 +295,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         start.setMinuteOfHour(meetingsOnDay.get(position).begin%4*15);
         MutableDateTime endTime = new MutableDateTime();
         endTime.setHourOfDay(end/4);
-        endTime.setHourOfDay(end%4*15);
+        endTime.setMinuteOfHour(end%4*15);
         viewHolder.myTime.setText(start.toString("HH:mm - ")+endTime.toString("HH:mm"));
     }
 
