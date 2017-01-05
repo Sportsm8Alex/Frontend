@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,8 +29,8 @@ import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by alex on 10/30/2016.
@@ -205,17 +204,19 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                         SharedPreferences.Editor editor = sharedPrefs.edit();
                         editor.clear();
                         editor.apply();
+                        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        mAuth.signOut();
 
                         intent = new Intent(getApplicationContext(), LoginScreen.class);
                         startActivity(intent);
                         closeNavDrawer();
                         return true;
-                    case R.id.nav_sportart:
-                        return true;
                     case R.id.nav_home:
                         intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                         closeNavDrawer();
+                        return true;
+                    case R.id.nav_settings:
                         return true;
 
 

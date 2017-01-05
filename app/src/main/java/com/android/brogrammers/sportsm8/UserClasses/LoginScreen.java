@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,6 +22,15 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -27,8 +38,9 @@ import java.util.concurrent.ExecutionException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LoginScreen extends AppCompatActivity implements UIthread, View.OnClickListener{
+public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UIthread, View.OnClickListener {
 
+    private static final String TAG = "Tag";
     protected EditText email;
     private EditText password;
     protected String enteredEmail;
@@ -36,8 +48,13 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
@@ -47,16 +64,37 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
         findViewById(R.id.loginButton).setOnClickListener(this);
         findViewById(R.id.registerButton).setOnClickListener(this);
 
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    System.out.println("session continued");
+                    Intent intent = new Intent(LoginScreen.this, MainActivity.class);
+                    startActivity(intent);
+                    LoginScreen.this.finish();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+
         //try to read local database if a user is already logged in
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String loginJson = sharedPrefs.getString("islogin", "");
 
-        if (loginJson.equalsIgnoreCase("1")) {
+       /* if (loginJson.equalsIgnoreCase("1")) {
             System.out.println("session continued");
             Intent intent = new Intent(LoginScreen.this, MainActivity.class);
             startActivity(intent);
             LoginScreen.this.finish();
-        }
+        }*/
     }
 
     @Override
@@ -82,10 +120,38 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
             Toast.makeText(LoginScreen.this, "email and password required", Toast.LENGTH_LONG).show();
             return;
         }
+        mAuth.signInWithEmailAndPassword(enteredEmail, enteredPassword)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-        String[] params = {"IndexAccounts.php", "function", "loginAccount", "email", enteredEmail, "password", enteredPassword};
-        Database db = new Database(this, this.getApplicationContext());
-        db.execute(params);
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail", task.getException());
+                            Toast.makeText(LoginScreen.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -105,15 +171,14 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
                 sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString("email", enteredEmail);
-                editor.putString("islogin","1");
+                editor.putString("islogin", "1");
                 editor.apply();
 
                 //start home screen in case of successful login
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 this.finish();
-            }
-            else if (success == 0) {
+            } else if (success == 0) {
                 Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
@@ -174,5 +239,10 @@ public class LoginScreen extends AppCompatActivity implements UIthread, View.OnC
                 break;
             }
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

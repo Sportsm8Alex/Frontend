@@ -1,90 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_account_page"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.android.brogrammers.sportsm8.UserClasses.AccountPage"
-    tools:showIn="@layout/activity_account_page">
-
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:elevation="8dp">
+        android:layout_height="200dp">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            />
+            android:scaleType="center"
+            android:src="@drawable/blurred" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/profilepicture"
+            android:id="@+id/accountpage_pp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp"
+            android:src="@drawable/profilepicture" />
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/username_accountpage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryDark"
             android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:text="Korbinian Rzepka"
+            android:textSize="26sp" />
+
     </RelativeLayout>
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="2">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:padding="8dp">
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
-                android:id="@+id/email"
-                android:text="someEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
-            <TextView
-                android:id="@+id/birthday"
-                android:text="someBirthday"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
-            <Button
-                android:id="@+id/edit_userinformation"
-                android:text="Edit"
+                android:id="@+id/friend_number"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:text="0" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Einstellungen"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="8dp"/>
-
+                android:text="@string/friends" />
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/group_memberships_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/groups" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/meetings_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meetings" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/ll_time_buttons"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/email_accountpage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:paddingStart="8dp"
+        android:text="Test@testemail.com"
+        android:textSize="20sp" />
+
+    <lecho.lib.hellocharts.view.ColumnChartView
+        android:id="@+id/chart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
+
+
+

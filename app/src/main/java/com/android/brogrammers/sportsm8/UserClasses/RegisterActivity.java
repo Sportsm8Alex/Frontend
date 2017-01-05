@@ -2,7 +2,9 @@ package com.android.brogrammers.sportsm8.UserClasses;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +14,11 @@ import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,24 +26,30 @@ import org.json.simple.parser.ParseException;
 
 public class RegisterActivity extends AppCompatActivity implements UIthread {
 
+    private static final String TAG = "";
     protected EditText username;
     private EditText password;
     private EditText email;
     protected String enteredUsername;
-    public static final int CONNECTION_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=15000;
+    public static final int CONNECTION_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 15000;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        username = (EditText)findViewById(R.id.eUsername);
-        password = (EditText)findViewById(R.id.ePassword);
-        email = (EditText)findViewById((R.id.ePassword));
+        username = (EditText) findViewById(R.id.eUsername);
+        password = (EditText) findViewById(R.id.ePassword);
+        email = (EditText) findViewById((R.id.eEmail));
+
+        mAuth = FirebaseAuth.getInstance();
     }
-    
+
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.registerButton:
                 enteredUsername = username.getText().toString();
                 String enteredPassword = password.getText().toString();
@@ -51,23 +64,44 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
                 register();
                 break;
             case R.id.cancel_button:
-                Intent intent = new Intent(getApplicationContext(),LoginScreen.class);
+                Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
                 startActivity(intent);
                 finish();
                 break;
         }
     }
 
-    public void register(){
+    public void register() {
         enteredUsername = username.getText().toString();
-        String enteredPassword = password.getText().toString();
-        String enteredEmail = email.getText().toString();
+        final String enteredPassword = password.getText().toString();
+        final String enteredEmail = email.getText().toString();
+        mAuth.createUserWithEmailAndPassword(enteredEmail, enteredPassword)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            syncDatabases(enteredUsername,enteredPassword,enteredEmail);
+                        }
+
+                        // ...
+                    }
+                });
+
+
+    }
+    public void syncDatabases(String enteredUsername,String enteredPassword,String enteredEmail){
         String[] params = {"IndexAccounts.php", "function", "createNewAccount", "email", enteredUsername, "password", enteredPassword, "email", enteredEmail};
-        Database db = new Database(this, this.getApplicationContext());
+        Database db = new Database(this, getBaseContext());
         db.execute(params);
     }
-
 
 
     @Override
@@ -77,148 +111,14 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
     @Override
     public void updateUI(String answer) {
-        JSONParser parser = new JSONParser();
-        JSONObject json = null;
-        String success ="";
-        try {
-            json = (JSONObject) parser.parse(answer);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        success = Long.toString((Long) json.get("success"));
-        System.out.println("SUCCESS: "+success);
 
-        if(success.equalsIgnoreCase("1")){
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
             RegisterActivity.this.finish();
 
-        }
-        else if(success.equalsIgnoreCase("")){
-            Toast.makeText(RegisterActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-
-        }
-        else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
-            Toast.makeText(RegisterActivity.this, "Connection Problem", Toast.LENGTH_LONG).show();
-        }
 
     }
 
 
-
-    /* not needed anymore
-
-
-    private class AsyncRegistration extends AsyncTask<String, String, String> {
-        ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
-        HttpURLConnection conn;
-        URL url = null;
-
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            //this method will be running on the UI thread
-            progressDialog.setMessage("\tLoading");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        @Override
-        protected String doInBackground(String... params){
-            try{
-                url = new URL("http://10.0.2.2/android_user_api/Backend/index.php");
-            }
-            catch(MalformedURLException e){
-                e.printStackTrace();
-                System.out.println("URL not found");
-                return "exception";
-            }
-
-            try {
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout((READ_TIMEOUT));
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("POST");
-                //setDoInput and setDoOutput method depict handling of both send and receive
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                //Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("email", params[0])
-                        .appendQueryParameter("password", params[1])
-                        .appendQueryParameter("email", params[2]);
-                String query = builder.build().getEncodedQuery();
-
-                //Open connection for sending data
-
-                OutputStream os = conn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(query);
-                writer.flush();
-                writer.close();
-                os.close();
-                conn.connect();
-            }
-            catch(IOException e1){
-                e1.printStackTrace();
-                System.out.println("URL not found");
-                return "exception";
-            }
-            try{
-                InputStream input = conn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                StringBuilder successString = new StringBuilder();
-                String line;
-                String success ="";
-
-                while ((line = reader.readLine()) != null) {
-                    successString.append(line);
-                    System.out.println(successString.toString());
-                }
-                try {
-                    JSONParser parser = new JSONParser();
-                    JSONObject json = (JSONObject) parser.parse(successString.toString());
-
-                    //the json.get seems to be causing the trouble
-                    success = Long.toString((Long) json.get("success"));
-                }
-                catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return success;
-            }
-            catch(IOException e2) {
-                e2.printStackTrace();
-                return "exception";
-            }
-            finally{
-                conn.disconnect();
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String success){
-            //this is running on the UI thread
-            progressDialog.dismiss();
-
-            if(success.equalsIgnoreCase("1")){
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(intent);
-                RegisterActivity.this.finish();
-
-            }
-            else if(success.equalsIgnoreCase("")){
-                Toast.makeText(RegisterActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-
-            }
-            else if(success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")){
-                Toast.makeText(RegisterActivity.this, "Connection Problem", Toast.LENGTH_LONG).show();
-            }
-        }
-    }*/
 }
 

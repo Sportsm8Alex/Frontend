@@ -109,4 +109,9 @@
     <string name="add_friends_to_meeting">Freunde hinzufügen</string>
     <string name="minium_party_size">Mindestanzahl Teilnemer:</string>
     <string name="minimum_meeting_time">Mindestzeit:</string>
+    <string name="calendar">Kalendar</string>
+    <string name="friends">Freunde</string>
+    <string name="home">Home</string>
+    <string name="groups">Gruppen</string>
+    <string name="meetings">Meetings</string>
 </resources>
