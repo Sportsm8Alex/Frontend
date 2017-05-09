@@ -1,5 +1,6 @@
 package com.android.brogrammers.sportsm8.UserClasses;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,14 +24,18 @@ import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -41,6 +46,7 @@ import org.json.simple.parser.ParseException;
 public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UIthread, View.OnClickListener {
 
     private static final String TAG = "Tag";
+    private static final int RC_SIGN_IN = 9001;
     protected EditText email;
     private EditText password;
     protected String enteredEmail;
@@ -51,9 +57,11 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    GoogleApiClient mGoogleApiClient;
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         super.onCreate(savedInstanceState);
@@ -71,6 +79,11 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putString("email", mAuth.getCurrentUser().getEmail());
+                    editor.apply();
+                    progressDialog.dismiss();
                     System.out.println("session continued");
                     Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                     startActivity(intent);
@@ -95,6 +108,17 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
             startActivity(intent);
             LoginScreen.this.finish();
         }*/
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        progressDialog = new ProgressDialog(LoginScreen.this);
+        progressDialog.setMessage("Logging in");
     }
 
     @Override
@@ -126,6 +150,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
+                        progressDialog.dismiss();
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
@@ -157,7 +182,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void updateUI() {
 
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
+    /*    SharedPreferences sharedPrefs = getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
         String loginJson = sharedPrefs.getString("IndexAccountsloginAccountJSON", "");
 
         try {
@@ -235,11 +260,73 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                 this.finish();
                 break;
             }
+            case R.id.sign_in_button:
+                progressDialog.show();
+                signIn();
+                break;
             default: {
                 break;
             }
         }
     }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            firebaseAuthWithGoogle(acct);
+        } else {
+            // Signed out, show unauthenticated UI.
+        }
+    }
+
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        progressDialog.hide();
+                        syncDatabases(acct);
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginScreen.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        // ...
+                    }
+                });
+    }
+
+    public void syncDatabases(GoogleSignInAccount account){
+        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", account.getDisplayName(), "password", account.getId(), "email", account.getEmail()};
+        Database db = new Database(this, getBaseContext());
+        db.execute(params);
+    }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

@@ -25,6 +25,8 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+
 public class FriendsListFragment extends Fragment implements UIthread {
 
     private ArrayList<Information> friends;

@@ -17,26 +17,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
-import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
+import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
+import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements CalenderFragment.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CalenderFragment2.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment.
                                 textView.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_calender:
-                                fragment = new CalenderFragment();
+                                fragment = new CalenderFragment2();
                                 imageButtonToolbar.animate()
                                         .scaleX(0)
                                         .scaleY(0)

@@ -20,10 +20,13 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.Column;
@@ -32,7 +35,18 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-public class AccountPage extends AppCompatActivity implements View.OnClickListener,UIthread{
+public class AccountPage extends AppCompatActivity implements UIthread{
+
+    @BindView(R.id.email_accountpage)
+    TextView emailTV;
+    @BindView(R.id.username_accountpage)
+    TextView usernameTV;
+    @BindView(R.id.accountpage_pp)
+    CircleImageView circleImageView;
+    @BindView(R.id.friend_number)
+    TextView friendcount;
+    @BindView(R.id.group_memberships_number)
+    TextView groupcount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +54,11 @@ public class AccountPage extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_account_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //initiating the buttons
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        fab.setOnClickListener(this);
+        ButterKnife.bind(this);
 
 
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email","");
-        TextView emailTV = (TextView)findViewById(R.id.email_accountpage);
         emailTV.setText(email);
 
 
@@ -59,23 +68,6 @@ public class AccountPage extends AppCompatActivity implements View.OnClickListen
 
 
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.fab:
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                break;
-           /* case R.id.edit_userinformation:
-                //start new alert dialog
-                System.out.println("edit user information");
-                FragmentManager fm = getSupportFragmentManager();
-                EditUserInformation editUserInformationDialog = new EditUserInformation();
-                editUserInformationDialog.show(fm, "editUserInformation");
-                break;*/
-        }
     }
 
     @Override
@@ -93,9 +85,9 @@ public class AccountPage extends AppCompatActivity implements View.OnClickListen
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
-        TextView usernameTV = (TextView) findViewById(R.id.username_accountpage);
         usernameTV.setText(accountData.get(0).username);
-        CircleImageView circleImageView = (CircleImageView) findViewById(R.id.accountpage_pp);
+        groupcount.setText(accountData.get(0).groupcount+"");
+        friendcount.setText(accountData.get(0).friendcount+"");
         Picasso.with(this)
                 .load("http://sportsm8.bplaced.net" + accountData.get(0).PPpath)
                 .placeholder(R.drawable.dickbutt)

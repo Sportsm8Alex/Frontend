@@ -31,12 +31,12 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CalenderFragment.OnFragmentInteractionListener} interface
+ * {@link CalenderFragment2.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CalenderFragment#newInstance} factory method to
+ * Use the {@link CalenderFragment2#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalenderFragment extends Fragment implements UIthread, SwipeRefreshLayout.OnRefreshListener {
+public class CalenderFragment2 extends Fragment implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
     TabLayout slidingTabLayout;
     Activity parentActivity;
@@ -47,7 +47,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
 
     private OnFragmentInteractionListener mListener;
 
-    public CalenderFragment() {
+    public CalenderFragment2() {
         // Required empty public constructor
     }
 
@@ -57,8 +57,8 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
      *
      * @return A new instance of fragment CalenderFragment.
      */
-    public static CalenderFragment newInstance(String param1, String param2) {
-        return new CalenderFragment();
+    public static CalenderFragment2 newInstance(String param1, String param2) {
+        return new CalenderFragment2();
     }
 
     @Override
