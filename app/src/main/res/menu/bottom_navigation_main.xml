@@ -19,7 +19,7 @@
         android:id="@+id/bottom_navigation_friends"
         android:enabled="true"
         android:title="@string/button_friends"
-        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:icon="@drawable/ic_people_white_48dp"
         app:showAsAction="ifRoom"/>
 
 </menu>

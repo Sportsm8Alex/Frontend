@@ -11,6 +11,7 @@ public class Information implements Serializable {
 
     //userInformation
     public String email, PPpath,username,friend;
+    public int friendcount,groupcount;
 
     //meetingInformation
     public int MeetingID,confirmed=0,minParticipants,begin,duration,dynamic;
