@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,10 +25,15 @@ import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
-import org.json.simple.parser.ParseException;
 import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 
 
 /**
@@ -40,16 +44,18 @@ import java.util.ArrayList;
  * Use the {@link ActivitiesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivitiesFragment extends Fragment implements UIthread, View.OnClickListener {
+public class ActivitiesFragment extends Fragment implements UIthread {
 
     Activity parentActivity;
     ArrayList<Information> sportIDs;
-    Spinner mySpinner;
     int sportID;
     String[] sportArten;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    @BindView(R.id.email_switcher)
+    Button email_switcher_button;
+    Spinner sportsSpinner;
     int i = 0;
 
 
@@ -81,13 +87,12 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_activities, container, false);
         //toolbar problem needs to be solved first
+        ButterKnife.bind(this,rootView);
+        sportsSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
         createList();
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        Button btn = (Button) rootView.findViewById(R.id.email_switcher);
-        rootView.findViewById(R.id.button_create_meeting).setOnClickListener(this);
-        btn.setOnClickListener(this);
-        btn.setText(email);
+        email_switcher_button.setText(email);
         return rootView;
     }
 
@@ -114,7 +119,6 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         mListener = null;
     }
 
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -129,25 +133,20 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
         void onFragmentInteraction(Uri uri);
     }
 
+    @OnClick(R.id.email_switcher)
     public void onClick(View view) {
-        switch (view.getId()) {
-            case (R.id.button_create_meeting):
-                createMeeting(view);
-                break;
-            case R.id.email_switcher:
-                String[] emails = getContext().getResources().getStringArray(R.array.emails);
-                SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("email", emails[i]);
-                editor.apply();
-                Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
-                btn.setText(emails[i]);
-                i++;
-                i = i % emails.length;
-                break;
-        }
+        String[] emails = getContext().getResources().getStringArray(R.array.emails);
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("email", emails[i]);
+        editor.apply();
+        Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
+        btn.setText(emails[i]);
+        i++;
+        i = i % emails.length;
     }
 
+    @OnClick(R.id.button_create_meeting)
     public void createMeeting(View v) {
         Bundle b = new Bundle();
         b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
@@ -159,17 +158,14 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
 
     private void initSpinner() {
         if (sportArten != null) {
-            mySpinner = (Spinner) parentActivity.findViewById(R.id.spinner2);
             ArrayAdapter<String> myAdapater = new ArrayAdapter<>(parentActivity, R.layout.item_custom_spinner, sportArten);
             myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mySpinner.setAdapter(myAdapater);
+             sportsSpinner.setAdapter(myAdapater);
 
-            mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            sportsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    //update(mySpinner.getSelectedItem().toString());
                     update(position);
-                    sportID = position;
                 }
 
                 @Override
@@ -177,25 +173,26 @@ public class ActivitiesFragment extends Fragment implements UIthread, View.OnCli
 
                 }
             });
+
+
         }
     }
 
-    private void update(int sID) {
+    public void update(int sID) {
+        sportID = sID;
         Button fSpiel = (Button) parentActivity.findViewById(R.id.button_create_meeting);
         ImageView iV = (ImageView) parentActivity.findViewById(R.id.imageView_sportart);
 
         Information temp = sportIDs.get(sID);
         Resources res = parentActivity.getResources();
         TypedArray draws = res.obtainTypedArray(R.array.sportDrawables);
-        if(Integer.valueOf(temp.sportID)!=8008) {
+        if (Integer.valueOf(temp.sportID) != 8008) {
             iV.setImageDrawable(draws.getDrawable(Integer.parseInt(temp.sportID)));
-        }else{
+        } else {
             iV.setImageDrawable(getResources().getDrawable(R.drawable.custommeeting));
         }
-
         draws.recycle();
         fSpiel.setVisibility(View.GONE);
-
         if (Integer.valueOf(sportIDs.get(sID).team) == 1) {
             fSpiel.setVisibility(View.VISIBLE);
         } else {

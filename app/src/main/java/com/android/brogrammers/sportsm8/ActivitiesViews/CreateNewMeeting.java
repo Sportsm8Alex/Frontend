@@ -20,11 +20,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
-import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.DateTime;

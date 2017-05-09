@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "998745973585",
+    "firebase_url": "https://sportsm8-41cec.firebaseio.com",
+    "project_id": "sportsm8-41cec",
+    "storage_bucket": "sportsm8-41cec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998745973585:android:ebe4bb4dc01b8fac",
+        "android_client_info": {
+          "package_name": "com.example.alex.helloworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998745973585-co9bf5hvn4n6q7m565lc1m82p1n156gv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alex.helloworld",
+            "certificate_hash": "23981F89E5553FACDB5EA4F33B2C423E2F935B60"
+          }
+        },
+        {
+          "client_id": "998745973585-oqd30p7l6683ou00if79d54pd9efcab4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alex.helloworld",
+            "certificate_hash": "2291510754C8C6D96E044D83DBE3EE8DB867F8C0"
+          }
+        },
+        {
+          "client_id": "998745973585-vlk6uebrr2sbdq0of6c784c9gj55mlvn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alex.helloworld",
+            "certificate_hash": "0A9E4272B532B62D78D5A3A3298224E58FA8411E"
+          }
+        },
+        {
+          "client_id": "998745973585-rgupj5rrtep5a4mvlbnf9dsm5p5pvofa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBusrhAj8MupmXkODD4b4ZOnRqixWdXNA4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998745973585-rgupj5rrtep5a4mvlbnf9dsm5p5pvofa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

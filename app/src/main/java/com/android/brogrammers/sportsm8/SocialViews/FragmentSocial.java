@@ -35,6 +35,8 @@ import com.android.brogrammers.sportsm8.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -52,12 +54,12 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView textView_selected_count;
-    private ImageButton decline_selection, page_button;
     private Boolean addToMeetingMode = false, newGroupMode = false;
     private ViewPager pager;
     private ViewPagerAdapter viewPagerAdapter;
     private TabLayout tabs;
+
+
     private CharSequence Titles[] = {"Friends", "Groups"};
     private int NumOfTabs = 2;
 
@@ -122,9 +124,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         //  ((AppCompatActivity) parentActivity).setSupportActionBar(toolbar);
 
-        page_button = (ImageButton) rootView.findViewById(R.id.add_new_friend);
-        textView_selected_count = (TextView) rootView.findViewById(R.id.selected_friends_number);
-        decline_selection = (ImageButton) rootView.findViewById(R.id.discard_selection_button);
+
         pager = (ViewPager) rootView.findViewById(R.id.pager);
         tabs = (TabLayout) rootView.findViewById(R.id.tabs);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.friends_refresh);

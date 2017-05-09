@@ -3,37 +3,30 @@ package com.android.brogrammers.sportsm8.ActivitiesViews;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -44,42 +37,64 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Text;
 
-import java.awt.font.NumericShaper;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting2 extends Activity implements TextWatcher, android.support.v7.widget.SearchView.OnQueryTextListener, UIthread, View.OnClickListener {
+public class CreateNewMeeting2 extends Activity implements TextWatcher, android.support.v7.widget.SearchView.OnQueryTextListener, UIthread {
 
     int minMemberCount = 4, minHours = 2;
     Button selectedButton;
 
+
     int sportart_ID = -1;
     ArrayList<Information> Selection = new ArrayList<>();
     ArrayList<Information> SelectionGroup = new ArrayList<>();
-    private SearchView editTextChooseActivity;
     private Boolean start;
     private MutableDateTime startTime, endTime;
     private DateTime datetime, backUpStartTime, backUpEndTime;
     private DateTimeFormatter formatter;
-    private Button startTime_b, endTime_b, date_b;
-    private TextView minTimeTextView, minPartySizeTextView;
-    private Button startTimeButton, endTimeButton, startDateButton, endDateButton, addFriendsButton;
+
+    @BindView(R.id.edittext_choose_activity)
+    SearchView editTextChooseActivity;
+    @BindView(R.id.textview_min_meeting_time)
+    TextView minTimeTextView;
+    @BindView(R.id.textview_min_party_size)
+    TextView minPartySizeTextView;
+    @BindView(R.id.button_begin_time)
+    Button startTimeButton;
+    @BindView(R.id.button_end_time)
+    Button endTimeButton;
+    @BindView(R.id.button_begin_date)
+    Button startDateButton;
+    @BindView(R.id.button_end_date)
+    Button endDateButton;
+    @BindView(R.id.button_add_friends)
+    Button addFriendsButton;
+    @BindView(R.id.check_dynamic)
+    Switch checkSwitch;
+
     private String extraInfoString;
     private NumberPicker numHours, minMember;
-    private Switch checkSwitch;
     private int step = 0;
     private int dynamic = 0;
     Boolean bBegin = false, bEnd = false, bDate = false;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_meeting2);
+        ButterKnife.bind(this);
         start = true;
         extraInfoString = "";
 
@@ -96,7 +111,6 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
         //SearchView
         if (sportart_ID == 8008) {
-            editTextChooseActivity = (SearchView) findViewById(R.id.edittext_choose_activity);
             editTextChooseActivity.setOnQueryTextListener(this);
             editTextChooseActivity.setIconifiedByDefault(false);
             editTextChooseActivity.setIconified(false);
@@ -105,45 +119,12 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
             editTextChooseActivity.clearFocus();
             ImageView searchViewIcon = (ImageView) editTextChooseActivity.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
             searchViewIcon.setImageDrawable(null);
-        }else{
-            TextView activityName = (TextView)findViewById(R.id.activity_name);
+        } else {
+            TextView activityName = (TextView) findViewById(R.id.activity_name);
             Resources res = getResources();
             String[] array = res.getStringArray(R.array.sportarten);
             activityName.setText(array[sportart_ID]);
         }
-
-
-        startTimeButton = (Button) findViewById(R.id.button_begin_time);
-        endTimeButton = (Button) findViewById(R.id.button_end_time);
-        startDateButton = (Button) findViewById(R.id.button_begin_date);
-        endDateButton = (Button) findViewById(R.id.button_end_date);
-        addFriendsButton = (Button) findViewById(R.id.button_add_friends);
-        minPartySizeTextView = (TextView) findViewById(R.id.textview_min_party_size);
-        minTimeTextView = (TextView) findViewById(R.id.textview_min_meeting_time);
-
-        findViewById(R.id.cancel_button).setOnClickListener(this);
-        findViewById(R.id.save_meeting).setOnClickListener(this);
-        findViewById(R.id.button_min_party_size).setOnClickListener(this);
-        findViewById(R.id.button_min_meeting_time).setOnClickListener(this);
-        startTimeButton.setOnClickListener(this);
-        endTimeButton.setOnClickListener(this);
-        startDateButton.setOnClickListener(this);
-        endDateButton.setOnClickListener(this);
-        addFriendsButton.setOnClickListener(this);
-        checkSwitch = (Switch) findViewById(R.id.check_dynamic);
-        checkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked) {
-                    startTimeButton.setText(startTime.toString("HH:"+(startTime.getMinuteOfHour()-startTime.getMinuteOfHour()%15)));
-                    endTimeButton.setText(endTime.toString("HH:"+(endTime.getMinuteOfHour()-endTime.getMinuteOfHour()%15)));
-                } else {
-                    startTimeButton.setText(startTime.toString("HH:mm"));
-                    endTimeButton.setText(endTime.toString("HH:mm"));
-                }
-            }
-        });
-
 
         startDateButton.setText(datetime.toString("EE., dd. MMM. yyyy"));
         endDateButton.setText(datetime.toString("EE., dd. MMM. yyyy"));
@@ -153,45 +134,156 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         minPartySizeTextView.setText(minMemberCount + "");
 
         //startCycle
-        onClick(startTimeButton);
+        timeButtons(startTimeButton);
     }
 
-    @Override
-    public void onClick(View view) {
+    @OnCheckedChanged(R.id.check_dynamic)
+    public void onCheckedChanged(boolean checked) {
+        if (checked) {
+            startTimeButton.setText(startTime.toString("HH:" + (startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
+            endTimeButton.setText(endTime.toString("HH:" + (endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15)));
+        } else {
+            startTimeButton.setText(startTime.toString("HH:mm"));
+            endTimeButton.setText(endTime.toString("HH:mm"));
+        }
+    }
+
+    @OnClick(R.id.cancel_button)
+    public void cancel() {
+        finish();
+    }
+
+    @OnClick(R.id.button_add_friends)
+    void addFriends() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("SelectionMode", true);
+        bundle.putSerializable("Selection", Selection);
+        Intent intent = new Intent(this, SelectorContainer.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 1);
+    }
+
+    @OnClick(R.id.button_min_meeting_time)
+    void setMinTime() {
+        createNumberPickerDialog("Wie viele Stunden?", minHours, 24, false);
+    }
+
+    @OnClick(R.id.button_min_party_size)
+    void setMinPartySize() {
+        createNumberPickerDialog("Ab wie vielen Leuten?", minMemberCount, Selection.size(), true);
+    }
+
+    @OnClick({R.id.button_begin_time, R.id.button_end_time})
+    public void timeButtons(View view) {
         switch (view.getId()) {
             case R.id.button_begin_time:
-                timeButtons(view);
+                TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+                        startTime.set(DateTimeFieldType.minuteOfHour(), minute);
+                        startTimeButton.setText(startTime.toString("HH:mm"));
+                        bBegin = true;
+                        if (step == 0) {
+                            step++;
+                            timeButtons(endTimeButton);
+                        }
+                    }
+                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true);
+                if (checkSwitch.isChecked()) tdp.setTimeInterval(1, 15);
+                tdp.show(getFragmentManager(), "TimePickerDialog");
                 break;
             case R.id.button_end_time:
-                timeButtons(view);
-                break;
-            case R.id.button_begin_date:
-                dateButton(view);
-                break;
-            case R.id.button_end_date:
-                dateButton(view);
-                break;
-            case R.id.cancel_button:
-                finish();
-                break;
-            case R.id.save_meeting:
-                createMeeting(view);
-                break;
-            case R.id.button_add_friends:
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("SelectionMode", true);
-                bundle.putSerializable("Selection",Selection);
-                Intent intent = new Intent(this, SelectorContainer.class);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
-                break;
-            case R.id.button_min_meeting_time:
-                createNumberPickerDialog("Wie viele Stunden?", minHours, 24, false);
-                break;
-            case R.id.button_min_party_size:
-                createNumberPickerDialog("Ab wie vielen Leuten?", minMemberCount, Selection.size(), true);
+                TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
+                        endTime.set(DateTimeFieldType.minuteOfHour(), minute);
+                        endTimeButton.setText(endTime.toString("HH:mm"));
+                        bEnd = true;
+                        if (step == 1) {
+                            step++;
+                            dateButton(startDateButton);
+                        }
+                    }
+                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true);
+                if (checkSwitch.isChecked()) tdp2.setTimeInterval(1, 15);
+                tdp2.show(getFragmentManager(), "TimePickerDialog");
                 break;
         }
+
+
+    }
+
+
+    @OnClick({R.id.button_begin_date, R.id.button_end_date})
+    public void dateButton(View view) {
+        switch (view.getId()) {
+            case R.id.button_begin_date:
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                        startTime.setDate(year, month + 1, dayOfMonth);
+                        endTime.setDate(year, month + 1, dayOfMonth);
+                        startDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
+                        endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
+                        bDate = true;
+                    }
+                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
+                break;
+            case R.id.button_end_date:
+                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                        startTime.setDate(year, month + 1, dayOfMonth);
+                        endTime.setDate(year, month + 1, dayOfMonth);
+                        endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
+                    }
+                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
+                break;
+        }
+
+    }
+
+    @OnClick(R.id.save_meeting)
+    public void createMeeting(View view) {
+
+        if (bBegin && bEnd && bDate && minMemberCount != 0 && minHours != 0) {
+            if (startTime.isBefore(endTime)) {
+                if (checkSwitch.isChecked()) {
+                    dynamic = 1;
+                    startTime.setMinuteOfHour((startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15));
+                    endTime.setMinuteOfHour((endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15));
+                }
+                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                String email = sharedPrefs.getString("email", "");
+                ArrayList<String> paramsArrayList = new ArrayList<>(
+                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", minMemberCount + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID, "dynamic", dynamic + "")
+                );
+                for (int i = 0; i < Selection.size(); i++) {
+                    paramsArrayList.add("member" + i);
+                    paramsArrayList.add(Selection.get(i).email);
+                }
+                String[] params = new String[paramsArrayList.size()];
+                params = paramsArrayList.toArray(params);
+
+                Database db = new Database(this, getBaseContext());
+                db.execute(params);
+                // Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                finish();
+
+            } else {
+                // Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
+                Toasty.error(this, "Falsche Zeit eingestellt", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } else {
+            // Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
+            Toasty.error(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void createNumberPickerDialog(String message, int current, int max, final Boolean partySize) {
@@ -223,147 +315,11 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         }).setView(numberPicker).show();
     }
 
-    public void timeButtons(View view) {
-        switch (view.getId()) {
-            case R.id.button_begin_time:
-                TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-                        startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
-                        startTime.set(DateTimeFieldType.minuteOfHour(), minute);
-                        startTimeButton.setText(startTime.toString("HH:mm"));
-                        bBegin = true;
-                        if (step == 0) {
-                            step++;
-                            onClick(endTimeButton);
-                        }
-                    }
-                },startTime.getHourOfDay(),startTime.getMinuteOfHour(),true);
-               if(checkSwitch.isChecked()) tdp.setTimeInterval(1,15);
-                tdp.show(getFragmentManager(),"TimePickerDialog");
-               /* new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-                        startTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
-                        startTime.set(DateTimeFieldType.minuteOfHour(), minute);
-                        startTimeButton.setText(startTime.toString("HH:mm"));
-                        if (checkSwitch.isChecked())
-                            startTimeButton.setText(startTime.toString("HH:00"));
-                        bBegin = true;
-                        if (step == 0) {
-                            step++;
-                            onClick(endTimeButton);
-                        }
-                    }
-                }, endTime.getHourOfDay(), endTime.getMinuteOfHour(), true).show();*/
-                break;
-            case R.id.button_end_time:
-                TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-                        endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
-                        endTime.set(DateTimeFieldType.minuteOfHour(), minute);
-                        endTimeButton.setText(endTime.toString("HH:mm"));
-                        bEnd = true;
-                        if (step == 1) {
-                            step++;
-                            onClick(startDateButton);
-                        }
-                    }
-                },startTime.getHourOfDay(),startTime.getMinuteOfHour(),true);
-                if(checkSwitch.isChecked()) tdp2.setTimeInterval(1,15);
-                tdp2.show(getFragmentManager(),"TimePickerDialog");
-               /* new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-                        endTime.set(DateTimeFieldType.hourOfDay(), hourOfDay);
-                        endTime.set(DateTimeFieldType.minuteOfHour(), minute);
-                        if (checkSwitch.isChecked()) {
-                        }
-                        endTimeButton.setText(endTime.toString("HH:mm"));
-                        if (checkSwitch.isChecked())
-                            endTimeButton.setText(endTime.toString("HH:00"));
-                        bEnd = true;
-                        if (step == 1) {
-                            step++;
-                            onClick(startDateButton);
-                        }
-                    }
-                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true).show();*/
-                break;
-        }
-
-
-    }
-
-    public void dateButton(View view) {
-        switch (view.getId()) {
-            case R.id.button_begin_date:
-                new DatePickerDialog(this,new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        startTime.setDate(year, month + 1, dayOfMonth);
-                        endTime.setDate(year, month + 1, dayOfMonth);
-                        startDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
-                        endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
-                        bDate = true;
-                    }
-                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
-                break;
-            case R.id.button_end_date:
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        startTime.setDate(year, month + 1, dayOfMonth);
-                        endTime.setDate(year, month + 1, dayOfMonth);
-                        endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
-                    }
-                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
-                break;
-        }
-
-    }
-
 
     public void cancelButton(View v) {
         finish();
     }
 
-    public void createMeeting(View view) {
-
-        if (bBegin && bEnd && bDate && minMemberCount != 0 && minHours != 0) {
-            if (startTime.isBefore(endTime)) {
-                if (checkSwitch.isChecked()) {
-                    dynamic = 1;
-                    startTime.setMinuteOfHour((startTime.getMinuteOfHour()-startTime.getMinuteOfHour()%15));
-                    endTime.setMinuteOfHour((endTime.getMinuteOfHour()-endTime.getMinuteOfHour()%15));
-                }
-                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                String email = sharedPrefs.getString("email", "");
-                ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", minMemberCount + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID, "dynamic", dynamic + "")
-                );
-                for (int i = 0; i < Selection.size(); i++) {
-                    paramsArrayList.add("member" + i);
-                    paramsArrayList.add(Selection.get(i).email);
-                }
-                String[] params = new String[paramsArrayList.size()];
-                params = paramsArrayList.toArray(params);
-
-                Database db = new Database(this, getBaseContext());
-                db.execute(params);
-                Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
-                finish();
-
-            } else {
-                Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     public void mergeGroupsAndFriends() {
         ArrayList<Information> temp = new ArrayList<>();
