@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.CalendarViews;
+package com.android.brogrammers.sportsm8.CalendarViewsTest;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,9 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.LocalDate;
@@ -206,7 +206,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
             } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
-            return DayFragment.newInstance(position, meetingsOnDay); //position+1 ???
+            return TimelineTestFragment.newInstance(); //position+1 ???
         }
 
         @Override

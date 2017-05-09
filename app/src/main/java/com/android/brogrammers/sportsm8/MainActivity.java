@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,19 +24,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
-import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
+import com.android.brogrammers.sportsm8.CalendarViewsTest.CalenderFragment;
+import com.android.brogrammers.sportsm8.CalendarViewsTest.TimelineTestFragment;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 /**
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements CalenderFragment.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TimelineTestFragment.OnFragmentInteractionListener, CalenderFragment.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;

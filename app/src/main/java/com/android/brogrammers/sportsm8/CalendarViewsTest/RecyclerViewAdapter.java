@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.CalendarViews;
+package com.android.brogrammers.sportsm8.CalendarViewsTest;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,9 +16,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -55,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new MeetingsViewHolder(view);
     }
 
-    //onBindViewholder seems to be iterated through, probably getItemCount() times!!
+    //onBindViewholder seems to be iterated through, probably int position times!!
     @Override
     public void onBindViewHolder(MeetingsViewHolder meetingsViewHolder, int position) {
         getOptimalTime(position);
