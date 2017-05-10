@@ -54,6 +54,10 @@
         <activity
             android:name=".ActivitiesViews.CreateNewMeeting2"
             android:label="@string/title_activity_create_new_meeting2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DebugScreen.DebugScreen"
+            android:label="@string/title_activity_debug_screen"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

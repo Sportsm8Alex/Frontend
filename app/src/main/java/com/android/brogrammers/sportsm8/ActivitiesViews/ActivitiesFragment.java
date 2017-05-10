@@ -53,8 +53,7 @@ public class ActivitiesFragment extends Fragment implements UIthread {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
-    @BindView(R.id.email_switcher)
-    Button email_switcher_button;
+
     Spinner sportsSpinner;
     int i = 0;
 
@@ -90,9 +89,6 @@ public class ActivitiesFragment extends Fragment implements UIthread {
         ButterKnife.bind(this,rootView);
         sportsSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
         createList();
-        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        email_switcher_button.setText(email);
         return rootView;
     }
 
@@ -133,18 +129,6 @@ public class ActivitiesFragment extends Fragment implements UIthread {
         void onFragmentInteraction(Uri uri);
     }
 
-    @OnClick(R.id.email_switcher)
-    public void onClick(View view) {
-        String[] emails = getContext().getResources().getStringArray(R.array.emails);
-        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString("email", emails[i]);
-        editor.apply();
-        Button btn = (Button) getActivity().findViewById(R.id.email_switcher);
-        btn.setText(emails[i]);
-        i++;
-        i = i % emails.length;
-    }
 
     @OnClick(R.id.button_create_meeting)
     public void createMeeting(View v) {

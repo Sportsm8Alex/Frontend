@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
+import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
@@ -212,6 +213,11 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                         return true;
                     case R.id.nav_home:
                         intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        closeNavDrawer();
+                        return true;
+                    case R.id.nav_debug:
+                        intent = new Intent(getApplicationContext(), DebugScreen.class);
                         startActivity(intent);
                         closeNavDrawer();
                         return true;

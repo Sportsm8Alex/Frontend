@@ -30,93 +30,12 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="8dp">
 
-            <LinearLayout
-                android:id="@+id/ll_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
                 <Button
                     android:id="@+id/button_create_meeting"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:textAllCaps="false"
                     android:text="@string/create_meeting" />
-
-                <Button
-                    android:id="@+id/email_switcher"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/ll_buttons"
-                android:background="@color/grey" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:elevation="2dp">
-
-                <TextView
-                    android:id="@+id/next_meeting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/next_meeting" />
-
-                <TextView
-                    android:id="@+id/date_textview_sport"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="4dp"
-                    android:text="DD.MM.YYYY" />
-
-                <LinearLayout
-                    android:id="@+id/ll_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/next_meeting"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center"
-                    android:weightSum="5">
-
-                    <TextView
-                        android:id="@+id/startzeit_sport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="64dp"
-                        android:text="HH:MM"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:text="-"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/stoppzeit_sport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="64dp"
-                        android:text="HH:MM"
-                        android:textSize="20sp" />
-
-
-                </LinearLayout>
-
-
-            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>

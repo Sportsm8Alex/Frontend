@@ -21,4 +21,10 @@
         android:icon="@drawable/ic_menu_slideshow"
         android:title="Logout" />
 
+
+    <item
+        android:id="@+id/nav_debug"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="DEBUG" />
+
 </menu>
