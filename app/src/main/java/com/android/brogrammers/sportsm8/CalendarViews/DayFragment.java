@@ -3,6 +3,7 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class DayFragment extends Fragment {
     RecyclerView recyclerView;
     private BottomNavigationView bottomNavigationView;
+    private FloatingActionButton floatingActionButton;
 
     public static DayFragment newInstance(int position, ArrayList<Information> meetingsOnDay) {
 
@@ -45,6 +47,7 @@ public class DayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frragment_day, container, false);
         bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab_calendar);
         // needs to use the containers function since its not an activity
 
         //#############
@@ -59,8 +62,10 @@ public class DayFragment extends Fragment {
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (verticalOffset == 0) {
                     bottomNavigationView.animate().translationY(0).setDuration(100);
+                    floatingActionButton.animate().translationY(0).setDuration(100);
                 } else {
                     bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+                    floatingActionButton.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
                 }
             }
         });

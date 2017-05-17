@@ -9,8 +9,8 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
         android:id="@+id/main_coordinator_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.AppBarLayout
@@ -37,10 +37,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fontFamily="sans-serif-medium"
-                        android:visibility="gone"
                         android:text="Title"
                         android:textColor="@color/whiteText"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="gone" />
 
                     <Spinner
                         android:id="@+id/spinner2"
@@ -73,17 +73,29 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemBackground="@color/darkgrey"
-            app:itemIconTint="@drawable/bottom_navigation_selector"
-            app:itemTextColor="@drawable/bottom_navigation_selector"
-            app:menu="@menu/bottom_navigation_main" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_gravity="bottom|end"
+                android:layout_marginRight="@dimen/fab_margin"
+                android:layout_marginBottom="70dp"
+                app:srcCompat="@drawable/ic_add_black_36dp" />
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:itemBackground="@color/darkgrey"
+                android:layout_gravity="bottom"
+                app:itemIconTint="@drawable/bottom_navigation_selector"
+                app:itemTextColor="@drawable/bottom_navigation_selector"
+                app:menu="@menu/bottom_navigation_main" />
 
     </android.support.design.widget.CoordinatorLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"

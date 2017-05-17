@@ -1,5 +1,7 @@
 package com.android.brogrammers.sportsm8.ActivitiesViews;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -14,10 +16,13 @@ import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,6 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -54,6 +60,8 @@ import es.dmoral.toasty.Toasty;
 public class CreateNewMeeting2 extends Activity implements TextWatcher, android.support.v7.widget.SearchView.OnQueryTextListener, UIthread {
 
     int minMemberCount = 4, minHours = 2;
+    ArrayList<Information> sportIDs;
+    String[] sportArten;
     Button selectedButton;
 
 
@@ -79,10 +87,17 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
     Button startDateButton;
     @BindView(R.id.button_end_date)
     Button endDateButton;
-    @BindView(R.id.button_add_friends)
-    Button addFriendsButton;
+    @BindView(R.id.textview_add_friends)
+    TextView addFriendsButton;
     @BindView(R.id.check_dynamic)
     Switch checkSwitch;
+    @BindView(R.id.more_settings_LL)
+    LinearLayout moreSettings;
+    @BindView(R.id.listview_meeting_activities)
+    public ListView listView_activities;
+    @BindView(R.id.imageview_expand_arrow)
+    ImageView expandArrow;
+
 
     private String extraInfoString;
     private NumberPicker numHours, minMember;
@@ -97,7 +112,6 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         ButterKnife.bind(this);
         start = true;
         extraInfoString = "";
-
         //sportartID
         Bundle b = getIntent().getExtras();
         if (b != null) {
@@ -108,7 +122,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         datetime = new DateTime();
         startTime = new MutableDateTime();
         endTime = new MutableDateTime();
-
+        createList();
         //SearchView
         if (sportart_ID == 8008) {
             editTextChooseActivity.setOnQueryTextListener(this);
@@ -135,12 +149,23 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
         //startCycle
         timeButtons(startTimeButton);
+        editTextChooseActivity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
+
+
 
     @OnCheckedChanged(R.id.check_dynamic)
     public void onCheckedChanged(boolean checked) {
         if (checked) {
-            startTimeButton.setText(startTime.toString("HH:" + (startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
+            startTimeButton.setText(startTime.toString("HH:" +(startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
             endTimeButton.setText(endTime.toString("HH:" + (endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15)));
         } else {
             startTimeButton.setText(startTime.toString("HH:mm"));
@@ -150,10 +175,11 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
     @OnClick(R.id.cancel_button)
     public void cancel() {
+        editTextChooseActivity.clearFocus();
         finish();
     }
 
-    @OnClick(R.id.button_add_friends)
+    @OnClick(R.id.add_friends_RL)
     void addFriends() {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SelectionMode", true);
@@ -163,12 +189,13 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         startActivityForResult(intent, 1);
     }
 
-    @OnClick(R.id.button_min_meeting_time)
+
+    @OnClick(R.id.min_meeting_time_RL)
     void setMinTime() {
         createNumberPickerDialog("Wie viele Stunden?", minHours, 24, false);
     }
 
-    @OnClick(R.id.button_min_party_size)
+    @OnClick(R.id.min_party_size_RL)
     void setMinPartySize() {
         createNumberPickerDialog("Ab wie vielen Leuten?", minMemberCount, Selection.size(), true);
     }
@@ -213,6 +240,25 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         }
 
 
+    }
+
+    @OnClick(R.id.more_settings_RL)
+    public void expandSettings() {
+        expandArrow.animate().rotation(expandArrow.getRotation() == 180 ? 0 : 180);
+        if (moreSettings.getAlpha() == 0) {
+            moreSettings.setVisibility(View.VISIBLE);
+            moreSettings.animate().alpha(1);
+        } else {
+            moreSettings.animate().alpha(0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    if (moreSettings.getAlpha() == 0) {
+                        moreSettings.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
     }
 
 
@@ -385,9 +431,29 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
     }
 
+    private void createList() {
+        String[] params = {"IndexSports.php", "function", "getData"};
+        //must parent Activity implement UIThread?
+        Database db = new Database(this, getBaseContext());
+        db.execute(params);
+        updateUI("");
+    }
+
     @Override
     public void updateUI(String answer) {
-
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexSports", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexSportsgetDataJSON", "");
+        try {
+            sportIDs = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        if (sportIDs != null) {
+            sportArten = new String[sportIDs.size()];
+            for (int j = 0; j < sportIDs.size(); j++) {
+                sportArten[j] = sportIDs.get(j).sportname;
+            }
+        }
     }
 
 
@@ -398,7 +464,38 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        listView_activities.setVisibility(View.VISIBLE);
         extraInfoString = newText;
+        ArrayList<String> searchresults = new ArrayList<>();
+
+        for (int i = 0; i < sportArten.length; i++) {
+            if (sportArten[i].toLowerCase().contains(newText)) {
+                searchresults.add(sportArten[i]);
+            }
+        }
+        String searchresultsS[] = new String[searchresults.size()];
+        searchresultsS = searchresults.toArray(searchresultsS);
+        final String[] sResult = searchresultsS;
+        extraInfoString = newText;
+        if (sResult != null) {
+            ArrayAdapter<String> myAdapater = new ArrayAdapter<>(this, R.layout.item_custom_spinner, R.id.search_textview_meeting, sResult);
+            myAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            listView_activities.setAdapter(myAdapater);
+
+            listView_activities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    editTextChooseActivity.setQuery(sResult[position], false);
+                    editTextChooseActivity.clearFocus();
+                    listView_activities.setVisibility(View.GONE);
+                    extraInfoString = sResult[position];
+                }
+            });
+
+
+        }
+
+
         return false;
     }
 }

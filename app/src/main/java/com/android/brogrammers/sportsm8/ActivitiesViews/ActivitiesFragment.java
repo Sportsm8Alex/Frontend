@@ -88,7 +88,7 @@ public class ActivitiesFragment extends Fragment implements UIthread {
         //toolbar problem needs to be solved first
         ButterKnife.bind(this,rootView);
         sportsSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
-        createList();
+        //createList();
         return rootView;
     }
 
@@ -133,7 +133,8 @@ public class ActivitiesFragment extends Fragment implements UIthread {
     @OnClick(R.id.button_create_meeting)
     public void createMeeting(View v) {
         Bundle b = new Bundle();
-        b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
+     //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
+        b.putInt("sportID",8008);
         b.putBoolean("liga", false);
         Intent intent = new Intent(parentActivity, CreateNewMeeting2.class);
         intent.putExtras(b);

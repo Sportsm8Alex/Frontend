@@ -6,19 +6,10 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <ImageView
-        android:id="@+id/imageView_sportart"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@color/colorPrimaryDark"
-        android:scaleType="centerCrop"
-        android:src="@drawable/beachen" />
-
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/imageView_sportart">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,12 +21,12 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="8dp">
 
-                <Button
+            <Button
                     android:id="@+id/button_create_meeting"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:textAllCaps="false"
-                    android:text="@string/create_meeting" />
+                    android:text="@string/Sport_Meeting" />
 
         </LinearLayout>
     </ScrollView>

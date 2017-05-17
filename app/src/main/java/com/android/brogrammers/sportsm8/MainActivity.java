@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
+import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting2;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
@@ -31,6 +33,10 @@ import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.google.firebase.auth.FirebaseAuth;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by alex on 10/30/2016.
@@ -47,12 +53,16 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
     private ImageButton imageButtonToolbar;
     private TextView textView;
 
+    @BindView(R.id.fab_calendar)
+    FloatingActionButton floatingActionButton;
+
     int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         imageButtonToolbar = (ImageButton) findViewById(R.id.image_button_toolbar);
@@ -87,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                             //not correct way to do
                             // don't start new activities
                             case R.id.bottom_navigation_sports:
+                                floatingActionButton.setVisibility(View.GONE);
                                 fragment = new ActivitiesFragment();
                                 imageButtonToolbar.animate()
                                         .scaleX(0)
@@ -99,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                                 textView.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_calender:
+                                floatingActionButton.setVisibility(View.VISIBLE);
                                 fragment = new CalenderFragment2();
                                 imageButtonToolbar.animate()
                                         .scaleX(0)
@@ -110,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                                 textView.setText("Kalender");
                                 break;
                             case R.id.bottom_navigation_friends:
+                                floatingActionButton.setVisibility(View.GONE);
                                 fragment = new FragmentSocial();
                                 imageButtonToolbar.animate()
                                         .scaleX(1)
@@ -145,6 +158,17 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
             default:
                 finish();
         }
+    }
+
+    @OnClick(R.id.fab_calendar)
+    public void createNewMeeting(){
+        Bundle b = new Bundle();
+        //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
+        b.putInt("sportID",8008);
+        b.putBoolean("liga", false);
+        Intent intent = new Intent(this, CreateNewMeeting2.class);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 
     @Override
