@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
+            android:focusable="true"
             app:contentInsetStart="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -36,16 +37,16 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="16dp"
                         android:background="@color/transparent"
-                        android:src="@drawable/ic_clear_white_24dp" />
+                        android:src="@drawable/ic_arrow_back_white_24dp" />
 
                     <TextView
                         android:id="@+id/activity_name"
                         android:layout_width="wrap_content"
-                        android:textColor="@color/whiteText"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
+                        android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true" />
+                        android:textColor="@color/whiteText"
+                        android:textSize="18sp" />
 
 
                     <Button
@@ -58,16 +59,39 @@
                         android:textSize="12sp" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/edittext_choose_activity"
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_below="@id/rl_button_bar"
-                    android:background="@color/transparent"
-                    android:visibility="gone"
-                    android:hint="Was willst du tun?"
-                    android:textColorHint="@color/whiteText"
-                    android:textCursorDrawable="@null" />
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <EditText
+                        android:id="@+id/edittext_choose_activity"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="16dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:inputType="text|textNoSuggestions"
+                        android:textColorHint="@color/whiteText"
+                        android:background="@null"
+                        android:hint="Was willst du tun?"
+                        android:maxLines="1" />
+
+                    <ImageButton
+                        android:id="@+id/button_clear_choose_activity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/ic_clear_white_36dp"
+                        android:background="@color/transparent"
+                         />
+
+                </FrameLayout>
+
+
+
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 

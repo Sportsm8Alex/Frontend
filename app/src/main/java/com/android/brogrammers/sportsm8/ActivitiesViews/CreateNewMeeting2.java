@@ -13,13 +13,16 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -50,14 +53,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting2 extends Activity implements TextWatcher, android.support.v7.widget.SearchView.OnQueryTextListener, UIthread {
+public class CreateNewMeeting2 extends Activity implements  UIthread {
 
     int minMemberCount = 4, minHours = 2;
     ArrayList<Information> sportIDs;
@@ -74,7 +79,7 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
     private DateTimeFormatter formatter;
 
     @BindView(R.id.edittext_choose_activity)
-    SearchView editTextChooseActivity;
+    EditText editTextChooseActivity;
     @BindView(R.id.textview_min_meeting_time)
     TextView minTimeTextView;
     @BindView(R.id.textview_min_party_size)
@@ -125,14 +130,8 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         createList();
         //SearchView
         if (sportart_ID == 8008) {
-            editTextChooseActivity.setOnQueryTextListener(this);
-            editTextChooseActivity.setIconifiedByDefault(false);
-            editTextChooseActivity.setIconified(false);
-            editTextChooseActivity.setQueryHint("Was willst du tun?");
             editTextChooseActivity.setVisibility(View.VISIBLE);
             editTextChooseActivity.clearFocus();
-            ImageView searchViewIcon = (ImageView) editTextChooseActivity.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
-            searchViewIcon.setImageDrawable(null);
         } else {
             TextView activityName = (TextView) findViewById(R.id.activity_name);
             Resources res = getResources();
@@ -149,11 +148,12 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
 
         //startCycle
         timeButtons(startTimeButton);
+        editTextChooseActivity.setHintTextColor(getResources().getColor(R.color.lightwhite));
         editTextChooseActivity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
-                    Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                    hideKeyboard();
                 }
             }
         });
@@ -189,6 +189,11 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         startActivityForResult(intent, 1);
     }
 
+
+    @OnClick(R.id.button_clear_choose_activity)
+    public void clear(){
+        editTextChooseActivity.setText("");
+    }
 
     @OnClick(R.id.min_meeting_time_RL)
     void setMinTime() {
@@ -413,18 +418,6 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         mergeGroupsAndFriends();
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
 
     @Override
     public void updateUI() {
@@ -457,13 +450,16 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
     }
 
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    @OnEditorAction(R.id.edittext_choose_activity)
+    public boolean enterPressed(){
+        hideKeyboard();
+        listView_activities.setVisibility(View.GONE);
+        return true;
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
+    @OnTextChanged(R.id.edittext_choose_activity)
+    public void onTextChanged(CharSequence text){
+        String newText = text.toString();
         listView_activities.setVisibility(View.VISIBLE);
         extraInfoString = newText;
         ArrayList<String> searchresults = new ArrayList<>();
@@ -485,8 +481,10 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
             listView_activities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    editTextChooseActivity.setQuery(sResult[position], false);
+                    editTextChooseActivity.setText(sResult[position],  TextView.BufferType.EDITABLE);
                     editTextChooseActivity.clearFocus();
+                    hideKeyboard();
+                    editTextChooseActivity.setCursorVisible(false);
                     listView_activities.setVisibility(View.GONE);
                     extraInfoString = sResult[position];
                 }
@@ -496,6 +494,10 @@ public class CreateNewMeeting2 extends Activity implements TextWatcher, android.
         }
 
 
-        return false;
     }
+    public  void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editTextChooseActivity.getWindowToken(), 0);
+    }
+
 }
