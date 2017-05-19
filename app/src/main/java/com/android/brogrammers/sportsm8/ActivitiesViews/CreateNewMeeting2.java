@@ -62,7 +62,7 @@ import es.dmoral.toasty.Toasty;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting2 extends Activity implements  UIthread {
+public class CreateNewMeeting2 extends Activity implements UIthread {
 
     int minMemberCount = 4, minHours = 2;
     ArrayList<Information> sportIDs;
@@ -70,7 +70,7 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
     Button selectedButton;
 
 
-    int sportart_ID = -1;
+    int sportart_ID = 8008;
     ArrayList<Information> Selection = new ArrayList<>();
     ArrayList<Information> SelectionGroup = new ArrayList<>();
     private Boolean start;
@@ -117,11 +117,6 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
         ButterKnife.bind(this);
         start = true;
         extraInfoString = "";
-        //sportartID
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            sportart_ID = b.getInt("sportID");
-        }
 
         formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
         datetime = new DateTime();
@@ -129,15 +124,8 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
         endTime = new MutableDateTime();
         createList();
         //SearchView
-        if (sportart_ID == 8008) {
-            editTextChooseActivity.setVisibility(View.VISIBLE);
-            editTextChooseActivity.clearFocus();
-        } else {
-            TextView activityName = (TextView) findViewById(R.id.activity_name);
-            Resources res = getResources();
-            String[] array = res.getStringArray(R.array.sportarten);
-            activityName.setText(array[sportart_ID]);
-        }
+        editTextChooseActivity.setVisibility(View.VISIBLE);
+        editTextChooseActivity.clearFocus();
 
         startDateButton.setText(datetime.toString("EE., dd. MMM. yyyy"));
         endDateButton.setText(datetime.toString("EE., dd. MMM. yyyy"));
@@ -152,7 +140,7 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
         editTextChooseActivity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     hideKeyboard();
                 }
             }
@@ -161,11 +149,10 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
     }
 
 
-
     @OnCheckedChanged(R.id.check_dynamic)
     public void onCheckedChanged(boolean checked) {
         if (checked) {
-            startTimeButton.setText(startTime.toString("HH:" +(startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
+            startTimeButton.setText(startTime.toString("HH:" + (startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
             endTimeButton.setText(endTime.toString("HH:" + (endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15)));
         } else {
             startTimeButton.setText(startTime.toString("HH:mm"));
@@ -191,7 +178,7 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
 
 
     @OnClick(R.id.button_clear_choose_activity)
-    public void clear(){
+    public void clear() {
         editTextChooseActivity.setText("");
     }
 
@@ -451,14 +438,14 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
 
 
     @OnEditorAction(R.id.edittext_choose_activity)
-    public boolean enterPressed(){
+    public boolean enterPressed() {
         hideKeyboard();
         listView_activities.setVisibility(View.GONE);
         return true;
     }
 
     @OnTextChanged(R.id.edittext_choose_activity)
-    public void onTextChanged(CharSequence text){
+    public void onTextChanged(CharSequence text) {
         String newText = text.toString();
         listView_activities.setVisibility(View.VISIBLE);
         extraInfoString = newText;
@@ -481,7 +468,7 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
             listView_activities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    editTextChooseActivity.setText(sResult[position],  TextView.BufferType.EDITABLE);
+                    editTextChooseActivity.setText(sResult[position], TextView.BufferType.EDITABLE);
                     editTextChooseActivity.clearFocus();
                     hideKeyboard();
                     editTextChooseActivity.setCursorVisible(false);
@@ -495,8 +482,9 @@ public class CreateNewMeeting2 extends Activity implements  UIthread {
 
 
     }
-    public  void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editTextChooseActivity.getWindowToken(), 0);
     }
 

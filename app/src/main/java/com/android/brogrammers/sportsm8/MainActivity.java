@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
     private ActionBarDrawerToggle mToggle;
     private BottomNavigationView bottomNavigationView;
 
+    private boolean tempCalendar= false;  //to prevent crashes
+
     private ImageButton imageButtonToolbar;
     private TextView textView;
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                 findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
+
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Intent intent;
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                             //not correct way to do
                             // don't start new activities
                             case R.id.bottom_navigation_sports:
+                                tempCalendar=false;
                                 floatingActionButton.setVisibility(View.GONE);
                                 fragment = new ActivitiesFragment();
                                 imageButtonToolbar.animate()
@@ -110,18 +114,22 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                                 textView.setVisibility(View.GONE);
                                 break;
                             case R.id.bottom_navigation_calender:
-                                floatingActionButton.setVisibility(View.VISIBLE);
-                                fragment = new CalenderFragment2();
-                                imageButtonToolbar.animate()
-                                        .scaleX(0)
-                                        .scaleY(0)
-                                        .alpha(0.0f);
-                                imageButtonToolbar.setVisibility(View.GONE);
-                                findViewById(R.id.spinner2).setVisibility(View.GONE);
-                                textView.setVisibility(View.VISIBLE);
-                                textView.setText("Kalender");
+                                if(!tempCalendar) {
+                                    tempCalendar=true;
+                                    floatingActionButton.setVisibility(View.VISIBLE);
+                                    fragment = new CalenderFragment2();
+                                    imageButtonToolbar.animate()
+                                            .scaleX(0)
+                                            .scaleY(0)
+                                            .alpha(0.0f);
+                                    imageButtonToolbar.setVisibility(View.GONE);
+                                    findViewById(R.id.spinner2).setVisibility(View.GONE);
+                                    textView.setVisibility(View.VISIBLE);
+                                    textView.setText("Kalender");
+                                }
                                 break;
                             case R.id.bottom_navigation_friends:
+                                tempCalendar=false;
                                 floatingActionButton.setVisibility(View.GONE);
                                 fragment = new FragmentSocial();
                                 imageButtonToolbar.animate()
@@ -164,10 +172,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
     public void createNewMeeting(){
         Bundle b = new Bundle();
         //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
-        b.putInt("sportID",8008);
-        b.putBoolean("liga", false);
         Intent intent = new Intent(this, CreateNewMeeting2.class);
-        intent.putExtras(b);
         startActivity(intent);
     }
 
@@ -197,6 +202,9 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 
     //Implements Navigation View
     private void navigationView() {
