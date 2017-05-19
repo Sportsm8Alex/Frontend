@@ -46,7 +46,7 @@ public class DayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frragment_day, container, false);
-        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+//        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab_calendar);
         // needs to use the containers function since its not an activity
 
@@ -56,19 +56,20 @@ public class DayFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         RecyclerView.Adapter rvAdapter = new RecyclerViewAdapter(getContext(), (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay"));
         recyclerView.setAdapter(rvAdapter);
-        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
-                    bottomNavigationView.animate().translationY(0).setDuration(100);
-                    floatingActionButton.animate().translationY(0).setDuration(100);
-                } else {
-                    bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
-                    floatingActionButton.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
-                }
-            }
-        });
+
+//        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
+//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//                if (verticalOffset == 0) {
+//                    bottomNavigationView.animate().translationY(0).setDuration(100);
+//                    floatingActionButton.animate().translationY(0).setDuration(100);
+//                } else {
+//                    bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+//                    floatingActionButton.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+//                }
+//            }
+//        });
         return view;
     }
 

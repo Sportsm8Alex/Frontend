@@ -12,6 +12,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    /*sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res/testDirectory',
+                            'src/main/res/layouts',
+                            'src/main/res'
+                    ]
+        }
+    }*/
     buildTypes {
         release {
             minifyEnabled false
@@ -53,6 +63,9 @@ dependencies {
 
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.github.sujithkanna:smileyrating:1.6.5'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
+    compile 'com.roughike:bottom-bar:2.3.1'
+
 
 }
 

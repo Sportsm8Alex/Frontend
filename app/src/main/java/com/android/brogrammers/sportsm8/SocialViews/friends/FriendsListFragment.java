@@ -47,20 +47,20 @@ public class FriendsListFragment extends Fragment implements UIthread {
         //Declaration Views
         recyclerView = (RecyclerView) view.findViewById(R.id.friends_recycler_view);
         updateUI("");
-        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
-        if (appBarLayout != null) {
-            appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-                @Override
-                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                    if (verticalOffset == 0) {
-                        bottomNavigationView.animate().translationY(0).setDuration(100);
-                    } else {
-                        bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
-                    }
-                }
-            });
-        }
-        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
+//        AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
+//        if (appBarLayout != null) {
+//            appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//                @Override
+//                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//                    if (verticalOffset == 0) {
+//                        bottomNavigationView.animate().translationY(0).setDuration(100);
+//                    } else {
+//                        bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(100);
+//                    }
+//                }
+//            });
+//        }
+//        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         updateUI("");
         return view;
     }
