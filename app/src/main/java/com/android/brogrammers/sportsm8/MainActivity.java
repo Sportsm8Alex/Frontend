@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                     case R.id.tab_account:
                         tempCalendar=false;
                         floatingActionButton.setVisibility(View.GONE);
-                        fragment = new ActivitiesFragment();
+                        fragment = new AccountPage();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
                                 .scaleY(0)
