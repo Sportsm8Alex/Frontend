@@ -36,6 +36,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.android.brogrammers.sportsm8.TestDirectory.BottomNavBar;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -85,6 +86,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                     editor.apply();
                     progressDialog.dismiss();
                     System.out.println("session continued");
+                    //Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                     Intent intent = new Intent(LoginScreen.this, MainActivity.class);
                     startActivity(intent);
                     LoginScreen.this.finish();

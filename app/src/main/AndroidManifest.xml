@@ -24,6 +24,9 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".TestDirectory.BottomNavBar"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".UserClasses.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

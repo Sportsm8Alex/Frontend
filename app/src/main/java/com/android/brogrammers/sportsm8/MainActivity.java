@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
@@ -33,6 +34,8 @@ import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.google.firebase.auth.FirebaseAuth;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,8 +90,66 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
+
+        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottom_bar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                Intent intent;
+                switch (tabId) {
+                    //not correct way to do
+                    // don't start new activities
+                    case R.id.tab_account:
+                        tempCalendar=false;
+                        floatingActionButton.setVisibility(View.GONE);
+                        fragment = new ActivitiesFragment();
+                        imageButtonToolbar.animate()
+                                .scaleX(0)
+                                .scaleY(0)
+                                .alpha(0.0f);
+                        imageButtonToolbar.setVisibility(View.GONE);
+                        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+                        appBarLayout.setExpanded(true);
+                        findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
+                        textView.setVisibility(View.GONE);
+                        break;
+                    case R.id.tab_calendar:
+                        if(!tempCalendar) {
+                            tempCalendar=true;
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                            fragment = new CalenderFragment2();
+                            imageButtonToolbar.animate()
+                                    .scaleX(0)
+                                    .scaleY(0)
+                                    .alpha(0.0f);
+                            imageButtonToolbar.setVisibility(View.GONE);
+                            findViewById(R.id.spinner2).setVisibility(View.GONE);
+                            textView.setVisibility(View.VISIBLE);
+                            textView.setText("Kalender");
+                        }
+                        break;
+                    case R.id.tab_friends:
+                        tempCalendar=false;
+                        floatingActionButton.setVisibility(View.GONE);
+                        fragment = new FragmentSocial();
+                        imageButtonToolbar.animate()
+                                .scaleX(1)
+                                .scaleY(1)
+                                .alpha(1.0f);
+                        imageButtonToolbar.setVisibility(View.VISIBLE);
+                        findViewById(R.id.spinner2).setVisibility(View.GONE);
+                        textView.setVisibility(View.VISIBLE);
+                        textView.setText("Freunde");
+                        break;
+                }
+                final FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment).commit();
+            }
+        });
+
+
         //bottom navigation
-        bottomNavigationView = (BottomNavigationView)
+        /*bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -146,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                         return true;
                     }
                 }
-        );
+        );*/
     }
 
 
