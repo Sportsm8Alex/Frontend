@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
@@ -37,6 +42,9 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class CalenderFragment2 extends Fragment implements UIthread, SwipeRefreshLayout.OnRefreshListener {
+
+    LinearLayout linear;
+    HorizontalScrollView horizontalScrollView;
 
     TabLayout slidingTabLayout;
     Activity parentActivity;
@@ -73,17 +81,32 @@ public class CalenderFragment2 extends Fragment implements UIthread, SwipeRefres
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_calendar, container, false);
         slidingTabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-
+       // linear = (LinearLayout) rootView.findViewById(R.id.calendar_scroll_LL);
+        //horizontalScrollView = (HorizontalScrollView)rootView.findViewById(R.id.scrollview_calendar);
 
         viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         //changed this method
         viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
-
         slidingTabLayout.setupWithViewPager(viewPager);
+        //createScrollView();
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.calender_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         getMeetings();
         return rootView;
+    }
+
+    private void createScrollView() {
+
+
+        for (int i = 0; i < 40; i++) {
+            View newView = LayoutInflater.from(parentActivity).inflate(R.layout.day_selector_tab, null);
+            TextView textView = (TextView)newView.findViewById(R.id.date_textview);
+            textView.setText(""+i+".5");
+            if(i%2==0) {
+                newView.setElevation(5);
+            }
+            linear.addView(newView);
+        }
     }
 
     public void getMeetings() {
@@ -136,7 +159,7 @@ public class CalenderFragment2 extends Fragment implements UIthread, SwipeRefres
     public void onDestroy() {
         try {
             super.onDestroy();
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
     }
@@ -219,7 +242,7 @@ public class CalenderFragment2 extends Fragment implements UIthread, SwipeRefres
 
             String[] btnText = {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"};
 
-            int todayInWeek = LocalDate.now().getDayOfWeek() - 1;
+            int todayInWeek = LocalDate.now().getDayOfWeek() - 4;
             /*for(int i=0; i<7; i++){
                 tabLayout.addTab(tabLayout.newTab().setText(btnText[(todayInWeek+i)%7]));
             }*/

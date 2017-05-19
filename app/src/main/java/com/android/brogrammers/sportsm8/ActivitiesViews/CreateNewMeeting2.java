@@ -77,6 +77,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
     private MutableDateTime startTime, endTime;
     private DateTime datetime, backUpStartTime, backUpEndTime;
     private DateTimeFormatter formatter;
+    private boolean enoughPeopleInvited = false;
 
     @BindView(R.id.edittext_choose_activity)
     EditText editTextChooseActivity;
@@ -148,12 +149,13 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
 
     }
 
-
     @OnCheckedChanged(R.id.check_dynamic)
     public void onCheckedChanged(boolean checked) {
         if (checked) {
-            startTimeButton.setText(startTime.toString("HH:" + (startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15)));
-            endTimeButton.setText(endTime.toString("HH:" + (endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15)));
+            int minutes = (startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15);
+            startTimeButton.setText(startTime.toString("HH:" + String.format("%02d", minutes)));
+            minutes = (endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15);
+            endTimeButton.setText(endTime.toString("HH:" + String.format("%02d", minutes)));
         } else {
             startTimeButton.setText(startTime.toString("HH:mm"));
             endTimeButton.setText(endTime.toString("HH:mm"));
@@ -285,42 +287,41 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
 
     @OnClick(R.id.save_meeting)
     public void createMeeting(View view) {
+        if (enoughPeopleInvited) {
+            if (minMemberCount != 0 && minHours != 0) {
+                if (startTime.isBefore(endTime)) {
+                    if (checkSwitch.isChecked()) {
+                        dynamic = 1;
+                        startTime.setMinuteOfHour((startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15));
+                        endTime.setMinuteOfHour((endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15));
+                    }
+                    SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+                    String email = sharedPrefs.getString("email", "");
+                    ArrayList<String> paramsArrayList = new ArrayList<>(
+                            Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", minMemberCount + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID, "dynamic", dynamic + "")
+                    );
+                    for (int i = 0; i < Selection.size(); i++) {
+                        paramsArrayList.add("member" + i);
+                        paramsArrayList.add(Selection.get(i).email);
+                    }
+                    String[] params = new String[paramsArrayList.size()];
+                    params = paramsArrayList.toArray(params);
 
-        if (bBegin && bEnd && bDate && minMemberCount != 0 && minHours != 0) {
-            if (startTime.isBefore(endTime)) {
-                if (checkSwitch.isChecked()) {
-                    dynamic = 1;
-                    startTime.setMinuteOfHour((startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15));
-                    endTime.setMinuteOfHour((endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15));
-                }
-                SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                String email = sharedPrefs.getString("email", "");
-                ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(startTime), "endTime", formatter.print(endTime), "minPar", minMemberCount + "", "member", email, "activity", extraInfoString, "sportID", "" + sportart_ID, "dynamic", dynamic + "")
-                );
-                for (int i = 0; i < Selection.size(); i++) {
-                    paramsArrayList.add("member" + i);
-                    paramsArrayList.add(Selection.get(i).email);
-                }
-                String[] params = new String[paramsArrayList.size()];
-                params = paramsArrayList.toArray(params);
+                    Database db = new Database(this, getBaseContext());
+                    db.execute(params);
+                    Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                    finish();
 
-                Database db = new Database(this, getBaseContext());
-                db.execute(params);
-                // Toast.makeText(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
-                Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
-                finish();
+                } else {
+                    Toasty.error(this, "Falsche Zeit eingestellt", Toast.LENGTH_SHORT).show();}
 
             } else {
-                // Toast.makeText(this, R.string.setTimeWrong, Toast.LENGTH_SHORT).show();
-                Toasty.error(this, "Falsche Zeit eingestellt", Toast.LENGTH_SHORT).show();
-
+                Toasty.error(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
             }
-
         } else {
-            // Toast.makeText(this, R.string.text_empty_fields, Toast.LENGTH_SHORT).show();
-            Toasty.error(this, "Nicht alle Felder ausgefüllt", Toast.LENGTH_SHORT).show();
+            Toasty.error(this, "Nicht genug Leute eingeladen", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 
@@ -375,7 +376,6 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
             }
             for (int j = 0; j < temp.size(); j++) {
                 Boolean tempBool = false;
-                int tempInt = 0;
                 for (int h = 0; h < Selection.size(); h++) {
                     if (temp.get(j).email.equals(Selection.get(h).email)) {
                         tempBool = true;
@@ -388,8 +388,6 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
 
         }
         addFriendsButton.setText(Selection.size() + "  Teilnehmer hinzugefügt");
-        addFriendsButton.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.green));
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -403,8 +401,20 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
             }
         }
         mergeGroupsAndFriends();
+        checkMemberCount();
     }
 
+
+    private void checkMemberCount(){
+        if (Selection.size() < minMemberCount) {
+
+            addFriendsButton.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.red));
+            enoughPeopleInvited = false;
+        } else {
+            addFriendsButton.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.green));
+            enoughPeopleInvited = true;
+        }
+    }
 
     @Override
     public void updateUI() {
@@ -474,6 +484,11 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                     editTextChooseActivity.setCursorVisible(false);
                     listView_activities.setVisibility(View.GONE);
                     extraInfoString = sResult[position];
+                    minMemberCount = Integer.parseInt(sportIDs.get(position).minPartySize);
+                    sportart_ID=Integer.parseInt(sportIDs.get(position).sportID);
+                    minPartySizeTextView.setText(minMemberCount + "");
+                    checkMemberCount();
+
                 }
             });
 

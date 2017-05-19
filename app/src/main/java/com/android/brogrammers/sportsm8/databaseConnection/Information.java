@@ -23,7 +23,7 @@ public class Information implements Serializable {
     public String GroupID, GroupName;
 
     //SportInformation
-    public String team, sportname, sportID;
+    public String team, sportname, sportID,minPartySize;
 
     //Help Variables
     public Boolean selected = false;
