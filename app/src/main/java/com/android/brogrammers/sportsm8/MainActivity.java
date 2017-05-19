@@ -42,7 +42,7 @@ import butterknife.OnClick;
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements CalenderFragment2.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements CalenderFragment2.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener,ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
         //buttons();
         fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new ActivitiesFragment();
+        fragment = new AccountPage();
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                 findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Intent intent;
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                             case R.id.bottom_navigation_sports:
                                 tempCalendar=false;
                                 floatingActionButton.setVisibility(View.GONE);
-                                fragment = new ActivitiesFragment();
+                                fragment = new AccountPage();
                                 imageButtonToolbar.animate()
                                         .scaleX(0)
                                         .scaleY(0)
