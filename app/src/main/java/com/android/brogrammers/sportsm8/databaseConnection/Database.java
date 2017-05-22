@@ -132,10 +132,8 @@ public class Database extends AsyncTask<String, String, String>{
     }
 
     public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {
-
         ArrayList<Information> data = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(json);
-
         int i=0;
         while(jsonObject.has(""+i)) {
             // in the php return JSON each meeting object is identified by an Index. Now they will be turned into a String one after another
@@ -146,7 +144,6 @@ public class Database extends AsyncTask<String, String, String>{
             data.add(currentMeeting);
             i++;
         }
-
         return data;
     }
 }

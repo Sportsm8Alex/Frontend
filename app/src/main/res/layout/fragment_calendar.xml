@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabMode="scrollable"
+        app:tabMaxWidth="100dp"
         android:background="@color/colorPrimary"
         app:tabSelectedTextColor="@color/whiteText"
         app:tabTextColor="@color/whiteText" />

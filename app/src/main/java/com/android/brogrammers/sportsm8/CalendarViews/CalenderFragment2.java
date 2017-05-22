@@ -3,10 +3,10 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,9 +16,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
@@ -27,11 +26,12 @@ import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 
 /**
@@ -44,22 +44,15 @@ import java.util.ArrayList;
  */
 public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChangeListener, UIthread, SwipeRefreshLayout.OnRefreshListener {
 
-    LinearLayout linear;
-    HorizontalScrollView horizontalScrollView;
     ViewPagerAdapter viewPagerAdapter;
-
     ArrayList<Information> meetings;
     DateTime today;
     TabLayout tabLayout;
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
-    private CharSequence Titles[] = {"Mo", "Di", "We", "Do", "Fr", "Sa", "So"};
     private ViewPager viewPager;
-    Boolean hasStop = false;
-    static int count = 0;
     private OnFragmentInteractionListener mListener;
     private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
-    private DateTimeFormatter formatter;
     Boolean needsUpdate = false;
     Boolean onStartUp = true;
 
@@ -82,10 +75,8 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         super.onCreate(savedInstanceState);
         parentActivity = getActivity();
         today = new DateTime();
-        meetings = new ArrayList<Information>();
+        meetings = new ArrayList<>();
         getMeetings();
-
-
     }
 
     @Override
@@ -94,10 +85,9 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_calendar, container, false);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        // linear = (LinearLayout) rootView.findViewById(R.id.calendar_scroll_LL);
-        //horizontalScrollView = (HorizontalScrollView)rootView.findViewById(R.id.scrollview_calendar);
-
-
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.calender_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setRefreshing(true);
         viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         //changed this method
         viewPagerAdapter = new ViewPagerAdapter(this.getChildFragmentManager(), parentActivity.getApplicationContext(), mFragmentList);
@@ -107,9 +97,6 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         tabLayout.setSmoothScrollingEnabled(true);
         customTabs();
         //createScrollView();
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.calender_refresh);
-        swipeRefreshLayout.setOnRefreshListener(this);
-
         return rootView;
     }
 
@@ -123,10 +110,8 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
     }
 
     private void parseMeetings() {
-
         SharedPreferences sharedPrefs = parentActivity.getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
-
         try {
             meetings = Database.jsonToArrayList(meetingJson);
         } catch (JSONException | ParseException e) {
@@ -197,24 +182,21 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         parseMeetings();
         if (onStartUp) {
             createFragmentList(7);
-            onStartUp=false;
+            onStartUp = false;
         } else {
             createFragmentList(mFragmentList.size());
         }
         swipeRefreshLayout.setRefreshing(false);
         viewPagerAdapter.notifyDataSetChanged();
-        customTabs();
         needsUpdate = false;
+        customTabs();
+
     }
 
     @Override
     public void onRefresh() {
         needsUpdate = true;
         getMeetings();
-
-       /* viewPager.getCurrentItem();
-
-        getMeetings();*/
     }
 
     public void setStartDate(int year, int month, int dayOfMonth) {
@@ -265,7 +247,9 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
     }
 
     public void scrollTo(int i) {
-        tabLayout.getTabAt(i).select();
+        if (tabLayout.getTabAt(i) != null) {
+            tabLayout.getTabAt(i).select();
+        }
     }
 
     @Override
@@ -277,8 +261,8 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
     public void onPageSelected(int position) {
         int count = tabLayout.getTabCount();
         if (count < 60) {
-            if (count - position < 3) {
-                // Toasty.success(parentActivity, "Neue Tabs erstellen", Toast.LENGTH_SHORT).show();
+            if (count - position == 1) {
+                Toasty.info(parentActivity, "Neue Tage geladen", Toast.LENGTH_SHORT).show();
                 mFragmentList.addAll(addTab(count));
                 viewPagerAdapter.notifyDataSetChanged();
                 customTabs();
@@ -361,6 +345,7 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
             if (arrayList != null) {
                 if (arrayList.size() > 0) {
                     tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 }
                 for (int i = 0; i < arrayList.size(); i++) {
                     if (arrayList.get(i).confirmed == 0) {

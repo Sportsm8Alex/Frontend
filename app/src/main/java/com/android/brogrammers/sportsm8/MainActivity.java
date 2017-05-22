@@ -14,7 +14,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting2;
-import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
@@ -52,6 +50,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -69,11 +68,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private BottomNavigationView bottomNavigationView;
+    //to prevent crashes
 
-    private boolean tempCalendar = false;  //to prevent crashes
-
-    private ImageButton imageButtonToolbar;
-    private TextView textView;
     ArrayList<Information> arrayListMeetings;
     DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 
@@ -83,8 +79,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     BottomBar bottomBar;
     @BindView(R.id.change_start_date)
     ImageButton startDate;
+    @BindView(R.id.image_button_toolbar)
+    ImageButton imageButtonToolbar;
+    @BindView(R.id.toolbar_title)
+    TextView textView;
+    @BindView(R.id.app_bar)
+    AppBarLayout appBarLayout;
 
-    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,20 +94,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         ButterKnife.bind(this);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-        imageButtonToolbar = (ImageButton) findViewById(R.id.image_button_toolbar);
-        textView = (TextView) findViewById(R.id.toolbar_title);
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
         navigationView();
-        //buttons();
+
         fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragment = new AccountPage();
@@ -122,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     //not correct way to do
                     // don't start new activities
                     case R.id.tab_account:
-                        tempCalendar = false;
                         floatingActionButton.setVisibility(View.GONE);
                         fragment = new AccountPage();
                         imageButtonToolbar.animate()
@@ -130,28 +118,22 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                 .scaleY(0)
                                 .alpha(0.0f);
                         imageButtonToolbar.setVisibility(View.GONE);
-                        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
                         appBarLayout.setExpanded(true);
                         startDate.setVisibility(View.GONE);
-                        textView.setVisibility(View.GONE);
+                        textView.setText("My Account");
                         break;
                     case R.id.tab_calendar:
-                        if (!tempCalendar) {
-                            tempCalendar = true;
-                            floatingActionButton.setVisibility(View.VISIBLE);
-                            fragment = new CalenderFragment2();
-                            imageButtonToolbar.animate()
-                                    .scaleX(0)
-                                    .scaleY(0)
-                                    .alpha(0.0f);
-                            imageButtonToolbar.setVisibility(View.GONE);
-                            startDate.setVisibility(View.VISIBLE);
-                            textView.setVisibility(View.VISIBLE);
-                            textView.setText("Kalender");
-                        }
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                        fragment = new CalenderFragment2();
+                        imageButtonToolbar.animate()
+                                .scaleX(0)
+                                .scaleY(0)
+                                .alpha(0.0f);
+                        imageButtonToolbar.setVisibility(View.GONE);
+                        startDate.setVisibility(View.VISIBLE);
+                        textView.setText("Kalender");
                         break;
                     case R.id.tab_friends:
-                        tempCalendar = false;
                         floatingActionButton.setVisibility(View.GONE);
                         fragment = new FragmentSocial();
                         imageButtonToolbar.animate()
@@ -159,9 +141,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                 .scaleY(1)
                                 .alpha(1.0f);
                         imageButtonToolbar.setVisibility(View.VISIBLE);
-
                         startDate.setVisibility(View.GONE);
-                        textView.setVisibility(View.VISIBLE);
                         textView.setText("Freunde");
                         break;
                 }
@@ -200,13 +180,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnClick(R.id.change_start_date)
     public void changeStartDate() {
-
-
         DateTime today = new DateTime();
         DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-
         ArrayList<Calendar> highlights = new ArrayList<>();
-
         for (int i = 0; i < arrayListMeetings.size(); i++) {
             String x = arrayListMeetings.get(i).startTime;
             DateTime dateTime = formatter.parseDateTime(arrayListMeetings.get(i).startTime);
@@ -215,17 +191,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         }
         Calendar[] days = highlights.toArray(new Calendar[highlights.size()]);
         dPD.setHighlightedDays(days);
-
         dPD.show(getFragmentManager(), "DatePicker");
-
-
-    }
-
-
-    public void onClick(View v) {
-
-        finish();
-
     }
 
     @OnClick(R.id.fab_calendar)
@@ -241,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
-
     }
 
     @Override
@@ -250,11 +215,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         // automatically handle clicks on the MainActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         if (mToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         //noinspection SimplifiableIfStatement
         switch (id) {
 
@@ -313,21 +276,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         return true;
                     case R.id.nav_settings:
                         return true;
-
-
                 }
-
                 return MainActivity.super.onOptionsItemSelected(item);
             }
         });
     }
 
     public void getNumberOfUnanswered() {
-
         arrayListMeetings = new ArrayList<>();
         SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
-
         try {
             arrayListMeetings = Database.jsonToArrayList(meetingJson);
         } catch (JSONException | ParseException e) {
@@ -364,16 +322,12 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
-
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         CalenderFragment2 calenderFragment2 = (CalenderFragment2) fragment;
         calenderFragment2.setStartDate(year, monthOfYear, dayOfMonth);
     }
-
-
 }
 
