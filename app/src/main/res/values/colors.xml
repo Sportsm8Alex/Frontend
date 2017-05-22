@@ -20,4 +20,7 @@
     <color name="grey">#9E9E9E</color>
     <color name="darkgrey">#424242</color>
     <color name="lightblue">#90CAF9</color>
+    <color name="mdtp_date_picker_text_highlighted_dark_theme">#303F9F</color>
+    <color name="mdtp_date_picker_text_highlighted">#303F9F</color>
+
 </resources>
