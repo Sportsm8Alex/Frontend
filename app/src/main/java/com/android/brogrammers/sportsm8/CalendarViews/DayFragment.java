@@ -16,11 +16,13 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+
 /**
  * CCreated by Korbi on 10/30/2016.
  */
 
-public class DayFragment extends Fragment {
+public class DayFragment extends Fragment implements Updateable {
     RecyclerView recyclerView;
     private BottomNavigationView bottomNavigationView;
     private FloatingActionButton floatingActionButton;
@@ -47,13 +49,10 @@ public class DayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_day, container, false);
-        bottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
-
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.fab_calendar);
         // needs to use the containers function since its not an activity
 
         //#############
-        //It doesnt seem to find the recyclerView!?
         recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         RecyclerView.Adapter rvAdapter = new RecyclerViewAdapter(getContext(), (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay"));
@@ -75,5 +74,13 @@ public class DayFragment extends Fragment {
         return view;
     }
 
+    public ArrayList<Information> getMeetingsOnDay(){
+        return (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay");
+    }
 
+    @Override
+    public void update() {
+        RecyclerView.Adapter rvAdapter = new RecyclerViewAdapter(getContext(),  (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay"));
+        recyclerView.setAdapter(rvAdapter);
+    }
 }

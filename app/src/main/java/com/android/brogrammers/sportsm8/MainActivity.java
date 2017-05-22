@@ -27,15 +27,31 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting2;
+import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
+import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.google.firebase.auth.FirebaseAuth;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +61,7 @@ import butterknife.OnClick;
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements CalenderFragment2.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener,ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, CalenderFragment2.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -53,13 +69,19 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
     private ActionBarDrawerToggle mToggle;
     private BottomNavigationView bottomNavigationView;
 
-    private boolean tempCalendar= false;  //to prevent crashes
+    private boolean tempCalendar = false;  //to prevent crashes
 
     private ImageButton imageButtonToolbar;
     private TextView textView;
+    ArrayList<Information> arrayListMeetings;
+    DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 
     @BindView(R.id.fab_calendar)
     FloatingActionButton floatingActionButton;
+    @BindView(R.id.bottom_bar)
+    BottomBar bottomBar;
+    @BindView(R.id.change_start_date)
+    ImageButton startDate;
 
     int i = 0;
 
@@ -90,8 +112,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
-
-        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottom_bar);
+        getNumberOfUnanswered();
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -100,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                     //not correct way to do
                     // don't start new activities
                     case R.id.tab_account:
-                        tempCalendar=false;
+                        tempCalendar = false;
                         floatingActionButton.setVisibility(View.GONE);
                         fragment = new AccountPage();
                         imageButtonToolbar.animate()
@@ -110,12 +131,12 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                         imageButtonToolbar.setVisibility(View.GONE);
                         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
                         appBarLayout.setExpanded(true);
-                        findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
+                        startDate.setVisibility(View.GONE);
                         textView.setVisibility(View.GONE);
                         break;
                     case R.id.tab_calendar:
-                        if(!tempCalendar) {
-                            tempCalendar=true;
+                        if (!tempCalendar) {
+                            tempCalendar = true;
                             floatingActionButton.setVisibility(View.VISIBLE);
                             fragment = new CalenderFragment2();
                             imageButtonToolbar.animate()
@@ -123,13 +144,13 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                                     .scaleY(0)
                                     .alpha(0.0f);
                             imageButtonToolbar.setVisibility(View.GONE);
-                            findViewById(R.id.spinner2).setVisibility(View.GONE);
+                            startDate.setVisibility(View.VISIBLE);
                             textView.setVisibility(View.VISIBLE);
                             textView.setText("Kalender");
                         }
                         break;
                     case R.id.tab_friends:
-                        tempCalendar=false;
+                        tempCalendar = false;
                         floatingActionButton.setVisibility(View.GONE);
                         fragment = new FragmentSocial();
                         imageButtonToolbar.animate()
@@ -137,99 +158,76 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                                 .scaleY(1)
                                 .alpha(1.0f);
                         imageButtonToolbar.setVisibility(View.VISIBLE);
-                        findViewById(R.id.spinner2).setVisibility(View.GONE);
+
+                        startDate.setVisibility(View.GONE);
                         textView.setVisibility(View.VISIBLE);
                         textView.setText("Freunde");
                         break;
                 }
+                getNumberOfUnanswered();
                 final FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment).commit();
             }
         });
 
-
-        //bottom navigation
-        /*bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Intent intent;
-                        switch (item.getItemId()) {
-                            //not correct way to do
-                            // don't start new activities
-                            case R.id.bottom_navigation_sports:
-                                tempCalendar=false;
-                                floatingActionButton.setVisibility(View.GONE);
-                                fragment = new AccountPage();
-                                imageButtonToolbar.animate()
-                                        .scaleX(0)
-                                        .scaleY(0)
-                                        .alpha(0.0f);
-                                imageButtonToolbar.setVisibility(View.GONE);
-                                AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
-                                appBarLayout.setExpanded(true);
-                                findViewById(R.id.spinner2).setVisibility(View.VISIBLE);
-                                textView.setVisibility(View.GONE);
-                                break;
-                            case R.id.bottom_navigation_calender:
-                                if(!tempCalendar) {
-                                    tempCalendar=true;
-                                    floatingActionButton.setVisibility(View.VISIBLE);
-                                    fragment = new CalenderFragment2();
-                                    imageButtonToolbar.animate()
-                                            .scaleX(0)
-                                            .scaleY(0)
-                                            .alpha(0.0f);
-                                    imageButtonToolbar.setVisibility(View.GONE);
-                                    findViewById(R.id.spinner2).setVisibility(View.GONE);
-                                    textView.setVisibility(View.VISIBLE);
-                                    textView.setText("Kalender");
-                                }
-                                break;
-                            case R.id.bottom_navigation_friends:
-                                tempCalendar=false;
-                                floatingActionButton.setVisibility(View.GONE);
-                                fragment = new FragmentSocial();
-                                imageButtonToolbar.animate()
-                                        .scaleX(1)
-                                        .scaleY(1)
-                                        .alpha(1.0f);
-                                imageButtonToolbar.setVisibility(View.VISIBLE);
-                                findViewById(R.id.spinner2).setVisibility(View.GONE);
-                                textView.setVisibility(View.VISIBLE);
-                                textView.setText("Freunde");
-                                break;
-                        }
-                        final FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(R.id.fragment_container, fragment).commit();
-                        return true;
-                    }
+        bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+            @Override
+            public void onTabReSelected(@IdRes int tabId) {
+                switch (tabId) {
+                    case R.id.tab_calendar:
+                        ((CalenderFragment2) fragment).scrollTo(0);
+                        break;
+                    default:
+                        break;
                 }
-        );*/
+
+
+            }
+        });
+
     }
 
+    @OnClick(R.id.image_button_toolbar)
+    public void searchNewFriends() {
+        Bundle b = new Bundle();
+        b.putBoolean("search", true);
+        Intent intent = new Intent(this, OnlyFriendsView.class);
+        intent.putExtras(b);
+        startActivity(intent);
 
+    }
+
+    @OnClick(R.id.change_start_date)
+    public void changeStartDate() {
+
+
+        DateTime today = new DateTime();
+        DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
+
+        ArrayList<Calendar> highlights = new ArrayList<>();
+
+        for (int i = 0; i < arrayListMeetings.size(); i++) {
+            String x = arrayListMeetings.get(i).startTime;
+            DateTime dateTime = formatter.parseDateTime(arrayListMeetings.get(i).startTime);
+            Calendar date1 = dateTime.toCalendar(Locale.getDefault());
+            highlights.add(date1);
+        }
+        Calendar[] days = highlights.toArray(new Calendar[highlights.size()]);
+        dPD.setHighlightedDays(days);
+        dPD.show(getFragmentManager(), "DatePicker");
+
+
+    }
 
 
     public void onClick(View v) {
-        Intent intent;
-        switch (v.getId()) {
-            case R.id.image_button_toolbar:
-                Bundle b = new Bundle();
-                b.putBoolean("search", true);
-                intent = new Intent(this, OnlyFriendsView.class);
-                intent.putExtras(b);
-                startActivity(intent);
-                break;
-            default:
-                finish();
-        }
+
+        finish();
+
     }
 
     @OnClick(R.id.fab_calendar)
-    public void createNewMeeting(){
+    public void createNewMeeting() {
         Bundle b = new Bundle();
         //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
         Intent intent = new Intent(this, CreateNewMeeting2.class);
@@ -262,8 +260,6 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
 
     //Implements Navigation View
@@ -324,6 +320,28 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
         });
     }
 
+    public void getNumberOfUnanswered() {
+
+        arrayListMeetings = new ArrayList<>();
+        SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
+        String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
+
+        try {
+            arrayListMeetings = Database.jsonToArrayList(meetingJson);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        int x = 0;
+        for (int i = 0; i < arrayListMeetings.size(); i++) {
+            if (arrayListMeetings.get(i).confirmed != 1) {
+                x++;
+            }
+        }
+        BottomBarTab calendar = bottomBar.getTabAtPosition(1);
+        calendar.setBadgeCount(x);
+    }
+
+
     public void onBackPressed() {
         if (isNavDrawerOpen()) {
             closeNavDrawer();
@@ -345,6 +363,13 @@ public class MainActivity extends AppCompatActivity implements CalenderFragment2
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        CalenderFragment2 calenderFragment2 = (CalenderFragment2) fragment;
+        calenderFragment2.setStartDate(year, monthOfYear, dayOfMonth);
     }
 
 

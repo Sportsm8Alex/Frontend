@@ -70,11 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String[] array = res.getStringArray(R.array.sportarten);
         //TODO: Change php to Json_Check_numeric and Attribute in Information to int
         int x = Integer.valueOf(meetingsOnDay.get(position).sportID);
-        if (x == 8008) {
-            meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
-        } else {
-            meetingsViewHolder.meetingName.setText(array[x]);
-        }
+        meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
         final Information infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
             meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);

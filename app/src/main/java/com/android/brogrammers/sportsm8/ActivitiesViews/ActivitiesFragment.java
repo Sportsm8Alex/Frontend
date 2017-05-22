@@ -87,7 +87,7 @@ public class ActivitiesFragment extends Fragment implements UIthread {
         View rootView = inflater.inflate(R.layout.fragment_activities, container, false);
         //toolbar problem needs to be solved first
         ButterKnife.bind(this,rootView);
-        sportsSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
+       // sportsSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
         //createList();
         return rootView;
     }
