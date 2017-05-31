@@ -97,11 +97,12 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new AccountPage();
+        fragment = new FragmentSocial();
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
         getNumberOfUnanswered();
+        bottomBar.selectTabAtPosition(1);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
