@@ -40,7 +40,7 @@
             android:layout_marginStart="72dp"
             android:clickable="true"
             android:text="Dynamic Meeting"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
 
         <Switch
             android:id="@+id/check_dynamic"
@@ -67,7 +67,7 @@
             android:paddingStart="0dp"
             android:text="Mi 4. Dez 2016"
             android:textAllCaps="false"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/button_begin_time"
@@ -78,7 +78,7 @@
             android:layout_centerVertical="true"
             android:paddingEnd="0dp"
             android:text="HH:mm"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -97,7 +97,7 @@
             android:paddingStart="0dp"
             android:text="Mi 4. Dez 2016"
             android:textAllCaps="false"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/button_end_time"
@@ -108,7 +108,7 @@
             android:layout_centerVertical="true"
             android:paddingEnd="0dp"
             android:text="HH:mm"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 
 
@@ -146,7 +146,7 @@
             android:paddingStart="0dp"
             android:text="@string/add_friends_to_meeting"
             android:textAllCaps="false"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 
     <View
@@ -182,7 +182,7 @@
             android:paddingStart="0dp"
             android:text="@string/more_settings_button"
             android:textAllCaps="false"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
 
         <ImageView
             android:id="@+id/imageview_expand_arrow"
@@ -194,7 +194,7 @@
             android:layout_marginEnd="16dp"
             android:padding="0dp"
             android:src="@drawable/ic_expand_more_black_36dp"
-            android:textColor="@color/blackText" />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -233,7 +233,7 @@
                 android:paddingStart="0dp"
                 android:text="@string/minium_party_size"
                 android:textAllCaps="false"
-                android:textColor="@color/blackText" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textview_min_party_size"
@@ -243,7 +243,7 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:text="0"
-                android:textColor="@color/blackText" />
+                android:textColor="@color/black" />
 
         </RelativeLayout>
 
@@ -272,7 +272,7 @@
                 android:paddingStart="0dp"
                 android:text="@string/minimum_meeting_time"
                 android:textAllCaps="false"
-                android:textColor="@color/blackText" />
+                android:textColor="@color/black" />
 
 
             <TextView
@@ -283,7 +283,7 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:text="0"
-                android:textColor="@color/blackText" />
+                android:textColor="@color/black" />
 
 
         </RelativeLayout>

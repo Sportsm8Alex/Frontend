@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="Username"
-        android:textColor="@color/blackText"
+        android:textColor="@color/black"
         android:textSize="16sp" />
     <TextView
         android:id="@+id/meeting_user_time"
@@ -17,5 +17,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_margin="8dp"
-        android:textColor="@color/blackText" />
+        android:textColor="@color/black" />
 </RelativeLayout>

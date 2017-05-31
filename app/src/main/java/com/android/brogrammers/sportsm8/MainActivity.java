@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     //to prevent crashes
 
     ArrayList<Information> arrayListMeetings;
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 
     @BindView(R.id.fab_calendar)
     FloatingActionButton floatingActionButton;
@@ -185,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         ArrayList<Calendar> highlights = new ArrayList<>();
         for (int i = 0; i < arrayListMeetings.size(); i++) {
             String x = arrayListMeetings.get(i).startTime;
-            DateTime dateTime = formatter.parseDateTime(arrayListMeetings.get(i).startTime);
+            DateTime dateTime = arrayListMeetings.get(i).getStartDateTime();
             Calendar date1 = dateTime.toCalendar(Locale.getDefault());
             highlights.add(date1);
         }
@@ -196,9 +195,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnClick(R.id.fab_calendar)
     public void createNewMeeting() {
-        Bundle b = new Bundle();
-        //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
+        CalenderFragment2 calenderFragment2 = (CalenderFragment2) fragment;
+        DateTime dateTime = calenderFragment2.getSelectedDate().toDateTime();
         Intent intent = new Intent(this, CreateNewMeeting2.class);
+        intent.putExtra("date",dateTime.toString("dd/MM/yyyy"));
         startActivity(intent);
     }
 

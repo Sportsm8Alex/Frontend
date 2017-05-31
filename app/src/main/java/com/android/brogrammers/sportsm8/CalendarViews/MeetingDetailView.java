@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.icu.text.IDNA;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,13 +37,30 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MeetingDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
-    private ListView listView;
     private int meetingID;
-    private String startTime, endTime, sportID,activity;
+    private String startTime, endTime, sportID, activity;
     private ArrayList<Information> members, Selection;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    ListViewAdapter arrayAdapter;
+
+    @BindView(R.id.listview_meeting_detail)
+    ListView listView;
+    //    @BindView(R.id.meeting_detail_swipeRefresh)
+//    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.time_meeting_detail)
+    TextView textView_time;
+    @BindView(R.id.time_meetingdetail)
+    TextView textView_date;
+    @BindView(R.id.activity_name_detailview)
+    TextView textView_sportID;
+    @BindView(R.id.meeting_detail_view_imageview)
+    ImageView bannerImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +68,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         setContentView(R.layout.activity_meeting_detail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Views
-        listView = (ListView) findViewById(R.id.listview_meeting_detail);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
-        TextView textView_time = (TextView) findViewById(R.id.time_meeting_detail);
-        TextView textView_date = (TextView) findViewById(R.id.time_meetingdetail);
-        TextView textView_sportID = (TextView) findViewById(R.id.activity_name_detailview);
+        ButterKnife.bind(this);
         //Variables
         Bundle b = getIntent().getExtras();
         meetingID = b.getInt("MeetingID");
@@ -63,25 +80,31 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         DateTime dt = formatter.parseDateTime(startTime);
         DateTime dt2 = formatter.parseDateTime(endTime);
         Resources res = getResources();
-        String[] array = res.getStringArray(R.array.sportarten);
+        TypedArray bannerArray = res.obtainTypedArray(R.array.sportDrawables);
         //Set Views
         textView_time.setText(dt.toString("HH:mm") + "-" + dt2.toString("HH:mm"));
         textView_date.setText(dt.toString("dd.MM.YYYY"));
-        if(Integer.valueOf(sportID)==8008) {
-           textView_sportID.setText(activity);
-        }else{
-            textView_sportID.setText(array[Integer.valueOf(sportID)]);
+        if (Integer.valueOf(sportID) < bannerArray.length()) {
+            bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(sportID), R.drawable.custommeeting));
         }
+        textView_sportID.setText(activity);
         getMemberList();
-        swipeRefreshLayout.setOnRefreshListener(this);
+        //    swipeRefreshLayout.setOnRefreshListener(this);
     }
 
-    public void onClick(View view) {
+
+    @OnClick(R.id.add_people_to_meeting)
+    public void addPeopleToMeeting(View view) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SelectionMode", true);
         Intent intent = new Intent(this, OnlyFriendsView.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
+    }
+
+    @OnClick(R.id.back_arrow_meeting_detail)
+    public void back() {
+        finish();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -121,6 +144,9 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
 
     @Override
     public void updateUI(String answer) {
+        if (members != null) {
+            members.clear();
+        }
         SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingMembersJSON", "");
         try {
@@ -132,11 +158,10 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         for (int i = 0; i < members.size(); i++) {
             emails.add(members.get(i).email + members.get(i).begin);
         }
-        ListViewAdapter arrayAdapter = new ListViewAdapter(this, members);
+        arrayAdapter = new ListViewAdapter(this, members);
         listView.setAdapter(arrayAdapter);
-        swipeRefreshLayout.setRefreshing(false);
-
-
+        arrayAdapter.notifyDataSetChanged();
+        // swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -147,11 +172,11 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
 
     class ListViewAdapter extends BaseAdapter {
 
-        ArrayList<Information> list;
         Context context;
+        ArrayList<Information> list;
 
-        ListViewAdapter(Context context, ArrayList<Information> listItem) {
-            list = listItem;
+        ListViewAdapter(Context context, ArrayList<Information> memberList) {
+            list = memberList;
             this.context = context;
         }
 
@@ -182,12 +207,12 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
                 username.setText(list.get(i).username);
                 //time.setText(list.get(i).begin + ":00 - " + end + ":00");
                 MutableDateTime start = new MutableDateTime();
-                start.setHourOfDay(list.get(i).begin/4);
-                start.setMinuteOfHour(list.get(i).begin%4*15);
+                start.setHourOfDay(list.get(i).begin / 4);
+                start.setMinuteOfHour(list.get(i).begin % 4 * 15);
                 MutableDateTime endTime = new MutableDateTime();
-                endTime.setHourOfDay(end/4);
-                endTime.setMinuteOfHour(end%4*15);
-                time.setText(start.toString("HH:mm - ")+endTime.toString("HH:mm"));
+                endTime.setHourOfDay(end / 4);
+                endTime.setMinuteOfHour(end % 4 * 15);
+                time.setText(start.toString("HH:mm - ") + endTime.toString("HH:mm"));
             } else {
                 username.setText(list.get(i).username);
             }

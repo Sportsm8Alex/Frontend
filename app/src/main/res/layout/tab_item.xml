@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:foregroundGravity="center"
         android:text="date"
-        android:textColor="@color/weiss"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_below="@id/textView_date"
         android:layout_centerHorizontal="true"
         android:text="Mo"
-        android:textColor="@color/weiss"
+        android:textColor="@color/white"
         android:textSize="8sp" />
 
     <ImageView

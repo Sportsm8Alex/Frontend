@@ -19,7 +19,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.alex.helloworld",
-            "certificate_hash": "23981F89E5553FACDB5EA4F33B2C423E2F935B60"
+            "certificate_hash": "23981f89e5553facdb5ea4f33b2c423e2f935b60"
           }
         },
         {
@@ -27,7 +27,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.alex.helloworld",
-            "certificate_hash": "2291510754C8C6D96E044D83DBE3EE8DB867F8C0"
+            "certificate_hash": "2291510754c8c6d96e044d83dbe3ee8db867f8c0"
           }
         },
         {
@@ -35,7 +35,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.alex.helloworld",
-            "certificate_hash": "0A9E4272B532B62D78D5A3A3298224E58FA8411E"
+            "certificate_hash": "0a9e4272b532b62d78d5a3a3298224e58fa8411e"
           }
         },
         {

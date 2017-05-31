@@ -3,28 +3,24 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import com.android.brogrammers.sportsm8.CalendarViews.Adapter.CalendarViewPagerAdapter;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
@@ -44,16 +40,13 @@ import es.dmoral.toasty.Toasty;
  */
 public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChangeListener, UIthread, SwipeRefreshLayout.OnRefreshListener {
 
-    ViewPagerAdapter viewPagerAdapter;
+    CalendarViewPagerAdapter viewPagerAdapter;
     ArrayList<Information> meetings;
-    DateTime today;
     TabLayout tabLayout;
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
-    private ViewPager viewPager;
     private OnFragmentInteractionListener mListener;
     private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
-    Boolean needsUpdate = false;
     Boolean onStartUp = true;
 
     public CalenderFragment2() {
@@ -74,7 +67,6 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         parentActivity = getActivity();
-        today = new DateTime();
         meetings = new ArrayList<>();
         getMeetings();
     }
@@ -88,9 +80,9 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.calender_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setRefreshing(true);
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         //changed this method
-        viewPagerAdapter = new ViewPagerAdapter(this.getChildFragmentManager(), parentActivity.getApplicationContext(), mFragmentList);
+        viewPagerAdapter = new CalendarViewPagerAdapter(this.getChildFragmentManager(), parentActivity.getApplicationContext(), mFragmentList);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(this);
         tabLayout.setupWithViewPager(viewPager);
@@ -188,26 +180,25 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         }
         swipeRefreshLayout.setRefreshing(false);
         viewPagerAdapter.notifyDataSetChanged();
-        needsUpdate = false;
+        viewPagerAdapter.setNeedsUpdate(false);
         customTabs();
-
     }
 
     @Override
     public void onRefresh() {
-        needsUpdate = true;
+        viewPagerAdapter.setNeedsUpdate(true);
         getMeetings();
     }
 
     public void setStartDate(int year, int month, int dayOfMonth) {
-        needsUpdate = true;
-        today = new DateTime(year, month + 1, dayOfMonth, 0, 0);
+        viewPagerAdapter.setNeedsUpdate(true);
+        viewPagerAdapter.setToday(new DateTime(year, month + 1, dayOfMonth, 0, 0));
         mFragmentList.clear();
         createFragmentList(7);
         viewPagerAdapter.notifyDataSetChanged();
         customTabs();
         scrollTo(0);
-        needsUpdate = false;
+        viewPagerAdapter.setNeedsUpdate(false);
     }
 
 
@@ -218,7 +209,7 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
             for (int j = 0; j < meetings.size(); j++) {
                 String date = meetings.get(j).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
                 int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
-                if (dateOfMeeting == today.getDayOfYear() + (count + i)) {
+                if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + (count + i)) {
                     meetingsOnDay.add(meetings.get(j));
                 }
             }
@@ -227,17 +218,22 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         return temp;
     }
 
+    public MutableDateTime getSelectedDate(){
+        MutableDateTime dt = new MutableDateTime();
+        dt.addDays(tabLayout.getSelectedTabPosition());
+        return dt;
+    }
 
     private void createFragmentList(int count) {
         mFragmentList.clear();
         for (int j = 0; j < count; j++) {
             ArrayList<Information> meetingsOnDay = new ArrayList<Information>();
             //int today = LocalDate.now().getDayOfYear();
-            System.out.println("THIS IS TODAY " + today);
+            System.out.println("THIS IS TODAY " + viewPagerAdapter.getToday());
             for (int i = 0; i < meetings.size(); i++) {
                 String date = meetings.get(i).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
                 int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
-                if (dateOfMeeting == today.getDayOfYear() + j) {
+                if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + j) {
                     meetingsOnDay.add(meetings.get(i));
                 }
             }
@@ -269,7 +265,6 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
                 scrollTo(position);
             }
         }
-
     }
 
     @Override
@@ -292,69 +287,4 @@ public class CalenderFragment2 extends Fragment implements ViewPager.OnPageChang
         void onFragmentInteraction(Uri uri);
     }
 
-    class ViewPagerAdapter extends FragmentStatePagerAdapter {
-
-        private ArrayList<DayFragment> fragmentList = new ArrayList<>();
-        Context context;
-
-        public ViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, ArrayList<DayFragment> meetings) {
-            super(fragmentManager);
-            fragmentList.clear();
-            this.context = ApplicationContext;
-            fragmentList = meetings; //Sets a reference doesnt copy
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            // POSITION_NONE makes it possible to reload the PagerAdapter
-            if (needsUpdate) {
-                return POSITION_NONE;
-            } else {
-                return POSITION_UNCHANGED;
-            }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            DateTime todayPosition = today.plusDays(position);
-            return todayPosition.getDayOfMonth() + "." + todayPosition.getMonthOfYear();
-        }
-
-        public View getTabView(int position) {
-
-            DateTime todayPosition = today.plusDays(position);
-            View v = LayoutInflater.from(parentActivity).inflate(R.layout.tab_item, null);
-            TextView tv = (TextView) v.findViewById(R.id.textView_date);
-            TextView tv2 = (TextView) v.findViewById(R.id.textView_day);
-            tv.setText(todayPosition.getDayOfMonth() + "." + todayPosition.getMonthOfYear());
-            tv2.setText(todayPosition.toString("E"));
-
-            DayFragment dayFragment = (DayFragment) viewPagerAdapter.getItem(position);
-            ArrayList<Information> arrayList = dayFragment.getMeetingsOnDay();
-            if (arrayList != null) {
-                if (arrayList.size() > 0) {
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
-                    tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                }
-                for (int i = 0; i < arrayList.size(); i++) {
-                    if (arrayList.get(i).confirmed == 0) {
-                        v.findViewById(R.id.imgView).setVisibility(View.VISIBLE);
-                    }
-                }
-
-            }
-            return v;
-        }
-    }
 }

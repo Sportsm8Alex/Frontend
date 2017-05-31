@@ -1,5 +1,9 @@
 package com.android.brogrammers.sportsm8.databaseConnection;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +12,8 @@ import java.io.Serializable;
 
 
 public class Information implements Serializable {
+
+
 
     //userInformation
     public String email, PPpath,username,friend;
@@ -38,5 +44,17 @@ public class Information implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public DateTime getStartDateTime(){
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        return formatter.parseDateTime(startTime);
+    }
+
+    public DateTime getEndDateTime(){
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        return formatter.parseDateTime(endTime);
     }
 }

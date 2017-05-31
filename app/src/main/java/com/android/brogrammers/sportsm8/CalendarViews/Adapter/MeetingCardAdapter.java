@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.CalendarViews;
+package com.android.brogrammers.sportsm8.CalendarViews.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,8 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailView;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
@@ -24,26 +25,25 @@ import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-import java.sql.Time;
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Korbi on 10/30/2016.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MeetingsViewHolder> implements UIthread {
+public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder> implements UIthread {
 
     private Context context;
     private ArrayList<Information> meetingsOnDay;
-    private DateTimeFormatter formatter;
     private int begin,beginMinute;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Information> meetingsOnDay) {
+    public MeetingCardAdapter(Context context, ArrayList<Information> meetingsOnDay) {
         this.context = context;
         this.meetingsOnDay = meetingsOnDay;
     }
@@ -53,8 +53,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         //this is what the recyclerViewAdapter returns to the recyclerView. Equivalent to FragmentPagerAdapter's getItem which returns the Fragment
-        formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
         View view = LayoutInflater.from(context).inflate(R.layout.item_meetings, parent, false);
+        ButterKnife.bind(this,view);
         return new MeetingsViewHolder(view);
     }
 
@@ -62,8 +62,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MeetingsViewHolder meetingsViewHolder, int position) {
         getOptimalTime(position);
-        DateTime timeS = formatter.parseDateTime(meetingsOnDay.get(position).startTime);
-        DateTime timeE = formatter.parseDateTime(meetingsOnDay.get(position).endTime);
+        DateTime timeS = meetingsOnDay.get(position).getStartDateTime();
+        DateTime timeE = meetingsOnDay.get(position).getEndDateTime();
         meetingsViewHolder.time.setText(timeS.toString("HH:mm") + " - " + timeE.toString("HH:mm"));
         meetingsViewHolder.textview.setText(timeE.toString("dd.MM.YYYY"));
         Resources res = context.getResources();
@@ -88,13 +88,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 setCardReady(meetingsViewHolder, position);
             }
         }
+        meetingsViewHolder.decline.setTag(position);
         onClickEvents(meetingsViewHolder, position, infoData);
     }
 
     private void getOptimalTime(int position) {
         int[] timeArray = meetingsOnDay.get(position).timeArray;
-        MutableDateTime startTime = formatter.parseMutableDateTime(meetingsOnDay.get(position).startTime);
-        MutableDateTime endTime = formatter.parseMutableDateTime(meetingsOnDay.get(position).endTime);
+        MutableDateTime startTime = meetingsOnDay.get(position).getStartDateTime().toMutableDateTime();
+        MutableDateTime endTime =  meetingsOnDay.get(position).getEndDateTime().toMutableDateTime();
         Boolean temp = false;
         int begin = 0;
         int dur = 0;
@@ -186,22 +187,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }, 0, 0, true);
                 tdp.setTimeInterval(1, 15);
                 tdp.show(((Activity)context).getFragmentManager(),"tag");
-
-
-               /* new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        begin = i;
-                        new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                setOtherTime(begin, i, position);
-                                setCardWaiting(meetingsViewHolder, position);
-                            }
-                        }, 0, 0, true).show();
-                    }
-                }, 0, 0, true).show();*/
-
             }
         });
     }
@@ -216,15 +201,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         db.execute(params);
     }
 
-    private void removeItem(int pos, Information infoData, View view) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexMeetings.php", "function", "declineAtt", "meetingID", meetingsOnDay.get(pos).MeetingID + "", "email", email};
-        Database db = new Database(this, context);
-        db.execute(params);
+
+    public void removeItem(int pos,Information infoData,View view) {
+       SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+       String email = sharedPrefs.getString("email", "");
+      String[] params = {"IndexMeetings.php", "function", "declineAtt", "meetingID", meetingsOnDay.get(pos).MeetingID + "", "email", email};
+      Database db = new Database(this, context);
+       db.execute(params);
         int position = meetingsOnDay.indexOf(infoData);
-        meetingsOnDay.remove(position);
-        notifyItemRemoved(position);
+       meetingsOnDay.remove(position);
+       notifyItemRemoved(position);
+       notifyItemRangeChanged(position,getItemCount());
     }
 
     public void confirm(int pos) {
@@ -236,8 +223,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             db.execute(params);
             meetingsOnDay.get(pos).confirmed = 1;
         } else {
-            DateTime timeS = formatter.parseDateTime(meetingsOnDay.get(pos).startTime);
-            DateTime timeE = formatter.parseDateTime(meetingsOnDay.get(pos).endTime);
+            DateTime timeS = meetingsOnDay.get(pos).getStartDateTime();
+            DateTime timeE = meetingsOnDay.get(pos).getEndDateTime();
             setOtherTime(timeS.getHourOfDay(),timeS.getMinuteOfHour(), timeE.getHourOfDay(),timeE.getMinuteOfHour(), pos);
         }
     }

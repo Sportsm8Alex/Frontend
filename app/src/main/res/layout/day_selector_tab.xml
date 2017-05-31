@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:textColor="@color/weiss"
+        android:textColor="@color/white"
         android:clickable="true"
         android:gravity="center_vertical"
         android:padding="10dp"

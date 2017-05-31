@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="sportDrawables">
+    <integer-array name="sportDrawables">
         <item>@drawable/beachen</item>
         <item>@drawable/soccer</item>
         <item>@drawable/run</item>
@@ -9,7 +9,7 @@
         <item>@drawable/tricking</item>
         <item>@drawable/gym</item>
         <item>@drawable/custommeeting</item>
-    </array>
+    </integer-array>
 
 
 </resources>

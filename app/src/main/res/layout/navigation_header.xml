@@ -10,7 +10,7 @@
     android:layout_height="wrap_content"
     android:text="Max Mustermann"
     android:layout_alignParentBottom="true"
-    android:textColor="@color/whiteText"
+    android:textColor="@color/white"
     android:paddingBottom="8dp"
     android:paddingStart="8dp"/>
 

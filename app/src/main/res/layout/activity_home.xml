@@ -38,7 +38,7 @@
                         android:layout_height="match_parent"
                         android:fontFamily="sans-serif-medium"
                         android:text="Title"
-                        android:textColor="@color/whiteText"
+                        android:textColor="@color/white"
                         android:textSize="20sp" />
                     <ImageButton
                         android:id="@+id/image_button_toolbar"

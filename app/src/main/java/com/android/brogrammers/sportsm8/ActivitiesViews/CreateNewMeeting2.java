@@ -9,13 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -31,11 +26,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.ActivitiesViews.DatabaseClasses.Meetings;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
@@ -54,7 +52,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import es.dmoral.toasty.Toasty;
 
@@ -75,7 +72,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
     ArrayList<Information> SelectionGroup = new ArrayList<>();
     private Boolean start;
     private MutableDateTime startTime, endTime;
-    private DateTime datetime, backUpStartTime, backUpEndTime;
+    private DateTime datetime, backUpStartTime, backUpEndTime, selectedDate;
     private DateTimeFormatter formatter;
     private boolean enoughPeopleInvited = false;
 
@@ -137,7 +134,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
 
         //startCycle
         timeButtons(startTimeButton);
-        editTextChooseActivity.setHintTextColor(getResources().getColor(R.color.lightwhite));
+        editTextChooseActivity.setHintTextColor(ContextCompat.getColor(getBaseContext(),R.color.WhiteTransparent));
         editTextChooseActivity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -146,6 +143,11 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                 }
             }
         });
+
+        Intent intent = getIntent();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd/MM/yyyy");
+        selectedDate = DateTime.parse(intent.getStringExtra("date"),dateTimeFormatter);
+        selectedDate.plusDays(1);
 
     }
 
@@ -227,7 +229,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                             dateButton(startDateButton);
                         }
                     }
-                }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true);
+                }, startTime.getHourOfDay()+2, startTime.getMinuteOfHour(), true);
                 if (checkSwitch.isChecked()) tdp2.setTimeInterval(1, 15);
                 tdp2.show(getFragmentManager(), "TimePickerDialog");
                 break;
@@ -269,7 +271,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                         endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
                         bDate = true;
                     }
-                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
+                }, selectedDate.getYear(), selectedDate.getMonthOfYear() - 1, selectedDate.getDayOfMonth()).show();
                 break;
             case R.id.button_end_date:
                 new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -279,7 +281,7 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                         endTime.setDate(year, month + 1, dayOfMonth);
                         endDateButton.setText(endTime.toString("EE., dd. MMM. yyyy"));
                     }
-                }, datetime.getYear(), datetime.getMonthOfYear() - 1, datetime.getDayOfMonth()).show();
+                }, selectedDate.getYear(), selectedDate.getMonthOfYear() - 1, selectedDate.getDayOfMonth()).show();
                 break;
         }
 
@@ -308,6 +310,8 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
                     params = paramsArrayList.toArray(params);
 
                     Database db = new Database(this, getBaseContext());
+                    Meetings newMeeting = new Meetings(minMemberCount,dynamic,sportart_ID,startTime.toDate(),endTime.toDate());
+                    firebase(newMeeting);
                     db.execute(params);
                     Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
                     finish();
@@ -323,6 +327,14 @@ public class CreateNewMeeting2 extends Activity implements UIthread {
         }
 
 
+    }
+
+    private void firebase(Meetings meeting3) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mRef = database.getReference("database");
+        DatabaseReference meetingsRef = mRef.child("Meetings");
+        DatabaseReference newMeetingsRef = meetingsRef.push();
+        newMeetingsRef.setValue(meeting3);
     }
 
     private void createNumberPickerDialog(String message, int current, int max, final Boolean partySize) {

@@ -45,7 +45,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="4dp"
                 android:text="Groupname"
-                android:textColor="@color/blackText"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
