@@ -68,18 +68,22 @@ public class GroupsListFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Group>> call, Throwable t) { }
+            public void onFailure(Call<ArrayList<Group>> call, Throwable t) {
+            }
         });
     }
+
     public void updateUI() {
         groups = (ArrayList<Group>) RetroFitClient.retrieveObjectList("groups", getContext(), new TypeToken<ArrayList<Group>>() {
         }.getType());
-        adapter = new GroupListAdapter(getContext(), null, groups);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter.notifyDataSetChanged();
-        fragmentSocial.setReferencesGroups(groups, this, adapter);
-        fragmentSocial.setSwipeRefreshLayout(false);
+        if (groups != null) {
+            adapter = new GroupListAdapter(getContext(), null, groups);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter.notifyDataSetChanged();
+            fragmentSocial.setReferencesGroups(groups, this, adapter);
+            fragmentSocial.setSwipeRefreshLayout(false);
+        } else updateGroupList();
     }
 
 

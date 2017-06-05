@@ -36,12 +36,9 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     private final static int FADE_DURATION = 500;
     private Context context;
-    private ArrayList<UserInfo> data, backup;
+    private ArrayList<UserInfo> data= new ArrayList<>();
     private LayoutInflater inflater;
-    private FriendsListFragment friendsListFragment;
-    private OnlyFriendsView searchNewFriends;
-    private Boolean addToMeetingMode, addFriendMode, creatGroupMode = false;
-    private int count = 0;
+    private Boolean addFriendMode;
     //Instance of clickListener for handling clickevents through Friends.java
     private ClickListener clickListener;
     private APIService apiService = APIUtils.getAPIService();
@@ -52,7 +49,6 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         this.clickListener = clickListener;
         this.context = context;
         this.data = data;
-        this.backup = data;
         //Is for when, adapter is used for searching new Friends
         this.addFriendMode = addFriendMode;
         inflater = LayoutInflater.from(context);

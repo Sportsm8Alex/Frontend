@@ -54,21 +54,26 @@ public class FriendsListFragment extends Fragment {
                 RetroFitClient.storeObjectList(response.body(), "friends", getContext());
                 updateUI();
             }
+
             @Override
-            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {}
+            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+            }
         });
     }
 
     public void updateUI() {
         friends = (ArrayList<UserInfo>) RetroFitClient.retrieveObjectList("friends", getContext(), new TypeToken<ArrayList<UserInfo>>() {
         }.getType());
-        adapter = new FriendsListAdapter(getContext(), null, friends, false);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //Method to set all connections between Friends,Friendslistfragment, Friendslistadapter and Clicklistener
-        fragmentSocial.setReferencesFriends(friends, this, adapter);
-        adapter.notifyDataSetChanged();
-        //stops loading animation
-        fragmentSocial.setSwipeRefreshLayout(false);
+        if (friends != null) {
+            adapter = new FriendsListAdapter(getContext(), null, friends, false);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            //Method to set all connections between Friends,Friendslistfragment, Friendslistadapter and Clicklistener
+            fragmentSocial.setReferencesFriends(friends, this, adapter);
+            adapter.notifyDataSetChanged();
+            //stops loading animation
+            fragmentSocial.setSwipeRefreshLayout(false);
+        }else updateFriendsList();
+
     }
 }
