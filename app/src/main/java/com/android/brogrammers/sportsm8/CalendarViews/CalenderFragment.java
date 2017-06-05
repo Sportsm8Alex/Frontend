@@ -5,27 +5,40 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
+import com.android.brogrammers.sportsm8.CalendarViews.Adapter.CalendarViewPagerAdapter;
+import com.android.brogrammers.sportsm8.CalendarViews.Adapter.ExpandOrCollapse;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -36,16 +49,19 @@ import java.util.ArrayList;
  * Use the {@link CalenderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CalenderFragment extends Fragment implements UIthread, SwipeRefreshLayout.OnRefreshListener {
+public class CalenderFragment extends Fragment implements ViewPager.OnPageChangeListener, SwipeRefreshLayout.OnRefreshListener {
 
-    TabLayout slidingTabLayout;
+    CalendarViewPagerAdapter viewPagerAdapter;
+    ArrayList<Meeting> meetings;
+    TabLayout tabLayout;
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
-    private CharSequence Titles[] = {"Mo", "Di", "We", "Do", "Fr", "Sa", "So"};
-    private ViewPager viewPager;
-    Boolean hasStop = false;
-
+    MaterialCalendarView calendarView;
     private OnFragmentInteractionListener mListener;
+    private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
+    Boolean onStartUp = true;
+
+    APIService apiService = APIUtils.getAPIService();
 
     public CalenderFragment() {
         // Required empty public constructor
@@ -55,7 +71,7 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment CalenderFragment.
+     * @return A new instance of fragment CalenderFragmentOld.
      */
     public static CalenderFragment newInstance(String param1, String param2) {
         return new CalenderFragment();
@@ -65,6 +81,8 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         parentActivity = getActivity();
+        meetings = new ArrayList<>();
+        getMeetings();
     }
 
     @Override
@@ -72,26 +90,67 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_calendar, container, false);
-        slidingTabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
-
-
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
-        //changed this method
-        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
-
-        slidingTabLayout.setupWithViewPager(viewPager);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.calender_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
-        getMeetings();
+        swipeRefreshLayout.setRefreshing(true);
+        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        calendarView = (MaterialCalendarView) rootView.findViewById(R.id.calendar_calendar);
+        //changed this method
+        viewPagerAdapter = new CalendarViewPagerAdapter(this.getChildFragmentManager(), parentActivity.getApplicationContext(), mFragmentList);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.addOnPageChangeListener(this);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setSmoothScrollingEnabled(true);
+        customTabs();
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                setStartDate(date.getYear(), date.getMonth(), date.getDay());
+                toggleCalendar();
+            }
+        });
+
+
+        //createScrollView();
         return rootView;
     }
+
 
     public void getMeetings() {
         SharedPreferences sharedPrefs = parentActivity.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexMeetings.php", "function", "getMeeting", "email", email};
-        Database db = new Database(this, parentActivity.getApplicationContext());
-        db.execute(params);
+        apiService.getMeetings("getMeeting2", email).enqueue(new Callback<ArrayList<Meeting>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Meeting>> call, Response<ArrayList<Meeting>> response) {
+                meetings = response.body();
+                createHighlightList();
+                if (onStartUp) {
+                    createFragmentList(14);
+                    onStartUp = false;
+                } else {
+                    createFragmentList(mFragmentList.size());
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                viewPagerAdapter.notifyDataSetChanged();
+                viewPagerAdapter.setNeedsUpdate(false);
+                customTabs();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Meeting>> call, Throwable t) {
+                Toasty.error(getContext(), "Connection Failed").show();
+            }
+        });
+    }
+
+    private void customTabs() {
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(null);
+            tab.setCustomView(viewPagerAdapter.getTabView(i));
+        }
+        int x = 0;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -122,21 +181,12 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
         mListener = null;
     }
 
-    @Override
-    public void updateUI() {
-        ViewPager viewPager = (ViewPager) parentActivity.findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
-        slidingTabLayout.setupWithViewPager(viewPager);
-
-        // needs to be adapted to keep current db info if refreshing not possible (no overwriting of sharedPreferences if no connection)
-
-    }
 
     @Override
     public void onDestroy() {
         try {
             super.onDestroy();
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
     }
@@ -147,17 +197,119 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
     }
 
     @Override
-    public void updateUI(String answer) {
-        ViewPager viewPager = (ViewPager) parentActivity.findViewById(R.id.viewPager);
-        viewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager(), parentActivity.getApplicationContext(), 7));
-        slidingTabLayout.setupWithViewPager(viewPager);
-        swipeRefreshLayout.setRefreshing(false);
+    public void onRefresh() {
+        viewPagerAdapter.setNeedsUpdate(true);
+        getMeetings();
+    }
+
+    public void setStartDate(int year, int month, int dayOfMonth) {
+        viewPagerAdapter.setNeedsUpdate(true);
+        viewPagerAdapter.setToday(new DateTime(year, month + 1, dayOfMonth, 0, 0));
+        mFragmentList.clear();
+        createFragmentList(7);
+        viewPagerAdapter.notifyDataSetChanged();
+        customTabs();
+        scrollTo(0);
+        viewPagerAdapter.setNeedsUpdate(false);
+    }
+
+
+    private ArrayList<DayFragment> addTab(int count) {
+        ArrayList<DayFragment> temp = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            ArrayList<Meeting> meetingsOnDay = new ArrayList<>();
+            for (int j = 0; j < meetings.size(); j++) {
+                String date = meetings.get(j).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
+                int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
+                if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + (count + i)) {
+                    meetingsOnDay.add(meetings.get(j));
+                }
+            }
+            temp.add(DayFragment.newInstance((count + i), meetingsOnDay));
+        }
+        return temp;
+    }
+
+    public MutableDateTime getSelectedDate() {
+        MutableDateTime dt = new MutableDateTime();
+        dt.addDays(tabLayout.getSelectedTabPosition());
+        return dt;
+    }
+
+    private void createFragmentList(int count) {
+        mFragmentList.clear();
+        for (int j = 0; j < count; j++) {
+            ArrayList<Meeting> meetingsOnDay = new ArrayList<>();
+            //int today = LocalDate.now().getDayOfYear();
+            System.out.println("THIS IS TODAY " + viewPagerAdapter.getToday());
+            for (int i = 0; i < meetings.size(); i++) {
+                String date = meetings.get(i).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
+                int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
+                if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + j) {
+                    meetingsOnDay.add(meetings.get(i));
+                }
+            }
+            DayFragment temp = DayFragment.newInstance(j, meetingsOnDay);
+            mFragmentList.add(temp);
+        }
+    }
+
+    public void scrollTo(int i) {
+        if (tabLayout.getTabAt(i) != null) {
+            tabLayout.getTabAt(i).select();
+        }
     }
 
     @Override
-    public void onRefresh() {
-        getMeetings();
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
     }
+
+    @Override
+    public void onPageSelected(int position) {
+        int count = tabLayout.getTabCount();
+        if (count < 60) {
+            if (count - position == 1) {
+                Toasty.info(parentActivity, "Neue Tage geladen", Toast.LENGTH_SHORT).show();
+                mFragmentList.addAll(addTab(count));
+                viewPagerAdapter.notifyDataSetChanged();
+                customTabs();
+                scrollTo(position);
+            }
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    boolean expanded = false;
+
+    public void toggleCalendar() {
+        ExpandOrCollapse mAnimator = new ExpandOrCollapse();
+        mAnimator.expand(calendarView, 250);
+        expanded = !expanded;
+    }
+
+    public void createHighlightList() {
+        ArrayList<CalendarDay> highlights = new ArrayList<>();
+        for (int i = 0; i < meetings.size(); i++) {
+            DateTime dateTime = meetings.get(i).getStartDateTime();
+            CalendarDay date1 = CalendarDay.from(dateTime.toDate());
+            highlights.add(date1);
+        }
+
+        EventDecorator eventDecorator = new EventDecorator(ContextCompat.getColor(getContext(), R.color.red), highlights);
+        calendarView.addDecorator(eventDecorator);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        calendarView.setTileHeightDp(35);
+        calendarView.setTileWidth(displayMetrics.widthPixels / 8);
+        // CalendarDay[] days = highlights.toArray(new CalendarDay[highlights.size()]);
+
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -173,60 +325,26 @@ public class CalenderFragment extends Fragment implements UIthread, SwipeRefresh
         void onFragmentInteraction(Uri uri);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    public class EventDecorator implements DayViewDecorator {
 
-        private int numberOfTabs;
+        private final int color;
+        private final ArrayList<CalendarDay> dates = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, int numberOfTabs) {
-            super(fragmentManager);
-            this.numberOfTabs = numberOfTabs;
+        public EventDecorator(int color, ArrayList<CalendarDay> dates) {
+            this.color = color;
+            this.dates.addAll(dates);
         }
 
         @Override
-        public Fragment getItem(int position) {
-            //get local Information
-            SharedPreferences sharedPrefs = parentActivity.getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
-            String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
-            //
-            System.out.println("THESE ARE ALL MEETINGZ " + meetingJson); // Gives me nothing but success = 0 :O
-            //
-            ArrayList<Information> meetingsOnDay = new ArrayList<Information>();
-
-            try {
-                ArrayList<Information> meetings = Database.jsonToArrayList(meetingJson);
-                int today = LocalDate.now().getDayOfYear();
-                System.out.println("THIS IS TODAY " + today);
-                for (int i = 0; i < meetings.size(); i++) {
-                    String date = meetings.get(i).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
-                    int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
-                    if (dateOfMeeting == today + position) {
-                        meetingsOnDay.add(meetings.get(i));
-                    }
-                }
-            } catch (JSONException | ParseException e) {
-                e.printStackTrace();
-            }
-            return DayFragment.newInstance(position, meetingsOnDay); //position+1 ???
+        public boolean shouldDecorate(CalendarDay day) {
+            return dates.contains(day);
         }
 
         @Override
-        public int getCount() {
-            return numberOfTabs;
+        public void decorate(DayViewFacade view) {
+            //  view.setBackgroundDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_access_time_black_48dp));
+            view.addSpan(new DotSpan(5, color));
         }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            String[] btnText = {"Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"};
-
-            int todayInWeek = LocalDate.now().getDayOfWeek() - 1;
-            /*for(int i=0; i<7; i++){
-                tabLayout.addTab(tabLayout.newTab().setText(btnText[(todayInWeek+i)%7]));
-            }*/
-            return btnText[(todayInWeek + position) % 7];
-
-            //return super.getPageTitle(position);
-        }
-
     }
+
 }

@@ -14,6 +14,7 @@
     //Transparent Colors
     <color name="transparent">#00000000</color>
     <color name="WhiteTransparent">#59FFFFFF</color>
+    <color name="blackTransparent">#80000000</color>
 
     //OtherColors
 
@@ -26,7 +27,7 @@
     <color name="darkred">#B71C1C</color>
 
     //Override Colors
-    <color name="mdtp_date_picker_text_highlighted_dark_theme">#303F9F</color>
-    <color name="mdtp_date_picker_text_highlighted">#303F9F</color>
+    <color name="mdtp_date_picker_text_highlighted_dark_theme">#F44336</color>
+    <color name="mdtp_date_picker_text_highlighted">#F44336</color>
 
 </resources>

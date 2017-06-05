@@ -8,12 +8,13 @@
     tools:context="com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailView">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
         android:id="@+id/meeting_detail_collABL"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -21,14 +22,14 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
+                android:id="@+id/meeting_detail_view_imageview"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:id="@+id/meeting_detail_view_imageview"
                 android:src="@drawable/custommeeting"
-                app:layout_collapseParallaxMultiplier="0.9"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.9" />
 
 
             <android.support.v7.widget.Toolbar
@@ -39,8 +40,8 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_marginEnd="16dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp">
 
 
                     <TextView
@@ -58,22 +59,68 @@
                         android:textStyle="bold" />
 
                     <ImageButton
-                        android:layout_width="wrap_content"
                         android:id="@+id/add_people_to_meeting"
-                        android:background="@color/transparent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:background="@color/transparent"
                         android:src="@drawable/ic_person_add_white_24dp" />
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:background="@color/transparent"
-                        android:layout_height="wrap_content"
                         android:id="@+id/back_arrow_meeting_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
                         android:src="@drawable/ic_arrow_back_white_24dp" />
                 </RelativeLayout>
 
             </android.support.v7.widget.Toolbar>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/accept_meeting"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="45dp"
+                    android:layout_marginLeft="25dp"
+                    android:background="@color/transparent"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/accept" />
+
+                <ImageButton
+                    android:id="@+id/decline_meeting"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="45dp"
+                    android:layout_marginRight="25dp"
+                    android:background="@color/transparent"
+                    android:elevation="5dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/decline" />
+
+
+                <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rangebar"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_alignParentBottom="true"
+                    android:elevation="7dp"
+                    custom:pinMaxFont="10sp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp" />
+
+
+
+            </RelativeLayout>
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>

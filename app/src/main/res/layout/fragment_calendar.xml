@@ -23,6 +23,13 @@
 
 
     </HorizontalScrollView>-->
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:layout_width="match_parent"
+        android:id="@+id/calendar_calendar"
+        app:mcv_showOtherDates="all"
+        app:mcv_firstDayOfWeek="monday"
+        android:visibility="gone"
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"

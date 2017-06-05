@@ -3,7 +3,6 @@ package com.android.brogrammers.sportsm8.CalendarViews.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -15,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailView;
+import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -29,9 +28,8 @@ import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Korbi on 10/30/2016.
@@ -40,10 +38,11 @@ import es.dmoral.toasty.Toasty;
 public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder> implements UIthread {
 
     private Context context;
-    private ArrayList<Information> meetingsOnDay;
-    private int begin,beginMinute;
+    private ArrayList<Meeting> meetingsOnDay;
+    private int begin, beginMinute;
+    private DatabaseHelperMeetings databaseHelperMeetings;
 
-    public MeetingCardAdapter(Context context, ArrayList<Information> meetingsOnDay) {
+    public MeetingCardAdapter(Context context, ArrayList<Meeting> meetingsOnDay) {
         this.context = context;
         this.meetingsOnDay = meetingsOnDay;
     }
@@ -54,7 +53,8 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
 
         //this is what the recyclerViewAdapter returns to the recyclerView. Equivalent to FragmentPagerAdapter's getItem which returns the Fragment
         View view = LayoutInflater.from(context).inflate(R.layout.item_meetings, parent, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
+        databaseHelperMeetings = new DatabaseHelperMeetings(context);
         return new MeetingsViewHolder(view);
     }
 
@@ -69,9 +69,8 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         Resources res = context.getResources();
         String[] array = res.getStringArray(R.array.sportarten);
         //TODO: Change php to Json_Check_numeric and Attribute in Information to int
-        int x = Integer.valueOf(meetingsOnDay.get(position).sportID);
         meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
-        final Information infoData = meetingsOnDay.get(position);
+        final Meeting infoData = meetingsOnDay.get(position);
         if (meetingsOnDay.get(position).dynamic == 1) {
             meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
             if (meetingsOnDay.get(position).meetingIsGood && meetingsOnDay.get(position).duration != 0) {
@@ -95,20 +94,20 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     private void getOptimalTime(int position) {
         int[] timeArray = meetingsOnDay.get(position).timeArray;
         MutableDateTime startTime = meetingsOnDay.get(position).getStartDateTime().toMutableDateTime();
-        MutableDateTime endTime =  meetingsOnDay.get(position).getEndDateTime().toMutableDateTime();
+        MutableDateTime endTime = meetingsOnDay.get(position).getEndDateTime().toMutableDateTime();
         Boolean temp = false;
         int begin = 0;
         int dur = 0;
         for (int i = 0; i < 96; i++) {
             if (!temp && timeArray[i] >= meetingsOnDay.get(position).minParticipants) {
-                begin = i+1;
+                begin = i + 1;
                 temp = true;
             } else if (temp && timeArray[i] < meetingsOnDay.get(position).minParticipants) {
                 if (i - begin - 1 > dur) {
-                    startTime.setHourOfDay((begin/4));
-                    startTime.setMinuteOfHour(begin%4*15);
-                    endTime.setHourOfDay(i/4);
-                    endTime.setMinuteOfHour(i%4*15);
+                    startTime.setHourOfDay((begin / 4));
+                    startTime.setMinuteOfHour(begin % 4 * 15);
+                    endTime.setHourOfDay(i / 4);
+                    endTime.setMinuteOfHour(i % 4 * 15);
                     meetingsOnDay.get(position).startTime = startTime.toString("YYYY-MM-dd HH:mm:ss");
                     meetingsOnDay.get(position).endTime = endTime.toString("YYYY-MM-dd HH:mm:ss");
                     dur = begin - i - 1;
@@ -120,17 +119,13 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         }
     }
 
-    private void onClickEvents(final MeetingsViewHolder meetingsViewHolder, final int position, final Information infoData) {
+    private void onClickEvents(final MeetingsViewHolder meetingsViewHolder, final int position, final Meeting infoData) {
         meetingsViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, MeetingDetailView.class);
                 Bundle b = new Bundle();
-                b.putInt("MeetingID", meetingsOnDay.get(position).MeetingID);
-                b.putString("startTime", meetingsOnDay.get(position).startTime);
-                b.putString("endTime", meetingsOnDay.get(position).endTime);
-                b.putString("sportID", meetingsOnDay.get(position).sportID);
-                b.putString("activity", meetingsOnDay.get(position).meetingActivity);
+                b.putSerializable("MeetingOnDay",meetingsOnDay.get(position));
                 intent.putExtras(b);
                 context.startActivity(intent);
             }
@@ -138,7 +133,8 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         meetingsViewHolder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirm(position);
+                infoData.confirmed=1;
+                databaseHelperMeetings.confirm(infoData);
                 //TODO: Check if minParticipants are reached after accepting
                 setCardWaiting(meetingsViewHolder, position);
             }
@@ -146,14 +142,14 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         meetingsViewHolder.decline_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeItem(position, infoData, v);
+                removeItem(infoData);
             }
         });
 
         meetingsViewHolder.decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeItem(position, infoData, v);
+                removeItem(infoData);
             }
         });
         meetingsViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -177,56 +173,27 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
                         TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePickerDialog view, int endHourOfDay, int endMinute, int second) {
-                                setOtherTime(begin,beginMinute, endHourOfDay,endMinute, position);
+                                databaseHelperMeetings.setOtherTime(begin, beginMinute, endHourOfDay, endMinute, meetingsOnDay.get(position));
                                 setCardWaiting(meetingsViewHolder, position);
                             }
                         }, 0, 0, true);
                         tdp2.setTimeInterval(1, 15);
-                        tdp2.show(((Activity)context).getFragmentManager(),"tag");
+                        tdp2.show(((Activity) context).getFragmentManager(), "tag");
                     }
                 }, 0, 0, true);
                 tdp.setTimeInterval(1, 15);
-                tdp.show(((Activity)context).getFragmentManager(),"tag");
+                tdp.show(((Activity) context).getFragmentManager(), "tag");
             }
         });
     }
 
-    public void setOtherTime(int begin,int beginMinute, int end,int endMinute, int position) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        Database db = new Database(this, context);
-        int beginDatabase=begin*4+(beginMinute/15);
-        int durationDatabase=((end*4)+endMinute/15)-((begin*4)+beginMinute/15);
-        String[] params = {"IndexMeetings.php", "function", "setOtherTime", "start", beginDatabase+"", "duration", durationDatabase+"", "meetingID", meetingsOnDay.get(position).MeetingID + "", "email", email};
-        db.execute(params);
-    }
 
-
-    public void removeItem(int pos,Information infoData,View view) {
-       SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-       String email = sharedPrefs.getString("email", "");
-      String[] params = {"IndexMeetings.php", "function", "declineAtt", "meetingID", meetingsOnDay.get(pos).MeetingID + "", "email", email};
-      Database db = new Database(this, context);
-       db.execute(params);
+    public void removeItem(Meeting infoData) {
+        databaseHelperMeetings.declineMeeting(infoData);
         int position = meetingsOnDay.indexOf(infoData);
-       meetingsOnDay.remove(position);
-       notifyItemRemoved(position);
-       notifyItemRangeChanged(position,getItemCount());
-    }
-
-    public void confirm(int pos) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        if (meetingsOnDay.get(pos).dynamic == 0) {
-            String[] params = {"IndexMeetings.php", "function", "confirmAtt", "meetingID", meetingsOnDay.get(pos).MeetingID + "", "email", email};
-            Database db = new Database(this, context);
-            db.execute(params);
-            meetingsOnDay.get(pos).confirmed = 1;
-        } else {
-            DateTime timeS = meetingsOnDay.get(pos).getStartDateTime();
-            DateTime timeE = meetingsOnDay.get(pos).getEndDateTime();
-            setOtherTime(timeS.getHourOfDay(),timeS.getMinuteOfHour(), timeE.getHourOfDay(),timeE.getMinuteOfHour(), pos);
-        }
+        meetingsOnDay.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount());
     }
 
     @Override
@@ -274,36 +241,43 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         viewHolder.myTime.setVisibility(View.VISIBLE);
         int end = meetingsOnDay.get(position).begin + meetingsOnDay.get(position).duration;
         MutableDateTime start = new MutableDateTime();
-        start.setHourOfDay(meetingsOnDay.get(position).begin/4);
-        start.setMinuteOfHour(meetingsOnDay.get(position).begin%4*15);
+        start.setHourOfDay(meetingsOnDay.get(position).begin / 4);
+        start.setMinuteOfHour(meetingsOnDay.get(position).begin % 4 * 15);
         MutableDateTime endTime = new MutableDateTime();
-        endTime.setHourOfDay(end/4);
-        endTime.setMinuteOfHour(end%4*15);
-        viewHolder.myTime.setText(start.toString("HH:mm - ")+endTime.toString("HH:mm"));
+        endTime.setHourOfDay(end / 4);
+        endTime.setMinuteOfHour(end % 4 * 15);
+        viewHolder.myTime.setText(start.toString("HH:mm - ") + endTime.toString("HH:mm"));
     }
 
 
     class MeetingsViewHolder extends RecyclerView.ViewHolder {
-
+        @BindView(R.id.indicator_view)
         View indicator;
-        TextView textview, time, meetingName, myTime;
-        Button decline, decline_2, accept, otherTime;
+        @BindView(R.id.meeting_name)
+        TextView meetingName;
+        @BindView(R.id.ll_time)
+        TextView time;
+        @BindView(R.id.date_textview)
+        TextView textview;
+        @BindView(R.id.myTime_textView)
+        TextView myTime;
+        @BindView(R.id.decline_meeting_button)
+        Button decline;
+        @BindView(R.id.decline_meeting_button_2)
+        Button decline_2;
+        @BindView(R.id.accept_meeting_button)
+        Button accept;
+        @BindView(R.id.other_time)
+        Button otherTime;
+        @BindView(R.id.meeting_card)
         CardView cardView;
+        @BindView(R.id.status_badge)
         ImageView badge;
 
         public MeetingsViewHolder(View itemView) {
             super(itemView);
-            meetingName = (TextView) itemView.findViewById(R.id.meeting_name);
-            time = (TextView) itemView.findViewById(R.id.ll_time);
-            textview = (TextView) itemView.findViewById(R.id.date_textview);
-            myTime = (TextView) itemView.findViewById(R.id.myTime_textView);
-            decline_2 = (Button) itemView.findViewById(R.id.decline_meeting_button_2);
-            accept = (Button) itemView.findViewById(R.id.accept_meeting_button);
-            decline = (Button) itemView.findViewById(R.id.decline_meeting_button);
-            otherTime = (Button) itemView.findViewById(R.id.other_time);
-            cardView = (CardView) itemView.findViewById(R.id.meeting_card);
-            indicator = itemView.findViewById(R.id.indicator_view);
-            badge = (ImageView) itemView.findViewById(R.id.status_badge);
+            ButterKnife.bind(this, itemView);
         }
     }
+
 }

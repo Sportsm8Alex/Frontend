@@ -55,6 +55,8 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
+    private static String emailAdress;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -83,6 +85,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                     SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putString("email", mAuth.getCurrentUser().getEmail());
+                    emailAdress = mAuth.getCurrentUser().getEmail();
                     editor.apply();
                     progressDialog.dismiss();
                     System.out.println("session continued");
@@ -333,5 +336,8 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+    public static String getEmailAdress(){
+        return emailAdress;
     }
 }

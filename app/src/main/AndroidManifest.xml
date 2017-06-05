@@ -30,7 +30,7 @@
             android:name=".UserClasses.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ActivitiesViews.CreateNewMeeting"
+            android:name=".OldClassers.CreateNewMeetingOld"
             android:theme="@style/AppTheme.Custom1" />
         <activity
             android:name=".UserClasses.AccountPage"
@@ -55,7 +55,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SocialViews.SelectorContainer" />
         <activity
-            android:name=".ActivitiesViews.CreateNewMeeting2"
+            android:name=".ActivitiesViews.CreateNewMeeting"
             android:label="@string/title_activity_create_new_meeting2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,21 +20,33 @@ import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.RetroFitClient;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GroupDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
     private ListView listView;
-    private ArrayList<Information> members, Selection;
+    private ArrayList<UserInfo> members, Selection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String GroupID, groupName;
     private TextView textView_name;
+    private APIService apiService = APIUtils.getAPIService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +78,10 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
                 startActivityForResult(intent, 1);
                 break;
             case R.id.leave_group_button:
-                Database db = new Database(this,getBaseContext());
+                Database db = new Database(this, getBaseContext());
                 SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                 String email = sharedPrefs.getString("email", "");
-                String[] params = {"IndexGroups.php","function","leaveGroup","GroupID",GroupID,"email",email};
+                String[] params = {"IndexGroups.php", "function", "leaveGroup", "GroupID", GroupID, "email", email};
                 db.execute(params);
                 finish();
                 break;
@@ -80,29 +93,41 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
-
-                ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexGroups.php", "function", "adMembersToGroup", "GroupID", GroupID));
+                Selection = (ArrayList<UserInfo>) bundle.getSerializable("partyList");
+                Map<String, String> membersMap = new HashMap<>();
 
                 for (int i = 0; i < Selection.size(); i++) {
-                    paramsArrayList.add("member" + i);
-                    paramsArrayList.add(Selection.get(i).email);
+                    membersMap.put("member" + i, Selection.get(i).email);
                 }
-                String[] params = new String[paramsArrayList.size()];
-                params = paramsArrayList.toArray(params);
-                Database db = new Database(this, getBaseContext());
-                db.execute(params);
+                apiService.addMembersToGroup("adMembersToGroup", GroupID, membersMap).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
 
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
             }
         }
         getMemberList();
     }
 
     private void getMemberList() {
-        String[] params = {"IndexGroups.php", "function", "getGroupMembers", "GroupID", GroupID};
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
+        apiService.getGroupMembers("getGroupMembers", GroupID).enqueue(new Callback<ArrayList<UserInfo>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
+                RetroFitClient.storeObjectList(response.body(), "groupMembers" + GroupID, getBaseContext());
+                updateUI("");
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -112,17 +137,8 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
 
     @Override
     public void updateUI(String answer) {
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexGroups", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexGroupsgetGroupMembersJSON", "");
-        try {
-            members = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-        ArrayList<String> emails = new ArrayList<>();
-        for (int i = 0; i < members.size(); i++) {
-            emails.add(members.get(i).email);
-        }
+        members = (ArrayList<UserInfo>) RetroFitClient.retrieveObjectList("groupMembers" + GroupID, getBaseContext(), new TypeToken<ArrayList<UserInfo>>() {
+        }.getType());
         ListViewAdapter arrayAdapter = new ListViewAdapter(this, members);
         listView.setAdapter(arrayAdapter);
         TextView textView = (TextView) findViewById(R.id.group_size_detailview);
@@ -140,10 +156,10 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
 
     class ListViewAdapter extends BaseAdapter {
 
-        ArrayList<Information> list;
+        ArrayList<UserInfo> list;
         Context context;
 
-        public ListViewAdapter(Context context, ArrayList<Information> listItem) {
+        public ListViewAdapter(Context context, ArrayList<UserInfo> listItem) {
             list = listItem;
             this.context = context;
         }

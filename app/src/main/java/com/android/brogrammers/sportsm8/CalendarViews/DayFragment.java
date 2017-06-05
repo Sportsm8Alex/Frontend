@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.android.brogrammers.sportsm8.CalendarViews.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,11 +26,10 @@ import java.util.Comparator;
 
 public class DayFragment extends Fragment implements Updateable {
     RecyclerView recyclerView;
-    private BottomNavigationView bottomNavigationView;
-    ArrayList<Information> meetingsOnDay;
+    ArrayList<Meeting> meetingsOnDay;
     private FloatingActionButton floatingActionButton;
 
-    public static DayFragment newInstance(int position, ArrayList<Information> meetingsOnDay) {
+    public static DayFragment newInstance(int position, ArrayList<Meeting> meetingsOnDay) {
 
         // how exactly to hand down meetingsOnDay to MeetingCardAdapter?
         //#######################??
@@ -58,7 +58,7 @@ public class DayFragment extends Fragment implements Updateable {
         //#############
         recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        meetingsOnDay = (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay");
+        meetingsOnDay = (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
         RecyclerView.Adapter rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
         recyclerView.setAdapter(rvAdapter);
 
@@ -76,20 +76,20 @@ public class DayFragment extends Fragment implements Updateable {
         return view;
     }
 
-    public ArrayList<Information> getMeetingsOnDay(){
-        return (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay");
+    public ArrayList<Meeting> getMeetingsOnDay(){
+        return (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
     }
 
     @Override
     public void update() {
-        meetingsOnDay =  (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay");
+        meetingsOnDay =  (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
        // RecyclerView.Adapter rvAdapter = new MeetingCardAdapter(getContext(),  (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay"));
         recyclerView.getAdapter().notifyDataSetChanged();
     }
-    public static class CustomComperator implements Comparator<Information>{
+    public static class CustomComperator implements Comparator<Meeting>{
 
         @Override
-        public int compare(Information o1, Information o2) {
+        public int compare(Meeting o1, Meeting o2) {
             return o1.getStartDateTime().compareTo(o2.getStartDateTime());
         }
     }

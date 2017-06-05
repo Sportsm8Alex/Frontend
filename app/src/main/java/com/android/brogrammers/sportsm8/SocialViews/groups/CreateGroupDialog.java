@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import java.lang.reflect.Array;
@@ -26,7 +27,7 @@ import java.util.Arrays;
  */
 
 public class CreateGroupDialog extends android.support.v4.app.DialogFragment implements TextWatcher, UIthread, View.OnClickListener {
-    private ArrayList<Information> groupmembers;
+    private ArrayList<UserInfo> groupmembers;
     private String groupname;
 
     @Override
@@ -39,7 +40,7 @@ public class CreateGroupDialog extends android.support.v4.app.DialogFragment imp
         view.findViewById(R.id.button_create_group).setOnClickListener(this);
         //Declaration Variables
         Bundle bundle = getArguments();
-        groupmembers = (ArrayList<Information>) bundle.getSerializable("GroupList");
+        groupmembers = (ArrayList<UserInfo>) bundle.getSerializable("GroupList");
         //Init Listeners
         groupname.addTextChangedListener(this);
         groupname.setSingleLine(true);

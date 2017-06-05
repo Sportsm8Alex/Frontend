@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting2"
+    tools:context="com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting"
     tools:showIn="@layout/activity_create_new_meeting2">
 
     <ListView

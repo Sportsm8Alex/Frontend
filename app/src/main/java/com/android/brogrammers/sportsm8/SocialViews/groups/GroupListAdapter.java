@@ -1,6 +1,5 @@
 package com.android.brogrammers.sportsm8.SocialViews.groups;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
+import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.ClickListener;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.SelectableAdapter;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
-import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewHolder> {
 
     private Context context;
-    private ArrayList<Information> data;
+    private ArrayList<Group> data;
     private LayoutInflater inflater;
     private Boolean selectionMode;
     private GroupsListFragment groupsListFragment;
@@ -34,7 +33,7 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
 
     private ClickListener clickListener;
 
-    public GroupListAdapter(Context context, ClickListener clickListener, ArrayList<Information> data) {
+    public GroupListAdapter(Context context, ClickListener clickListener, ArrayList<Group> data) {
         this.context = context;
         this.clickListener = clickListener;
         this.data = data;

@@ -17,29 +17,36 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="5dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:background="?attr/colorPrimary"
+                android:elevation="5dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fontFamily="sans-serif-medium"
+                        android:padding="8dp"
                         android:text="Title"
                         android:textColor="@color/white"
                         android:textSize="20sp" />
+
                     <ImageButton
                         android:id="@+id/image_button_toolbar"
                         android:layout_width="wrap_content"
@@ -49,19 +56,26 @@
                         android:alpha="0"
                         android:background="@color/transparent"
                         android:src="@drawable/ic_person_add_white_24dp" />
+
                     <ImageButton
                         android:id="@+id/change_start_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:visibility="gone"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginRight="8dp"
                         android:background="@color/transparent"
-                        android:src="@drawable/ic_today_white_24dp" />
+                        android:padding="8dp"
+                        android:src="@drawable/ic_today_white_24dp"
+                        android:visibility="gone" />
+
                 </RelativeLayout>
 
+
             </android.support.v7.widget.Toolbar>
+
+
         </android.support.design.widget.AppBarLayout>
+
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -71,38 +85,38 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_calendar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_gravity="bottom|end"
-                android:layout_marginRight="@dimen/fab_margin"
-                android:layout_marginBottom="70dp"
-                app:srcCompat="@drawable/ic_add_black_36dp" />
-<!--
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/bottom_navigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:itemBackground="@color/darkgrey"
-                android:layout_gravity="bottom"
-                app:itemIconTint="@drawable/bottom_navigation_selector"
-                app:itemTextColor="@drawable/bottom_navigation_selector"
-                app:menu="@menu/bottom_navigation_main"/>
--->
-            <com.roughike.bottombar.BottomBar
-                android:id="@+id/bottom_bar"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom"
-                android:background="@color/lightgrey"
-                app:bb_inActiveTabColor = "@color/darkgrey"
-                app:bb_activeTabColor = "@color/colorPrimaryDark"
-                app:bb_tabXmlResource="@xml/content_bottom_nav_bar"
-                app:bb_behavior="shy">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="70dp"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_add_black_36dp" />
+        <!--
+                    <android.support.design.widget.BottomNavigationView
+                        android:id="@+id/bottom_navigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:itemBackground="@color/darkgrey"
+                        android:layout_gravity="bottom"
+                        app:itemIconTint="@drawable/bottom_navigation_selector"
+                        app:itemTextColor="@drawable/bottom_navigation_selector"
+                        app:menu="@menu/bottom_navigation_main"/>
+        -->
+        <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:background="@color/lightgrey"
+            app:bb_activeTabColor="@color/colorPrimaryDark"
+            app:bb_behavior="shy"
+            app:bb_inActiveTabColor="@color/darkgrey"
+            app:bb_tabXmlResource="@xml/content_bottom_nav_bar">
 
-            </com.roughike.bottombar.BottomBar>
+        </com.roughike.bottombar.BottomBar>
 
     </android.support.design.widget.CoordinatorLayout>
 

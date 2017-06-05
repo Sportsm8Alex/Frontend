@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.icu.text.IDNA;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,15 +19,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.appyvet.rangebar.RangeBar;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
@@ -40,13 +50,16 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 
 public class MeetingDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
-    private int meetingID;
-    private String startTime, endTime, sportID, activity;
-    private ArrayList<Information> members, Selection;
+    private int count = 0;
+    private ArrayList<Information> members;
+    private ArrayList<UserInfo> Selection;
+    Meeting thisMeeting;
     ListViewAdapter arrayAdapter;
+    DatabaseHelperMeetings databaseHelperMeetings;
 
     @BindView(R.id.listview_meeting_detail)
     ListView listView;
@@ -60,6 +73,16 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     TextView textView_sportID;
     @BindView(R.id.meeting_detail_view_imageview)
     ImageView bannerImage;
+    @BindView(R.id.progressbar_count)
+    IconRoundCornerProgressBar progressBar;
+    @BindView(R.id.meeting_detail_collABL)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.accept_meeting)
+    ImageButton acceptMeeting;
+    @BindView(R.id.decline_meeting)
+    ImageButton declineMeeting;
+    @BindView(R.id.rangebar)
+    RangeBar rangeBar;
 
 
     @Override
@@ -71,24 +94,45 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         ButterKnife.bind(this);
         //Variables
         Bundle b = getIntent().getExtras();
-        meetingID = b.getInt("MeetingID");
-        startTime = b.getString("startTime");
-        endTime = b.getString("endTime");
-        sportID = b.getString("sportID");
-        activity = b.getString("activity");
+        thisMeeting = (Meeting) b.getSerializable("MeetingOnDay");
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        DateTime dt = formatter.parseDateTime(startTime);
-        DateTime dt2 = formatter.parseDateTime(endTime);
+        DateTime dt = formatter.parseDateTime(thisMeeting.startTime);
+        DateTime dt2 = formatter.parseDateTime(thisMeeting.endTime);
         Resources res = getResources();
         TypedArray bannerArray = res.obtainTypedArray(R.array.sportDrawables);
         //Set Views
         textView_time.setText(dt.toString("HH:mm") + "-" + dt2.toString("HH:mm"));
         textView_date.setText(dt.toString("dd.MM.YYYY"));
-        if (Integer.valueOf(sportID) < bannerArray.length()) {
-            bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(sportID), R.drawable.custommeeting));
+        if (Integer.valueOf(thisMeeting.sportID) < bannerArray.length()) {
+            bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(thisMeeting.sportID), R.drawable.custommeeting));
         }
-        textView_sportID.setText(activity);
+        textView_sportID.setText(thisMeeting.meetingActivity);
         getMemberList();
+        progressBar.setProgress(0);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset < -100) verticalOffset = -100;
+                float offset = 1 + (verticalOffset / 100);
+                acceptMeeting.animate().scaleX(offset).setDuration(100);
+                acceptMeeting.animate().scaleY(offset).setDuration(100);
+                declineMeeting.animate().scaleY(offset).setDuration(100);
+                declineMeeting.animate().scaleX(offset).setDuration(100);
+                rangeBar.animate().scaleY(offset).setDuration(100);
+                rangeBar.animate().scaleX(offset).setDuration(100);
+            }
+        });
+        databaseHelperMeetings = new DatabaseHelperMeetings(this);
+        if (thisMeeting.dynamic == 0) {
+            rangeBar.setVisibility(View.GONE);
+        }
+        if (thisMeeting.confirmed == 1 || thisMeeting.duration != 0) {
+            declineMeeting.setVisibility(View.GONE);
+            acceptMeeting.setVisibility(View.GONE);
+            rangeBar.setVisibility(View.GONE);
+        }
+
+
         //    swipeRefreshLayout.setOnRefreshListener(this);
     }
 
@@ -107,15 +151,30 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         finish();
     }
 
+    @OnClick(R.id.accept_meeting)
+    public void acceptMeeting() {
+        databaseHelperMeetings.confirm(thisMeeting);
+        acceptMeeting.setVisibility(View.GONE);
+        declineMeeting.setVisibility(View.GONE);
+        getMemberList();
+    }
+
+    @OnClick(R.id.decline_meeting)
+    public void declineMeeting() {
+        databaseHelperMeetings.declineMeeting(thisMeeting);
+        finish();
+    }
+
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                Selection = (ArrayList<Information>) bundle.getSerializable("partyList");
+                Selection = (ArrayList<UserInfo>) bundle.getSerializable("partyList");
 
                 ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "addMembersToMeeting", "MeetingID", meetingID + ""));
+                        Arrays.asList("IndexMeetings.php", "function", "addMembersToMeeting", "MeetingID", thisMeeting.MeetingID + ""));
 
                 for (int i = 0; i < Selection.size(); i++) {
                     paramsArrayList.add("member" + i);
@@ -132,7 +191,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     }
 
     private void getMemberList() {
-        String[] params = {"IndexMeetings.php", "function", "getMeetingMembers", "MeetingID", meetingID + ""};
+        String[] params = {"IndexMeetings.php", "function", "getMeetingMembers", "MeetingID", thisMeeting.MeetingID + ""};
         Database db = new Database(this, getBaseContext());
         db.execute(params);
     }
@@ -218,6 +277,12 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             }
             if (list.get(i).confirmed == 1) {
                 row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+                count++;
+                double progress = (double) count / thisMeeting.minParticipants;
+                progressBar.setProgress((int) (progress * 100));
+                if (progress >= 1) {
+                    progressBar.setProgressColor(ContextCompat.getColor(context, R.color.green));
+                }
             }
             return row;
         }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.CalendarViews.DayFragment;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 
 import org.joda.time.DateTime;
 
@@ -75,7 +76,7 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
         tv2.setText(todayPosition.toString("E"));
 
         DayFragment dayFragment = (DayFragment) this.getItem(position);
-        ArrayList<Information> arrayList = dayFragment.getMeetingsOnDay();
+        ArrayList<Meeting> arrayList = dayFragment.getMeetingsOnDay();
         if (arrayList != null) {
             if (arrayList.size() > 0) {
                 tv.setTypeface(Typeface.DEFAULT_BOLD);

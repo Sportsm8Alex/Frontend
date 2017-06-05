@@ -29,9 +29,10 @@ import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.SocialViews.groups.CreateGroupDialog;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupListAdapter;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupsListFragment;
-import com.android.brogrammers.sportsm8.UserClasses.EditUserInformation;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,8 @@ import static android.app.Activity.RESULT_OK;
  */
 public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
     Activity parentActivity;
-    private ArrayList<Information> friends, groups, selection;
+    private ArrayList<UserInfo> friends,selection;
+    private ArrayList<Group> groups;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -103,7 +105,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         if (bundle != null) {
             addToMeetingMode = bundle.getBoolean("addToMeetingMode");
             try {
-                selection = (ArrayList<Information>) bundle.getSerializable("Selection");
+                selection = (ArrayList<UserInfo>) bundle.getSerializable("Selection");
             } catch (NullPointerException e) {
             }
         }
@@ -202,11 +204,11 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     /**
-     * For when Activity is called, from CreateNewMeeting
+     * For when Activity is called, from CreateNewMeetingOld
      */
     private void finishSelection() {
-        ArrayList<Information> selectionfriends = new ArrayList<>();
-        ArrayList<Information> selectiongroups = new ArrayList<>();
+        ArrayList<UserInfo> selectionfriends = new ArrayList<>();
+        ArrayList<Group> selectiongroups = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
                 selectionfriends.add(friends.get(i));
@@ -230,7 +232,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
      * Creates new Group from Friendselection
      */
     private void createGroup() {
-        ArrayList<Information> selection = new ArrayList<>();
+        ArrayList<UserInfo> selection = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
                 selection.add(friends.get(i));
@@ -350,7 +352,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
      * @param friendsListFragment Reference to friendsListFragment
      * @param adapter             Reference to FriendsListAdapter
      */
-    public void setReferencesFriends(ArrayList<Information> friends, FriendsListFragment friendsListFragment, FriendsListAdapter adapter) {
+    public void setReferencesFriends(ArrayList<UserInfo> friends, FriendsListFragment friendsListFragment, FriendsListAdapter adapter) {
         this.adapterReference = adapter;
         adapterReference.setClicklistener(this);
         this.friendsListFragment = friendsListFragment;
@@ -381,7 +383,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
      * @param groupsListFragment Reference to groupListFragment
      * @param adapter            Reference to GroupListAdapter
      */
-    public void setReferencesGroups(ArrayList<Information> groups, GroupsListFragment groupsListFragment, GroupListAdapter adapter) {
+    public void setReferencesGroups(ArrayList<Group> groups, GroupsListFragment groupsListFragment, GroupListAdapter adapter) {
         this.adapterReferenceGroup = adapter;
         this.adapterReferenceGroup.setSelectionMode(addToMeetingMode);
 

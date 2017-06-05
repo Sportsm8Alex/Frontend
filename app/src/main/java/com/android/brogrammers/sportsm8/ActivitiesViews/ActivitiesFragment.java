@@ -30,10 +30,8 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemSelected;
 
 
 /**
@@ -136,7 +134,7 @@ public class ActivitiesFragment extends Fragment implements UIthread {
      //   b.putInt("sportID", Integer.valueOf(sportIDs.get(sportID).sportID));
         b.putInt("sportID",8008);
         b.putBoolean("liga", false);
-        Intent intent = new Intent(parentActivity, CreateNewMeeting2.class);
+        Intent intent = new Intent(parentActivity, CreateNewMeeting.class);
         intent.putExtras(b);
         startActivity(intent);
     }

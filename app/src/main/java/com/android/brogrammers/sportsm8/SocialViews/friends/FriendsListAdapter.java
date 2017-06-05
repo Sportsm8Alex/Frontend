@@ -22,6 +22,9 @@ import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.ClickListener;
 import com.android.brogrammers.sportsm8.SocialViews.SelectableAdapter;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +36,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     private final static int FADE_DURATION = 500;
     private Context context;
-    private ArrayList<Information> data, backup;
+    private ArrayList<UserInfo> data, backup;
     private LayoutInflater inflater;
     private FriendsListFragment friendsListFragment;
     private OnlyFriendsView searchNewFriends;
@@ -41,9 +44,10 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     private int count = 0;
     //Instance of clickListener for handling clickevents through Friends.java
     private ClickListener clickListener;
+    private APIService apiService = APIUtils.getAPIService();
 
 
-    public FriendsListAdapter(Context context, ClickListener clickListener, ArrayList<Information> data, Boolean addFriendMode) {
+    public FriendsListAdapter(Context context, ClickListener clickListener, ArrayList<UserInfo> data, Boolean addFriendMode) {
         super();
         this.clickListener = clickListener;
         this.context = context;
@@ -92,7 +96,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     }
 
-    public void setSelected(ArrayList<Information> selection) {
+    public void setSelected(ArrayList<UserInfo> selection) {
         if (selection != null) {
             for (int i = 0; i < selection.size(); i++) {
                 for (int j = 0; j < data.size(); j++) {
@@ -163,8 +167,6 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
             decline.setOnClickListener(this);
             //attaching OnitemClicklistener to every Card
             this.listener = listener;
-
-
         }
 
         @Override
@@ -198,7 +200,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
                     notifyDataSetChanged();
                     break;
                 case R.id.cardview_friends:  //OnItemClickEvent calls Interface method to handle click inside Friends.java
-                    if (listener != null) {
+                    if (listener != null&&!addFriendMode) {
                         listener.onItemClicked(getAdapterPosition(), false);
                     }
                     break;

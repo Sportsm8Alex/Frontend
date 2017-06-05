@@ -26,8 +26,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
-import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting2;
-import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment2;
+import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting;
+import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
@@ -36,6 +36,8 @@ import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
@@ -43,25 +45,21 @@ import com.roughike.bottombar.OnTabSelectListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, CalenderFragment2.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
@@ -69,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private ActionBarDrawerToggle mToggle;
     private BottomNavigationView bottomNavigationView;
     //to prevent crashes
+    String JsonString = "[{\"MeetingID\":261,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-01-28 20:18:30\",\"endTime\":\"2017-01-28 21:18:30\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":1,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{\"MeetingID\":262,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-02-02 16:51:34\",\"endTime\":\"2017-02-02 17:51:34\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":0,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]";
+
 
     ArrayList<Information> arrayListMeetings;
 
@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     TextView textView;
     @BindView(R.id.app_bar)
     AppBarLayout appBarLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         break;
                     case R.id.tab_calendar:
                         floatingActionButton.setVisibility(View.VISIBLE);
-                        fragment = new CalenderFragment2();
+                        fragment = new CalenderFragment();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
                                 .scaleY(0)
@@ -156,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             public void onTabReSelected(@IdRes int tabId) {
                 switch (tabId) {
                     case R.id.tab_calendar:
-                        ((CalenderFragment2) fragment).scrollTo(0);
+                        ((CalenderFragment) fragment).scrollTo(0);
                         break;
                     default:
                         break;
@@ -165,8 +164,17 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
             }
         });
-
+//        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+//            @Override
+//            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+//                CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
+//                calenderFragment2.setStartDate(date.getYear(), date.getMonth(), date.getDay());
+//                calendarView.setVisibility(View.GONE);
+//                expanded = false;
+//            }
+//        });
     }
+
 
     @OnClick(R.id.image_button_toolbar)
     public void searchNewFriends() {
@@ -180,26 +188,29 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @OnClick(R.id.change_start_date)
     public void changeStartDate() {
-        DateTime today = new DateTime();
-        DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-        ArrayList<Calendar> highlights = new ArrayList<>();
-        for (int i = 0; i < arrayListMeetings.size(); i++) {
-            String x = arrayListMeetings.get(i).startTime;
-            DateTime dateTime = arrayListMeetings.get(i).getStartDateTime();
-            Calendar date1 = dateTime.toCalendar(Locale.getDefault());
-            highlights.add(date1);
-        }
-        Calendar[] days = highlights.toArray(new Calendar[highlights.size()]);
-        dPD.setHighlightedDays(days);
-        dPD.show(getFragmentManager(), "DatePicker");
+        CalenderFragment calenderFragment = (CalenderFragment) fragment;
+        calenderFragment.toggleCalendar();
+
+//        DateTime today = new DateTime();
+//        DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
+//        ArrayList<Calendar> highlights = new ArrayList<>();
+//        for (int i = 0; i < arrayListMeetings.size(); i++) {
+//            String x = arrayListMeetings.get(i).startTime;
+//            DateTime dateTime = arrayListMeetings.get(i).getStartDateTime();
+//            Calendar date1 = dateTime.toCalendar(Locale.getDefault());
+//            highlights.add(date1);
+//        }
+//        Calendar[] days = highlights.toArray(new Calendar[highlights.size()]);
+//        dPD.setHighlightedDays(days);
+//        dPD.show(getFragmentManager(), "DatePicker");
     }
 
     @OnClick(R.id.fab_calendar)
     public void createNewMeeting() {
-        CalenderFragment2 calenderFragment2 = (CalenderFragment2) fragment;
+        CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
         DateTime dateTime = calenderFragment2.getSelectedDate().toDateTime();
-        Intent intent = new Intent(this, CreateNewMeeting2.class);
-        intent.putExtra("date",dateTime.toString("dd/MM/yyyy"));
+        Intent intent = new Intent(this, CreateNewMeeting.class);
+        intent.putExtra("date", dateTime.toString("dd/MM/yyyy"));
         startActivity(intent);
     }
 
@@ -327,8 +338,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        CalenderFragment2 calenderFragment2 = (CalenderFragment2) fragment;
+        CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
         calenderFragment2.setStartDate(year, monthOfYear, dayOfMonth);
     }
+
+
 }
 

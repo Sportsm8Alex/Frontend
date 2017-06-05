@@ -19,7 +19,12 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.ClickListener;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.RetroFitClient;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
@@ -27,15 +32,20 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class OnlyFriendsView extends AppCompatActivity implements UIthread, SearchView.OnQueryTextListener, ClickListener {
 
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
-    private ArrayList<Information> friends;
+    private ArrayList<UserInfo> friends;
     private Boolean search = false;
     private Toolbar toolbar;
     private ActionMode actionMode;
     private OnlyFriendsView.ActionModeCallBack actionModeCallBack = new OnlyFriendsView.ActionModeCallBack();
+    private APIService apiService = APIUtils.getAPIService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +61,7 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         searchView.setIconified(false);
         recyclerView = (RecyclerView) findViewById(R.id.add_new_friend_recyclerview);
         friends = new ArrayList<>();
-        adapter = new FriendsListAdapter(getBaseContext(), null, friends, true);
+        adapter = new FriendsListAdapter(getBaseContext(), null, friends, search);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
 
@@ -65,7 +75,7 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
 
     public void onClick(View view) {
 
-        ArrayList<Information> selectionfriends = new ArrayList<>();
+        ArrayList<UserInfo> selectionfriends = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
                 selectionfriends.add(friends.get(i));
@@ -82,30 +92,44 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
     private void getSearchResults(String search) {
         SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        String[] params = {"IndexFriendship.php", "function", "searchNewFriend", "email", email, "friendname", search};
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
-        updateUI();
+        apiService.searchFriends("searchNewFriend",email,search).enqueue(new Callback<ArrayList<UserInfo>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
+                RetroFitClient.storeObjectList(response.body(),"friends",getBaseContext());
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+
+            }
+        });
+
+
+//        String[] params = {"IndexFriendship.php", "function", "searchNewFriend", "email", email, "friendname", search};
+//        Database db = new Database(this, getBaseContext());
+//        db.execute(params);
+        updateUI("");
     }
 
     private void getFriends() {
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexFriendshipgetFriendsJSON", "");
-        try {
-            friends = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-        Iterator<Information> itr = friends.iterator();
-        while (itr.hasNext()) {
-            Information info = itr.next();
-            if (Integer.valueOf(info.getConfirmed()) == 0) {
-                itr.remove();
-            }
-        }
-        adapter = new FriendsListAdapter(getBaseContext(), this, friends, false);
+//        SharedPreferences sharedPrefs = getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
+//        String meetingJson = sharedPrefs.getString("IndexFriendshipgetFriendsJSON", "");
+//        try {
+//            friends = Database.jsonToArrayList(meetingJson);
+//        } catch (JSONException | ParseException e) {
+//            e.printStackTrace();
+//        }
+//        Iterator<Information> itr = friends.iterator();
+//        while (itr.hasNext()) {
+//            Information info = itr.next();
+//            if (Integer.valueOf(info.getConfirmed()) == 0) {
+//                itr.remove();
+//            }
+//        }
+        adapter = new FriendsListAdapter(getBaseContext(), this, friends, search);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        updateUI("");
     }
 
     @Override
@@ -115,15 +139,16 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
 
     @Override
     public void updateUI(String answer) {
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexFriendshipsearchNewFriendJSON", "");
-        try {
-            friends = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-
-        adapter = new FriendsListAdapter(getBaseContext(), this, friends, true);
+//        SharedPreferences sharedPrefs = getSharedPreferences("IndexFriendship", Context.MODE_PRIVATE);
+//        String meetingJson = sharedPrefs.getString("IndexFriendshipsearchNewFriendJSON", "");
+//        try {
+//            friends = Database.jsonToArrayList(meetingJson);
+//        } catch (JSONException | ParseException e) {
+//            e.printStackTrace();
+//        }
+        friends = (ArrayList<UserInfo>) RetroFitClient.retrieveObjectList("friends", getBaseContext(), new TypeToken<ArrayList<UserInfo>>() {
+        }.getType());
+        adapter = new FriendsListAdapter(getBaseContext(), this, friends, search);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
     }
@@ -171,7 +196,7 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.menu_add:
-                    ArrayList<Information> selectionfriends = new ArrayList<>();
+                    ArrayList<UserInfo> selectionfriends = new ArrayList<>();
                     for (int i = 0; i < friends.size(); i++) {
                         if (friends.get(i).selected) {
                             selectionfriends.add(friends.get(i));
