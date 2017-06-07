@@ -12,10 +12,11 @@ import java.io.Serializable;
 
 public class Meeting implements Serializable {
 
-    public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic,sportID;
+    public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic, sportID;
     public String startTime, endTime, status, meetingActivity;
     public int[] timeArray = new int[24];
     public Boolean meetingIsGood = false;
+    public float longitude, latitude;
 
     public DateTime getStartDateTime() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
@@ -27,4 +28,13 @@ public class Meeting implements Serializable {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
         return formatter.parseDateTime(endTime);
     }
+
+    public void setStartDateTime(DateTime dateTime) {
+        startTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
+    }
+
+    public void setEndStartDateTime(DateTime dateTime) {
+        endTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
+    }
 }
+

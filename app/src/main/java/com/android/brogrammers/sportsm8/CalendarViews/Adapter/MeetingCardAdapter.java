@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailView;
+import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
@@ -215,9 +216,7 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     private void setCardWaiting(MeetingsViewHolder viewHolder, int position) {
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
         viewHolder.badge.setImageResource(R.drawable.waiting);
-        viewHolder.accept.setVisibility(View.GONE);
-        viewHolder.decline.setVisibility(View.GONE);
-        viewHolder.otherTime.setVisibility(View.GONE);
+        ViewHelperClass.setInvisible(new View[]{viewHolder.accept,viewHolder.decline,viewHolder.otherTime});
         if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
     }
 
@@ -231,9 +230,7 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     private void setCardReady(MeetingsViewHolder viewHolder, int position) {
         viewHolder.badge.setImageResource(R.drawable.confirmed_white);
         viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-        viewHolder.accept.setVisibility(View.GONE);
-        viewHolder.decline.setVisibility(View.GONE);
-        viewHolder.otherTime.setVisibility(View.GONE);
+        ViewHelperClass.setInvisible(new View[]{viewHolder.accept,viewHolder.decline,viewHolder.otherTime});
         if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
     }
 

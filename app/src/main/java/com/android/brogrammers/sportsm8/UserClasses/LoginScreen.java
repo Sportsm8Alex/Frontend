@@ -55,7 +55,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
-    private static String emailAdress;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -85,7 +84,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                     SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPrefs.edit();
                     editor.putString("email", mAuth.getCurrentUser().getEmail());
-                    emailAdress = mAuth.getCurrentUser().getEmail();
                     editor.apply();
                     progressDialog.dismiss();
                     System.out.println("session continued");
@@ -326,7 +324,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                 });
     }
 
-    public void syncDatabases(GoogleSignInAccount account){
+    public void syncDatabases(GoogleSignInAccount account) {
         String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", account.getDisplayName(), "password", account.getId(), "email", account.getEmail()};
         Database db = new Database(this, getBaseContext());
         db.execute(params);
@@ -335,9 +333,16 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
-    public static String getEmailAdress(){
-        return emailAdress;
+
+    public static String getEmailAdress(Context context) {
+
+        SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+        return sharedPrefs.getString("email","");
+        //TODO: USE THIS CODE
+//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//        return mAuth.getCurrentUser().getEmail();
+
+
     }
 }

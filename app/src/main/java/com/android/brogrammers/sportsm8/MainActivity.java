@@ -14,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,6 +36,11 @@ import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -59,13 +65,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private BottomNavigationView bottomNavigationView;
+    private double longitude, latitude;
+    private boolean locationON = false;
     //to prevent crashes
     String JsonString = "[{\"MeetingID\":261,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-01-28 20:18:30\",\"endTime\":\"2017-01-28 21:18:30\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":1,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{\"MeetingID\":262,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-02-02 16:51:34\",\"endTime\":\"2017-02-02 17:51:34\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":0,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]";
 
@@ -84,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     TextView textView;
     @BindView(R.id.app_bar)
     AppBarLayout appBarLayout;
+    @BindView(R.id.setLocation)
+    ImageButton setLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         fragment = new FragmentSocial();
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
-
+        setLocation.setOnClickListener(this);
         getNumberOfUnanswered();
         bottomBar.selectTabAtPosition(1);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
@@ -119,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         imageButtonToolbar.setVisibility(View.GONE);
                         appBarLayout.setExpanded(true);
                         startDate.setVisibility(View.GONE);
+                        setLocation.setVisibility(View.GONE);
                         textView.setText("My Account");
                         break;
                     case R.id.tab_calendar:
@@ -129,12 +140,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                 .scaleY(0)
                                 .alpha(0.0f);
                         imageButtonToolbar.setVisibility(View.GONE);
+                        setLocation.setVisibility(View.VISIBLE);
                         startDate.setVisibility(View.VISIBLE);
                         textView.setText("Kalender");
                         break;
                     case R.id.tab_friends:
                         floatingActionButton.setVisibility(View.GONE);
                         fragment = new FragmentSocial();
+
+                        setLocation.setVisibility(View.GONE);
                         imageButtonToolbar.animate()
                                 .scaleX(1)
                                 .scaleY(1)
@@ -185,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         startActivity(intent);
 
     }
+
 
     @OnClick(R.id.change_start_date)
     public void changeStartDate() {
@@ -343,5 +358,39 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
 
+    @Override
+    public void onClick(View v) {
+        if (!locationON) {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(this), 1);
+            } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+        } else {
+            locationON=false;
+            setLocation.setImageResource(R.drawable.ic_location_off_white_24dp);
+            CalenderFragment c1 = (CalenderFragment) fragment;
+            c1.setLocation(0,0,false);
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, data);
+                LatLng coord = place.getLatLng();
+                longitude = coord.longitude;
+                latitude = coord.latitude;
+                CalenderFragment c1 = (CalenderFragment) fragment;
+                c1.setLocation(longitude, latitude,true);
+                locationON=true;
+                setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);
+            }
+        }
+    }
 }
 

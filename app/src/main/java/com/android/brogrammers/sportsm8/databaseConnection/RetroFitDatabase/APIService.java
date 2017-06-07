@@ -39,7 +39,8 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")
-    Call<Void> createMeeting(@Field("function") String function, @Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String,String> members);
+    Call<Void> createMeeting(@Field("function") String function, @Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String, String> members, @Field("longitude") double
+            longitude, @Field("latitude") double latitude);
 
 
     //FRIENDSHIPS
@@ -65,9 +66,7 @@ public interface APIService {
     //Not Tested
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<Void> addMembersToGroup(@Field("function") String function, @Field("GroupID") String GroupID,@FieldMap Map<String,String> members);
-
-
+    Call<Void> addMembersToGroup(@Field("function") String function, @Field("GroupID") String GroupID, @FieldMap Map<String, String> members);
 
 
 }

@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,11 +36,10 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIS
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.RetroFitClient;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.reflect.TypeToken;
+import com.schibstedspain.leku.LocationPickerActivity;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
@@ -50,9 +50,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +69,7 @@ import retrofit2.Response;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting extends Activity implements UIthread {
+public class CreateNewMeeting extends Activity implements UIthread, View.OnClickListener {
 
     int minMemberCount = 4, minHours = 2;
     ArrayList<Information> sportIDs;
@@ -87,6 +85,7 @@ public class CreateNewMeeting extends Activity implements UIthread {
     private DateTime datetime, backUpStartTime, backUpEndTime, selectedDate;
     private DateTimeFormatter formatter;
     private boolean enoughPeopleInvited = false;
+    private double latitude =0,longitude=0;
     private APIService apiService = APIUtils.getAPIService();
 
     @BindView(R.id.edittext_choose_activity)
@@ -113,7 +112,8 @@ public class CreateNewMeeting extends Activity implements UIthread {
     public ListView listView_activities;
     @BindView(R.id.imageview_expand_arrow)
     ImageView expandArrow;
-
+    @BindView(R.id.location_RL)
+    RelativeLayout location;
 
     private String extraInfoString;
     private NumberPicker numHours, minMember;
@@ -144,7 +144,7 @@ public class CreateNewMeeting extends Activity implements UIthread {
         endTimeButton.setText(datetime.toString("HH:mm"));
         minTimeTextView.setText(minHours + "");
         minPartySizeTextView.setText(minMemberCount + "");
-
+        location.setOnClickListener(this);
         //startCycle
         timeButtons(startTimeButton);
         editTextChooseActivity.setHintTextColor(ContextCompat.getColor(getBaseContext(), R.color.WhiteTransparent));
@@ -190,7 +190,7 @@ public class CreateNewMeeting extends Activity implements UIthread {
         bundle.putSerializable("Selection", Selection);
         Intent intent = new Intent(this, SelectorContainer.class);
         intent.putExtras(bundle);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 2);
     }
 
 
@@ -316,7 +316,7 @@ public class CreateNewMeeting extends Activity implements UIthread {
                     for (int i = 0; i < Selection.size(); i++) {
                         members.put("members" + i, Selection.get(i).email);
                     }
-                    apiService.createMeeting("newMeeting", formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members).enqueue(new Callback<Void>() {
+                    apiService.createMeeting("newMeeting", formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members,longitude, latitude).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
@@ -410,15 +410,23 @@ public class CreateNewMeeting extends Activity implements UIthread {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+
+        if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<UserInfo>) bundle.getSerializable("partyList");
                 SelectionGroup = (ArrayList<Group>) bundle.getSerializable("groupList");
             }
+            mergeGroupsAndFriends();
+            checkMemberCount();
+        }else if(requestCode==1){
+            if(resultCode== RESULT_OK){
+                longitude= data.getDoubleExtra(LocationPickerActivity.LONGITUDE, 0);
+                latitude = data.getDoubleExtra(LocationPickerActivity.LATITUDE, 0);
+            }
         }
-        mergeGroupsAndFriends();
-        checkMemberCount();
+
+
     }
 
 
@@ -516,7 +524,7 @@ public class CreateNewMeeting extends Activity implements UIthread {
     }
 
 
- //FIREBASE TEST
+    //FIREBASE TEST
     //Meetings newMeeting = new Meetings(minMemberCount,dynamic,sportart_ID,startTime.toDate(),endTime.toDate());
     //firebase(newMeeting);
     private void firebase(Meetings meeting3) {
@@ -525,5 +533,29 @@ public class CreateNewMeeting extends Activity implements UIthread {
         DatabaseReference meetingsRef = mRef.child("Meeting");
         DatabaseReference newMeetingsRef = meetingsRef.push();
         newMeetingsRef.setValue(meeting3);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new LocationPickerActivity.Builder()
+                .withSearchZone("es_ES")
+                .shouldReturnOkOnBackPressed()
+                .withStreetHidden()
+                .withCityHidden()
+                .withZipCodeHidden()
+                .withSatelliteViewHidden()
+                .build(getApplicationContext());
+
+        startActivityForResult(intent, 1);
+
+
+
+//        int PLACE_PICKER_REQUEST = 1;
+//        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//        try {
+//            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+//        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
     }
 }

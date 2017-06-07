@@ -13,6 +13,7 @@
     <ListView
         android:id="@+id/listview_meeting_activities"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content" />
 
     <RelativeLayout
@@ -283,6 +284,36 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:text="0"
+                android:textColor="@color/black" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_RL"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingEnd="32dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_location_on_black_48dp" />
+
+            <TextView
+                android:id="@+id/location_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="72dp"
+                android:paddingStart="0dp"
+                android:text="@string/ortswahl"
+                android:textAllCaps="false"
                 android:textColor="@color/black" />
 
 

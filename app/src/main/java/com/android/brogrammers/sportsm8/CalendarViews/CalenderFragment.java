@@ -3,6 +3,7 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,9 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.android.brogrammers.sportsm8.CalendarViews.Adapter.CalendarViewPagerAdapter;
-import com.android.brogrammers.sportsm8.CalendarViews.Adapter.ExpandOrCollapse;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
@@ -60,7 +62,8 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     private OnFragmentInteractionListener mListener;
     private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
     Boolean onStartUp = true;
-
+    double longitude, latitude;
+    private boolean locationMode;
     APIService apiService = APIUtils.getAPIService();
 
     public CalenderFragment() {
@@ -243,10 +246,23 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
             //int today = LocalDate.now().getDayOfYear();
             System.out.println("THIS IS TODAY " + viewPagerAdapter.getToday());
             for (int i = 0; i < meetings.size(); i++) {
-                String date = meetings.get(i).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
-                int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
-                if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + j) {
-                    meetingsOnDay.add(meetings.get(i));
+                DateTime dt1 = meetings.get(i).getStartDateTime();
+                DateTime dt2 = viewPagerAdapter.getToday();
+                if (dt1.withTimeAtStartOfDay().equals(dt2.plusDays(j).withTimeAtStartOfDay())) {
+                    if (locationMode) {
+                        Location start = new Location("locationA");
+                        start.setLatitude(latitude);
+                        start.setLongitude(longitude);
+                        Location end = new Location("locationB");
+                        end.setLatitude(meetings.get(i).latitude);
+                        end.setLongitude(meetings.get(i).longitude);
+                        double distance = start.distanceTo(end);
+                        if (distance < 5000) {
+                            meetingsOnDay.add(meetings.get(i));
+                        }
+                    } else {
+                        meetingsOnDay.add(meetings.get(i));
+                    }
                 }
             }
             DayFragment temp = DayFragment.newInstance(j, meetingsOnDay);
@@ -287,8 +303,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     boolean expanded = false;
 
     public void toggleCalendar() {
-        ExpandOrCollapse mAnimator = new ExpandOrCollapse();
-        mAnimator.expand(calendarView, 250);
+        ViewHelperClass.expand(calendarView, 250);
         expanded = !expanded;
     }
 
@@ -299,7 +314,6 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
             CalendarDay date1 = CalendarDay.from(dateTime.toDate());
             highlights.add(date1);
         }
-
         EventDecorator eventDecorator = new EventDecorator(ContextCompat.getColor(getContext(), R.color.red), highlights);
         calendarView.addDecorator(eventDecorator);
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -307,7 +321,13 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
         calendarView.setTileHeightDp(35);
         calendarView.setTileWidth(displayMetrics.widthPixels / 8);
         // CalendarDay[] days = highlights.toArray(new CalendarDay[highlights.size()]);
+    }
 
+    public void setLocation(double longitude, double latitude, boolean locationMode) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.locationMode = locationMode;
+        onRefresh();
     }
 
 

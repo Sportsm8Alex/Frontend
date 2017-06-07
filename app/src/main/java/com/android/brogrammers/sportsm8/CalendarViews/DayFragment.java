@@ -15,6 +15,7 @@ import com.android.brogrammers.sportsm8.CalendarViews.Adapter.MeetingCardAdapter
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.google.android.gms.location.places.Place;
 
 import java.util.ArrayList;
 import java.util.Collections;

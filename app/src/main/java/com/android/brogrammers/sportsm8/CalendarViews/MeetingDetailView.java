@@ -5,12 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.icu.text.IDNA;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,26 +17,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
+import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
+import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
-import com.appyvet.rangebar.RangeBar;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
@@ -50,7 +43,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import es.dmoral.toasty.Toasty;
+import io.apptik.widget.MultiSlider;
 
 public class MeetingDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
@@ -60,6 +53,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     Meeting thisMeeting;
     ListViewAdapter arrayAdapter;
     DatabaseHelperMeetings databaseHelperMeetings;
+    DateTime startDateTime, endDateTime;
 
     @BindView(R.id.listview_meeting_detail)
     ListView listView;
@@ -73,8 +67,6 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     TextView textView_sportID;
     @BindView(R.id.meeting_detail_view_imageview)
     ImageView bannerImage;
-    @BindView(R.id.progressbar_count)
-    IconRoundCornerProgressBar progressBar;
     @BindView(R.id.meeting_detail_collABL)
     AppBarLayout appBarLayout;
     @BindView(R.id.accept_meeting)
@@ -82,8 +74,15 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     @BindView(R.id.decline_meeting)
     ImageButton declineMeeting;
     @BindView(R.id.rangebar)
-    RangeBar rangeBar;
-
+    MultiSlider rangeBar;
+    @BindView(R.id.progress_bar)
+    LinearLayout progressBar;
+    @BindView(R.id.new_endTime_detailV)
+    TextView newEndTimeView;
+    @BindView(R.id.new_startTime_detailV)
+    TextView newStartTimeView;
+    @BindView(R.id.dash_detailView)
+    TextView dashView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,45 +94,82 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         //Variables
         Bundle b = getIntent().getExtras();
         thisMeeting = (Meeting) b.getSerializable("MeetingOnDay");
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        DateTime dt = formatter.parseDateTime(thisMeeting.startTime);
-        DateTime dt2 = formatter.parseDateTime(thisMeeting.endTime);
+        startDateTime = thisMeeting.getStartDateTime();
+        endDateTime = thisMeeting.getEndDateTime();
         Resources res = getResources();
         TypedArray bannerArray = res.obtainTypedArray(R.array.sportDrawables);
         //Set Views
-        textView_time.setText(dt.toString("HH:mm") + "-" + dt2.toString("HH:mm"));
-        textView_date.setText(dt.toString("dd.MM.YYYY"));
+        textView_time.setText(startDateTime.toString("HH:mm") + "-" + endDateTime.toString("HH:mm"));
+        textView_date.setText(startDateTime.toString("dd.MM.YYYY"));
         if (Integer.valueOf(thisMeeting.sportID) < bannerArray.length()) {
             bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(thisMeeting.sportID), R.drawable.custommeeting));
         }
         textView_sportID.setText(thisMeeting.meetingActivity);
         getMemberList();
-        progressBar.setProgress(0);
+
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (verticalOffset < -100) verticalOffset = -100;
                 float offset = 1 + (verticalOffset / 100);
-                acceptMeeting.animate().scaleX(offset).setDuration(100);
-                acceptMeeting.animate().scaleY(offset).setDuration(100);
-                declineMeeting.animate().scaleY(offset).setDuration(100);
-                declineMeeting.animate().scaleX(offset).setDuration(100);
-                rangeBar.animate().scaleY(offset).setDuration(100);
-                rangeBar.animate().scaleX(offset).setDuration(100);
+                scaleView(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView}, offset);
             }
         });
         databaseHelperMeetings = new DatabaseHelperMeetings(this);
         if (thisMeeting.dynamic == 0) {
             rangeBar.setVisibility(View.GONE);
+        } else {
+            rangeBarSetup();
         }
         if (thisMeeting.confirmed == 1 || thisMeeting.duration != 0) {
-            declineMeeting.setVisibility(View.GONE);
-            acceptMeeting.setVisibility(View.GONE);
-            rangeBar.setVisibility(View.GONE);
+           ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
         }
-
-
         //    swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void rangeBarSetup() {
+        rangeBar.setMax(96);
+        newStartTimeView.setText(startDateTime.toString("HH:mm"));
+        newEndTimeView.setText(endDateTime.toString("HH:mm"));
+        rangeBar.getThumb(0).setValue(startDateTime.getMinuteOfDay() / 15);
+        rangeBar.getThumb(1).setValue(endDateTime.getMinuteOfDay() / 15);
+        rangeBar.setStepsThumbsApart(4);
+        rangeBar.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                if (thumbIndex == 0) {
+                    startDateTime = startDateTime.withTimeAtStartOfDay().plusMinutes(value * 15);
+                    newStartTimeView.setText(startDateTime.toString("HH:mm"));
+                    thisMeeting.setStartDateTime(startDateTime);
+                } else {
+                    endDateTime = endDateTime.withTimeAtStartOfDay().plusMinutes(value * 15);
+                    newEndTimeView.setText(endDateTime.toString("HH:mm"));
+                    thisMeeting.setEndStartDateTime(endDateTime);
+                }
+            }
+        });
+    }
+
+    private void setUpprogressBar() {
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i).confirmed == 1) {
+                count++;
+            }
+        }
+        for (int i = 0; i < thisMeeting.minParticipants; i++) {
+            ImageView imageView = new ImageView(getBaseContext());
+            imageView.setImageResource(R.drawable.ic_person_black_36dp);
+            imageView.setId(i);
+            if (i >= count) {
+                imageView.setScaleX(0.5f);
+                imageView.setScaleY(0.5f);
+                imageView.setAlpha(0.5f);
+                if (i >= members.size()) {
+                    imageView.setAlpha(0f);
+                }
+            }
+            progressBar.addView(imageView);
+        }
     }
 
 
@@ -154,9 +190,15 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     @OnClick(R.id.accept_meeting)
     public void acceptMeeting() {
         databaseHelperMeetings.confirm(thisMeeting);
-        acceptMeeting.setVisibility(View.GONE);
-        declineMeeting.setVisibility(View.GONE);
-        getMemberList();
+        ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
+        progressBar.findViewById(count).animate().scaleX(1).scaleY(1).alpha(1);
+        for (int i = 0; i < members.size(); i++) {
+            String email = LoginScreen.getEmailAdress(this);
+            if (members.get(i).email.equals(email)) {
+                members.get(i).confirmed = 1;
+                arrayAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @OnClick(R.id.decline_meeting)
@@ -220,6 +262,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         arrayAdapter = new ListViewAdapter(this, members);
         listView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
+        setUpprogressBar();
         // swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -228,8 +271,13 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         getMemberList();
     }
 
-
-    class ListViewAdapter extends BaseAdapter {
+    public void scaleView(View[] view, float offset) {
+        for (int i = 0; i < view.length; i++) {
+            view[i].animate().scaleX(offset).setDuration(100);
+            view[i].animate().scaleY(offset).setDuration(100);
+        }
+    }
+    private class ListViewAdapter extends BaseAdapter {
 
         Context context;
         ArrayList<Information> list;
@@ -277,12 +325,6 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             }
             if (list.get(i).confirmed == 1) {
                 row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-                count++;
-                double progress = (double) count / thisMeeting.minParticipants;
-                progressBar.setProgress((int) (progress * 100));
-                if (progress >= 1) {
-                    progressBar.setProgressColor(ContextCompat.getColor(context, R.color.green));
-                }
             }
             return row;
         }

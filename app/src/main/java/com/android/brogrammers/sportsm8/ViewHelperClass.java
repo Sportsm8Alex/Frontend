@@ -1,22 +1,33 @@
-package com.android.brogrammers.sportsm8.CalendarViews.Adapter;
+package com.android.brogrammers.sportsm8;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageButton;
 
 /**
- * Created by Korbi on 01.06.2017.
+ * Created by Korbi on 07.06.2017.
  */
 
-public class ExpandOrCollapse {
+public class ViewHelperClass {
 
+    public static void setInvisible(View[] view) {
+        for (int i = 0; i < view.length; i++) {
+            view[i].setVisibility(View.GONE);
+        }
+    }
+
+
+    public static void setVisible(View[] view) {
+        for (int i = 0; i < view.length; i++) {
+            view[i].setVisibility(View.VISIBLE);
+        }
+    }
 
     public static void expand(final View v, int duration) {
-        final boolean expand = v.getVisibility()!=View.VISIBLE;
+        final boolean expand = v.getVisibility() != View.VISIBLE;
 
-        int prevHeight  = v.getHeight();
+        int prevHeight = v.getHeight();
         int height = 0;
         if (expand) {
             int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
@@ -36,14 +47,14 @@ public class ExpandOrCollapse {
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                if (expand){
+                if (expand) {
                     v.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!expand){
+                if (!expand) {
                     v.setVisibility(View.INVISIBLE);
                 }
             }

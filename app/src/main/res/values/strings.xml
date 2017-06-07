@@ -118,4 +118,5 @@
     <string name="start_sport_activity">Start Sport Meeting</string>
     <string name="Sport_Meeting">Sport machen</string>
     <string name="more_settings_button">More Settings</string>
+    <string name="ortswahl">location_selection</string>
 </resources>
