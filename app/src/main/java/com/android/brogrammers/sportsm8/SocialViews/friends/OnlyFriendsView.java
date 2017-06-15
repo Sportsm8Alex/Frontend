@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +41,7 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
 
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
-    private ArrayList<UserInfo> friends;
+    private List<UserInfo> friends;
     private Boolean search = false;
     private Toolbar toolbar;
     private ActionMode actionMode;
@@ -75,14 +76,14 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
 
     public void onClick(View view) {
 
-        ArrayList<UserInfo> selectionfriends = new ArrayList<>();
+        List<UserInfo> selectionfriends = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
             if (friends.get(i).selected) {
                 selectionfriends.add(friends.get(i));
             }
         }
         Bundle bundle = new Bundle();
-        bundle.putSerializable("partyList", selectionfriends);
+        bundle.putSerializable("partyList", new ArrayList<>(selectionfriends));
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
@@ -92,14 +93,14 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
     private void getSearchResults(String search) {
         SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.searchFriends("searchNewFriend",email,search).enqueue(new Callback<ArrayList<UserInfo>>() {
+        apiService.searchFriends("searchNewFriend",email,search).enqueue(new Callback<List<UserInfo>>() {
             @Override
-            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
-                RetroFitClient.storeObjectList(response.body(),"friends",getBaseContext());
+            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
+                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()),"friends",getBaseContext());
             }
 
             @Override
-            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
 
             }
         });
@@ -196,14 +197,14 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.menu_add:
-                    ArrayList<UserInfo> selectionfriends = new ArrayList<>();
+                    List<UserInfo> selectionfriends = new ArrayList<>();
                     for (int i = 0; i < friends.size(); i++) {
                         if (friends.get(i).selected) {
                             selectionfriends.add(friends.get(i));
                         }
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("partyList", selectionfriends);
+                    bundle.putSerializable("partyList", new ArrayList<>(selectionfriends));
                     Intent intent = new Intent();
                     intent.putExtras(bundle);
                     setResult(RESULT_OK, intent);

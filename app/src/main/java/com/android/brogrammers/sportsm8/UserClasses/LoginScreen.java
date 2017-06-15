@@ -9,17 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-
 import android.widget.EditText;
-
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.simple.JSONObject;
-
 import com.android.brogrammers.sportsm8.MainActivity;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
@@ -36,13 +29,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.android.brogrammers.sportsm8.TestDirectory.BottomNavBar;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UIthread, View.OnClickListener {
 

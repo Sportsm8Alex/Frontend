@@ -25,7 +25,7 @@ import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,12 +42,12 @@ import okhttp3.ResponseBody;
 public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder> implements UIthread {
 
     private Context context;
-    private ArrayList<Meeting> meetingsOnDay;
+    private List<Meeting> meetingsOnDay;
     private int begin, beginMinute;
     private DatabaseHelperMeetings databaseHelperMeetings;
     private DatabaseMeetingsRepository meetingsRepository = new DatabaseMeetingsRepository();
 
-    public MeetingCardAdapter(Context context, ArrayList<Meeting> meetingsOnDay) {
+    public MeetingCardAdapter(Context context, List<Meeting> meetingsOnDay) {
         this.context = context;
         this.meetingsOnDay = meetingsOnDay;
     }

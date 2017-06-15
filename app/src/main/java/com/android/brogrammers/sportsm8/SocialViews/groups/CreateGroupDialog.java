@@ -21,13 +21,14 @@ import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Korbi on 19.12.2016.
  */
 
 public class CreateGroupDialog extends android.support.v4.app.DialogFragment implements TextWatcher, UIthread, View.OnClickListener {
-    private ArrayList<UserInfo> groupmembers;
+    private List<UserInfo> groupmembers;
     private String groupname;
 
     @Override
@@ -51,15 +52,15 @@ public class CreateGroupDialog extends android.support.v4.app.DialogFragment imp
     public void onClick(View view) {
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        ArrayList<String> paramsArrayList = new ArrayList<>(
+        List<String> paramsList = new ArrayList<>(
                 Arrays.asList("IndexGroups.php", "function", "newGroup", "groupName", groupname, "member", email)
         );
         for (int i = 0; i < groupmembers.size(); i++) {
-            paramsArrayList.add("member" + i);
-            paramsArrayList.add(groupmembers.get(i).email);
+            paramsList.add("member" + i);
+            paramsList.add(groupmembers.get(i).email);
         }
-        String[] params = new String[paramsArrayList.size()];
-        params = paramsArrayList.toArray(params);
+        String[] params = new String[paramsList.size()];
+        params = paramsList.toArray(params);
 
         Database db = new Database(this, getContext());
         db.execute(params);

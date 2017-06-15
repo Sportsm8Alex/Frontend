@@ -2,19 +2,13 @@ package com.android.brogrammers.sportsm8.databaseConnection;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-
-import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

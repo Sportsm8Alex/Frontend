@@ -49,6 +49,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -69,14 +70,14 @@ import retrofit2.Response;
 public class CreateNewMeeting extends Activity implements UIthread, View.OnClickListener {
 
     int minMemberCount = 4, minHours = 2;
-    ArrayList<Information> sportIDs;
+    List<Information> sportIDs;
     String[] sportArten;
     Button selectedButton;
 
 
     int sportart_ID = 8008;
-    ArrayList<UserInfo> Selection = new ArrayList<>();
-    ArrayList<Group> SelectionGroup = new ArrayList<>();
+    List<UserInfo> Selection = new ArrayList<>();
+    List<Group> SelectionGroup = new ArrayList<>();
     private Boolean start;
     private MutableDateTime startTime, endTime;
     private DateTime datetime, backUpStartTime, backUpEndTime, selectedDate;
@@ -184,7 +185,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     void addFriends() {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SelectionMode", true);
-        bundle.putSerializable("Selection", Selection);
+        bundle.putSerializable("Selection", new ArrayList<>(Selection));
         Intent intent = new Intent(this, SelectorContainer.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, 2);
@@ -378,10 +379,10 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
 
     public void mergeGroupsAndFriends() {
         for (int i = 0; i < SelectionGroup.size(); i++) {
-            apiService.getGroupMembers("getGroupMembers", SelectionGroup.get(i).GroupID).enqueue(new Callback<ArrayList<UserInfo>>() {
+            apiService.getGroupMembers("getGroupMembers", SelectionGroup.get(i).GroupID).enqueue(new Callback<List<UserInfo>>() {
                 @Override
-                public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
-                    ArrayList<UserInfo> temp = response.body();
+                public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
+                    List<UserInfo> temp = response.body();
                     for (int j = 0; j < temp.size(); j++) {
                         Boolean tempBool = false;
                         for (int h = 0; h < Selection.size(); h++) {
@@ -397,7 +398,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
                 }
 
                 @Override
-                public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+                public void onFailure(Call<List<UserInfo>> call, Throwable t) {
 
                 }
             });
@@ -481,7 +482,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
         String newText = text.toString();
         listView_activities.setVisibility(View.VISIBLE);
         extraInfoString = newText;
-        ArrayList<String> searchresults = new ArrayList<>();
+        List<String> searchresults = new ArrayList<>();
 
         for (int i = 0; i < sportArten.length; i++) {
             if (sportArten[i].toLowerCase().contains(newText)) {

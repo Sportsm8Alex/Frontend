@@ -37,6 +37,7 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
@@ -55,14 +56,14 @@ import retrofit2.Response;
 public class CalenderFragment extends Fragment implements ViewPager.OnPageChangeListener, SwipeRefreshLayout.OnRefreshListener {
 
     CalendarViewPagerAdapter viewPagerAdapter;
-    ArrayList<Meeting> meetings;
+    List<Meeting> meetings;
     TabLayout tabLayout;
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
     MaterialCalendarView calendarView;
     TextView filterTV;
     private OnFragmentInteractionListener mListener;
-    private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
+    private final List<DayFragment> mFragmentList = new ArrayList<>();
     Boolean onStartUp = true;
     double longitude, latitude;
     private boolean locationMode;
@@ -126,9 +127,9 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     public void getMeetings() {
         SharedPreferences sharedPrefs = parentActivity.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getMeetings("getMeeting2", email).enqueue(new Callback<ArrayList<Meeting>>() {
+        apiService.getMeetings("getMeeting2", email).enqueue(new Callback<List<Meeting>>() {
             @Override
-            public void onResponse(Call<ArrayList<Meeting>> call, Response<ArrayList<Meeting>> response) {
+            public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
                 meetings = response.body();
                 createHighlightList();
                 if (onStartUp) {
@@ -144,7 +145,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Meeting>> call, Throwable t) {
+            public void onFailure(Call<List<Meeting>> call, Throwable t) {
                 Toasty.error(getContext(), "Connection Failed").show();
             }
         });
@@ -220,10 +221,10 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     }
 
 
-    private ArrayList<DayFragment> addTab(int count) {
-        ArrayList<DayFragment> temp = new ArrayList<>();
+    private List<DayFragment> addTab(int count) {
+        List<DayFragment> temp = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            ArrayList<Meeting> meetingsOnDay = new ArrayList<>();
+            List<Meeting> meetingsOnDay = new ArrayList<>();
             for (int j = 0; j < meetings.size(); j++) {
                 String date = meetings.get(j).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
                 int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
@@ -245,7 +246,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     private void createFragmentList(int count) {
         mFragmentList.clear();
         for (int j = 0; j < count; j++) {
-            ArrayList<Meeting> meetingsOnDay = new ArrayList<>();
+            List<Meeting> meetingsOnDay = new ArrayList<>();
             //int today = LocalDate.now().getDayOfYear();
             System.out.println("THIS IS TODAY " + viewPagerAdapter.getToday());
             for (int i = 0; i < meetings.size(); i++) {
@@ -315,7 +316,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     }
 
     public void createHighlightList() {
-        ArrayList<CalendarDay> highlights = new ArrayList<>();
+        List<CalendarDay> highlights = new ArrayList<>();
         for (int i = 0; i < meetings.size(); i++) {
             DateTime dateTime = meetings.get(i).getStartDateTime();
             CalendarDay date1 = CalendarDay.from(dateTime.toDate());
@@ -360,9 +361,9 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     public class EventDecorator implements DayViewDecorator {
 
         private final int color;
-        private final ArrayList<CalendarDay> dates = new ArrayList<>();
+        private final List<CalendarDay> dates = new ArrayList<>();
 
-        public EventDecorator(int color, ArrayList<CalendarDay> dates) {
+        public EventDecorator(int color, List<CalendarDay> dates) {
             this.color = color;
             this.dates.addAll(dates);
         }

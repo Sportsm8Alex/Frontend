@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -42,7 +43,7 @@ public class RetroFitClient {
         editor.apply();
     }
 
-    public static ArrayList<?> retrieveObjectList(String filename, Context context,Type listType) {
+    public static List<?> retrieveObjectList(String filename, Context context, Type listType) {
         Gson gson = new Gson();
         SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
         String JsonString = sharedPrefs.getString(filename+"JSON", "");

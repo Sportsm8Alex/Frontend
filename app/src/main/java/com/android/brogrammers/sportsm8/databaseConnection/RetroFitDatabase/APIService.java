@@ -28,7 +28,7 @@ public interface APIService {
     //MEETINGS
     @FormUrlEncoded
     @POST("IndexMeetings.php")
-    Call<ArrayList<Meeting>> getMeetings(@Field("function") String function, @Field("email") String email);
+    Call<List<Meeting>> getMeetings(@Field("function") String function, @Field("email") String email);
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")
@@ -57,7 +57,7 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")
-    Call<ArrayList<UserInfo>> getMemberList(@Field("function") String function, @Field("MeetingID") int meetingID);
+    Call<List<UserInfo>> getMemberList(@Field("function") String function, @Field("MeetingID") int meetingID);
 
 
     @FormUrlEncoded
@@ -67,21 +67,21 @@ public interface APIService {
     //FRIENDSHIPS
     @FormUrlEncoded
     @POST("IndexFriendship.php")
-    Call<ArrayList<UserInfo>> getFriends(@Field("function") String function, @Field("email") String email);
+    Call<List<UserInfo>> getFriends(@Field("function") String function, @Field("email") String email);
 
 
     @FormUrlEncoded
     @POST("IndexFriendship.php")
-    Call<ArrayList<UserInfo>> searchFriends(@Field("function") String function, @Field("email") String email, @Field("friendname") String searchText);
+    Call<List<UserInfo>> searchFriends(@Field("function") String function, @Field("email") String email, @Field("friendname") String searchText);
 
     //GROUPS
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<ArrayList<Group>> getGroups(@Field("function") String function, @Field("email") String email);
+    Call<List<Group>> getGroups(@Field("function") String function, @Field("email") String email);
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<ArrayList<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") String GroupID);
+    Call<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") String GroupID);
 
     @FormUrlEncoded
     @POST("IndexGroups.php")

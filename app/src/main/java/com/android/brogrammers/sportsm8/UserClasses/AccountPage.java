@@ -153,7 +153,7 @@ public class AccountPage extends Fragment implements UIthread{
 
     @Override
     public void updateUI(String answer) {
-        ArrayList<Information> accountData = new ArrayList<>();
+        List<Information> accountData = new ArrayList<>();
         SharedPreferences sharedPrefs = parentActivity.getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
         String meetingJson = sharedPrefs.getString("IndexAccountsgetAccountInfoJSON", "");
         try {

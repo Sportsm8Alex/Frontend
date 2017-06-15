@@ -13,7 +13,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 
 import org.joda.time.MutableDateTime;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Korbi on 08.06.2017.
@@ -22,9 +22,9 @@ import java.util.ArrayList;
 public class MemberListAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<UserInfo> list;
+    private List<UserInfo> list;
 
-    public MemberListAdapter(Context context, ArrayList<UserInfo> memberList) {
+    public MemberListAdapter(Context context, List<UserInfo> memberList) {
         this.list = memberList;
         this.context = context;
     }
@@ -71,7 +71,7 @@ public class MemberListAdapter extends BaseAdapter {
         return row;
     }
 
-    public void setList(ArrayList<UserInfo> list) {
+    public void setList(List<UserInfo> list) {
         this.list = list;
     }
 }

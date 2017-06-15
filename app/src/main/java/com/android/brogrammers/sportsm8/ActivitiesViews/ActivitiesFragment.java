@@ -28,7 +28,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,7 +45,7 @@ import butterknife.OnClick;
 public class ActivitiesFragment extends Fragment implements UIthread {
 
     Activity parentActivity;
-    ArrayList<Information> sportIDs;
+    List<Information> sportIDs;
     int sportID;
     String[] sportArten;
     private DrawerLayout mDrawerLayout;

@@ -21,13 +21,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GroupsListFragment extends Fragment {
-    private ArrayList<Group> groups;
+    private List<Group> groups;
     private RecyclerView recyclerView;
     private GroupListAdapter adapter;
     private FragmentSocial fragmentSocial;
@@ -52,15 +53,15 @@ public class GroupsListFragment extends Fragment {
     public void updateGroupList() {
         final SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getGroups("getGroups", email).enqueue(new Callback<ArrayList<Group>>() {
+        apiService.getGroups("getGroups", email).enqueue(new Callback<List<Group>>() {
             @Override
-            public void onResponse(Call<ArrayList<Group>> call, Response<ArrayList<Group>> response) {
-                RetroFitClient.storeObjectList(response.body(), "groups", getContext());
+            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "groups", getContext());
                 updateUI();
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Group>> call, Throwable t) {
+            public void onFailure(Call<List<Group>> call, Throwable t) {
             }
         });
     }

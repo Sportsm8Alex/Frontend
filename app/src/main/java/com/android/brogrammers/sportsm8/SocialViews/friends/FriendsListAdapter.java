@@ -16,10 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.ClickListener;
+import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.SelectableAdapter;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
@@ -29,6 +28,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyViewHolder> {
@@ -36,7 +36,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     private final static int FADE_DURATION = 500;
     private Context context;
-    private ArrayList<UserInfo> data= new ArrayList<>();
+    private List<UserInfo> data= new ArrayList<>();
     private LayoutInflater inflater;
     private Boolean addFriendMode;
     //Instance of clickListener for handling clickevents through Friends.java
@@ -44,7 +44,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     private APIService apiService = APIUtils.getAPIService();
 
 
-    public FriendsListAdapter(Context context, ClickListener clickListener, ArrayList<UserInfo> data, Boolean addFriendMode) {
+    public FriendsListAdapter(Context context, ClickListener clickListener, List<UserInfo> data, Boolean addFriendMode) {
         super();
         this.clickListener = clickListener;
         this.context = context;
@@ -92,7 +92,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
     }
 
-    public void setSelected(ArrayList<UserInfo> selection) {
+    public void setSelected(List<UserInfo> selection) {
         if (selection != null) {
             for (int i = 0; i < selection.size(); i++) {
                 for (int j = 0; j < data.size(); j++) {

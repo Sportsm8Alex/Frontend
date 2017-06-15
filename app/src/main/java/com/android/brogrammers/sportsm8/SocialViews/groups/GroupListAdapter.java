@@ -19,12 +19,13 @@ import com.android.brogrammers.sportsm8.SocialViews.SelectableAdapter;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewHolder> {
 
     private Context context;
-    private ArrayList<Group> data;
+    private List<Group> data;
     private LayoutInflater inflater;
     private Boolean selectionMode;
     private GroupsListFragment groupsListFragment;
@@ -33,7 +34,7 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
 
     private ClickListener clickListener;
 
-    public GroupListAdapter(Context context, ClickListener clickListener, ArrayList<Group> data) {
+    public GroupListAdapter(Context context, ClickListener clickListener, List<Group> data) {
         this.context = context;
         this.clickListener = clickListener;
         this.data = data;

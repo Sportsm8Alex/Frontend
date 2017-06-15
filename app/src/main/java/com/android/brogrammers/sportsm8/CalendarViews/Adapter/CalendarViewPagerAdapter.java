@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.CalendarViews.DayFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Korbi on 23.05.2017.
@@ -26,12 +26,12 @@ import java.util.ArrayList;
 
 public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<DayFragment> fragmentList = new ArrayList<>();
+    private List<DayFragment> fragmentList = new ArrayList<>();
     private Context context;
     private boolean needsUpdate=false;
     private DateTime today;
 
-    public CalendarViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, ArrayList<DayFragment> meetings) {
+    public CalendarViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, List<DayFragment> meetings) {
         super(fragmentManager);
         fragmentList.clear();
         this.context = ApplicationContext;
@@ -76,14 +76,14 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
         tv2.setText(todayPosition.toString("E"));
 
         DayFragment dayFragment = (DayFragment) this.getItem(position);
-        ArrayList<Meeting> arrayList = dayFragment.getMeetingsOnDay();
-        if (arrayList != null) {
-            if (arrayList.size() > 0) {
+        List<Meeting> onDay = dayFragment.getMeetingsOnDay();
+        if (onDay != null) {
+            if (onDay.size() > 0) {
                 tv.setTypeface(Typeface.DEFAULT_BOLD);
                 tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             }
-            for (int i = 0; i < arrayList.size(); i++) {
-                if (arrayList.get(i).confirmed == 0) {
+            for (int i = 0; i < onDay.size(); i++) {
+                if (onDay.get(i).confirmed == 0) {
                     v.findViewById(R.id.imgView).setVisibility(View.VISIBLE);
                 }
             }

@@ -17,6 +17,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * CCreated by Korbi on 10/30/2016.
@@ -24,17 +25,17 @@ import java.util.Comparator;
 
 public class DayFragment extends Fragment {
     RecyclerView recyclerView;
-    ArrayList<Meeting> meetingsOnDay;
+    List<Meeting> meetingsOnDay;
     private FloatingActionButton floatingActionButton;
 
-    public static DayFragment newInstance(int position, ArrayList<Meeting> meetingsOnDay) {
+    public static DayFragment newInstance(int position, List<Meeting> meetingsOnDay) {
 
         // how exactly to hand down meetingsOnDay to MeetingCardAdapter?
         //#######################??
         DayFragment dayFragment = new DayFragment();
         Bundle args = new Bundle();
         Collections.sort(meetingsOnDay,new CustomComperator());
-        args.putSerializable("meetingsOnDay", meetingsOnDay);
+        args.putSerializable("meetingsOnDay", new ArrayList<>(meetingsOnDay));
         //args.putParcelableArrayList("meetingsOnDay", meetingsOnDay);
         dayFragment.setArguments(args);
         return dayFragment;
@@ -74,7 +75,7 @@ public class DayFragment extends Fragment {
         return view;
     }
 
-    public ArrayList<Meeting> getMeetingsOnDay(){
+    public List<Meeting> getMeetingsOnDay(){
         return (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
     }
 

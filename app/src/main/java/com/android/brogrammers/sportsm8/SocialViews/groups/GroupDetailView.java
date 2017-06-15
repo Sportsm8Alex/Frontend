@@ -33,6 +33,7 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -42,7 +43,7 @@ import retrofit2.Response;
 public class GroupDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
 
     private ListView listView;
-    private ArrayList<UserInfo> members, Selection;
+    private List<UserInfo> members, Selection;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String GroupID, groupName;
     private TextView textView_name;
@@ -116,15 +117,15 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
     }
 
     private void getMemberList() {
-        apiService.getGroupMembers("getGroupMembers", GroupID).enqueue(new Callback<ArrayList<UserInfo>>() {
+        apiService.getGroupMembers("getGroupMembers", GroupID).enqueue(new Callback<List<UserInfo>>() {
             @Override
-            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
-                RetroFitClient.storeObjectList(response.body(), "groupMembers" + GroupID, getBaseContext());
+            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
+                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "groupMembers" + GroupID, getBaseContext());
                 updateUI("");
             }
 
             @Override
-            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
 
             }
         });
@@ -156,10 +157,10 @@ public class GroupDetailView extends AppCompatActivity implements UIthread, Swip
 
     class ListViewAdapter extends BaseAdapter {
 
-        ArrayList<UserInfo> list;
+        List<UserInfo> list;
         Context context;
 
-        public ListViewAdapter(Context context, ArrayList<UserInfo> listItem) {
+        public ListViewAdapter(Context context, List<UserInfo> listItem) {
             list = listItem;
             this.context = context;
         }

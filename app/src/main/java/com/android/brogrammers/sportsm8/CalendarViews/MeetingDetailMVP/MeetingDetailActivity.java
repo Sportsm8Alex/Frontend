@@ -45,8 +45,8 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
 
     private static final String TAG = "MeetingDetailActivity";
     private int count = 0;
-    private ArrayList<UserInfo> members;
-    private ArrayList<UserInfo> Selection;
+    private List<UserInfo> members;
+    private List<UserInfo> Selection;
     Meeting thisMeeting;
     MemberListAdapter arrayAdapter;
     DatabaseHelperMeetings databaseHelperMeetings;
@@ -224,7 +224,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                Selection = (ArrayList<UserInfo>) bundle.getSerializable("partyList");
+                Selection = (List<UserInfo>) bundle.getSerializable("partyList");
                 presenter.addMembers(thisMeeting, Selection);
             }
         }

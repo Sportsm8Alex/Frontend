@@ -36,6 +36,7 @@ import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Korbi on 22.10.2016.
@@ -186,7 +187,7 @@ public class CreateNewMeetingOld extends Activity implements DatePickerDialog.On
     }
 
     public void mergeGroupsAndFriends() {
-        ArrayList<Information> temp = new ArrayList<>();
+        List<Information> temp = new ArrayList<>();
         for (int i = 0; i < SelectionGroup.size(); i++) {
             String[] params = {"IndexGroups.php", "function", "getGroupMembers", "GroupID", SelectionGroup.get(0).GroupID};
             Database db = new Database(this, getBaseContext());

@@ -19,7 +19,9 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.RetroFitClient;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +29,7 @@ import retrofit2.Response;
 
 public class FriendsListFragment extends Fragment {
 
-    private ArrayList<UserInfo> friends;
+    private List<UserInfo> friends;
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
     private FragmentSocial fragmentSocial;
@@ -48,15 +50,15 @@ public class FriendsListFragment extends Fragment {
     public void updateFriendsList() {
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getFriends("getFriends", email).enqueue(new Callback<ArrayList<UserInfo>>() {
+        apiService.getFriends("getFriends", email).enqueue(new Callback<List<UserInfo>>() {
             @Override
-            public void onResponse(Call<ArrayList<UserInfo>> call, Response<ArrayList<UserInfo>> response) {
-                RetroFitClient.storeObjectList(response.body(), "friends", getContext());
+            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
+                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "friends", getContext());
                 updateUI();
             }
 
             @Override
-            public void onFailure(Call<ArrayList<UserInfo>> call, Throwable t) {
+            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
             }
         });
     }

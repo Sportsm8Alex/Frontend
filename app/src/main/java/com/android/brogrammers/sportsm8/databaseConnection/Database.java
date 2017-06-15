@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alex on 11/18/2016.
@@ -131,8 +132,8 @@ public class Database extends AsyncTask<String, String, String>{
         uiThread.updateUI(phpSuccess);
     }
 
-    public static ArrayList<Information> jsonToArrayList(String json) throws JSONException, ParseException {
-        ArrayList<Information> data = new ArrayList<>();
+    public static List<Information> jsonToArrayList(String json) throws JSONException, ParseException {
+        List<Information> data = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(json);
         int i=0;
         while(jsonObject.has(""+i)) {
