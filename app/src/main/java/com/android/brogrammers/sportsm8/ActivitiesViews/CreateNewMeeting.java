@@ -27,7 +27,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.brogrammers.sportsm8.ActivitiesViews.DatabaseClasses.Meetings;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.SelectorContainer;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
@@ -37,8 +36,6 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIU
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.schibstedspain.leku.LocationPickerActivity;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -523,17 +520,6 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
         imm.hideSoftInputFromWindow(editTextChooseActivity.getWindowToken(), 0);
     }
 
-
-    //FIREBASE TEST
-    //Meetings newMeeting = new Meetings(minMemberCount,dynamic,sportart_ID,startTime.toDate(),endTime.toDate());
-    //firebase(newMeeting);
-    private void firebase(Meetings meeting3) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mRef = database.getReference("database");
-        DatabaseReference meetingsRef = mRef.child("Meeting");
-        DatabaseReference newMeetingsRef = meetingsRef.push();
-        newMeetingsRef.setValue(meeting3);
-    }
 
     @Override
     public void onClick(View v) {

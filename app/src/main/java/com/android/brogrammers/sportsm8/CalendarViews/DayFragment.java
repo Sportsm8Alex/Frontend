@@ -2,7 +2,6 @@ package com.android.brogrammers.sportsm8.CalendarViews;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +12,7 @@ import android.view.ViewGroup;
 
 import com.android.brogrammers.sportsm8.CalendarViews.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.google.android.gms.location.places.Place;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +22,7 @@ import java.util.Comparator;
  * CCreated by Korbi on 10/30/2016.
  */
 
-public class DayFragment extends Fragment implements Updateable {
+public class DayFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Meeting> meetingsOnDay;
     private FloatingActionButton floatingActionButton;
@@ -81,12 +78,7 @@ public class DayFragment extends Fragment implements Updateable {
         return (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
     }
 
-    @Override
-    public void update() {
-        meetingsOnDay =  (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
-       // RecyclerView.Adapter rvAdapter = new MeetingCardAdapter(getContext(),  (ArrayList<Information>) this.getArguments().getSerializable("meetingsOnDay"));
-        recyclerView.getAdapter().notifyDataSetChanged();
-    }
+
     public static class CustomComperator implements Comparator<Meeting>{
 
         @Override

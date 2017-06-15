@@ -1,59 +1,57 @@
-package com.android.brogrammers.sportsm8.CalendarViews;
+package com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.Adapter.MemberListAdapter;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.ViewHelperClass;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.repositories.impl.DatabaseUserRepository;
 
 import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import io.apptik.widget.MultiSlider;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class MeetingDetailView extends AppCompatActivity implements UIthread, SwipeRefreshLayout.OnRefreshListener {
+public class MeetingDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MeetingDetailView {
 
+    private static final String TAG = "MeetingDetailActivity";
     private int count = 0;
-    private ArrayList<Information> members;
+    private ArrayList<UserInfo> members;
     private ArrayList<UserInfo> Selection;
     Meeting thisMeeting;
-    ListViewAdapter arrayAdapter;
+    MemberListAdapter arrayAdapter;
     DatabaseHelperMeetings databaseHelperMeetings;
     DateTime startDateTime, endDateTime;
+    private Intent intent;
 
     @BindView(R.id.listview_meeting_detail)
     ListView listView;
@@ -83,10 +81,14 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     TextView newStartTimeView;
     @BindView(R.id.dash_detailView)
     TextView dashView;
+    APIService apiService = APIUtils.getAPIService();
+
+    MeetingDetailViewPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new MeetingDetailViewPresenter(this, new DatabaseUserRepository(), AndroidSchedulers.mainThread());
         setContentView(R.layout.activity_meeting_detail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,7 +107,11 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(thisMeeting.sportID), R.drawable.custommeeting));
         }
         textView_sportID.setText(thisMeeting.meetingActivity);
-        getMemberList();
+        members = new ArrayList<>();
+        arrayAdapter = new MemberListAdapter(this, members);
+        listView.setAdapter(arrayAdapter);
+        //    getMemberList();
+        presenter.loadMembers(thisMeeting);
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -122,8 +128,9 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             rangeBarSetup();
         }
         if (thisMeeting.confirmed == 1 || thisMeeting.duration != 0) {
-           ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
+            ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
         }
+        intent = new Intent();
         //    swipeRefreshLayout.setOnRefreshListener(this);
     }
 
@@ -150,28 +157,31 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
         });
     }
 
-    private void setUpprogressBar() {
-        for (int i = 0; i < members.size(); i++) {
-            if (members.get(i).confirmed == 1) {
-                count++;
-            }
-        }
-        for (int i = 0; i < thisMeeting.minParticipants; i++) {
+    @Override
+    public void setUpprogressBar(int accepted, int total) {
+        progressBar.removeAllViews();
+        for (int i = 0; i < total; i++) {
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageResource(R.drawable.ic_person_black_36dp);
             imageView.setId(i);
-            if (i >= count) {
+            if (i >= accepted) {
                 imageView.setScaleX(0.5f);
                 imageView.setScaleY(0.5f);
                 imageView.setAlpha(0.5f);
-                if (i >= members.size()) {
-                    imageView.setAlpha(0f);
-                }
             }
             progressBar.addView(imageView);
         }
     }
 
+    @Override
+    public void updateMemberList() {
+        presenter.loadMembers(thisMeeting);
+    }
+
+    @Override
+    public void showError() {
+        Toasty.error(this, "Error", Toast.LENGTH_SHORT).show();
+    }
 
     @OnClick(R.id.add_people_to_meeting)
     public void addPeopleToMeeting(View view) {
@@ -190,6 +200,7 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     @OnClick(R.id.accept_meeting)
     public void acceptMeeting() {
         databaseHelperMeetings.confirm(thisMeeting);
+        setResult(RESULT_OK, intent);
         ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
         progressBar.findViewById(count).animate().scaleX(1).scaleY(1).alpha(1);
         for (int i = 0; i < members.size(); i++) {
@@ -204,9 +215,9 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
     @OnClick(R.id.decline_meeting)
     public void declineMeeting() {
         databaseHelperMeetings.declineMeeting(thisMeeting);
+        setResult(RESULT_OK, intent);
         finish();
     }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -214,61 +225,14 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
                 Selection = (ArrayList<UserInfo>) bundle.getSerializable("partyList");
-
-                ArrayList<String> paramsArrayList = new ArrayList<>(
-                        Arrays.asList("IndexMeetings.php", "function", "addMembersToMeeting", "MeetingID", thisMeeting.MeetingID + ""));
-
-                for (int i = 0; i < Selection.size(); i++) {
-                    paramsArrayList.add("member" + i);
-                    paramsArrayList.add(Selection.get(i).email);
-                }
-                String[] params = new String[paramsArrayList.size()];
-                params = paramsArrayList.toArray(params);
-                Database db = new Database(this, getBaseContext());
-                db.execute(params);
-
+                presenter.addMembers(thisMeeting, Selection);
             }
         }
-        getMemberList();
-    }
-
-    private void getMemberList() {
-        String[] params = {"IndexMeetings.php", "function", "getMeetingMembers", "MeetingID", thisMeeting.MeetingID + ""};
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
-    }
-
-    @Override
-    public void updateUI() {
-
-    }
-
-    @Override
-    public void updateUI(String answer) {
-        if (members != null) {
-            members.clear();
-        }
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingMembersJSON", "");
-        try {
-            members = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-        ArrayList<String> emails = new ArrayList<>();
-        for (int i = 0; i < members.size(); i++) {
-            emails.add(members.get(i).email + members.get(i).begin);
-        }
-        arrayAdapter = new ListViewAdapter(this, members);
-        listView.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
-        setUpprogressBar();
-        // swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        getMemberList();
+        presenter.loadMembers(thisMeeting);
     }
 
     public void scaleView(View[] view, float offset) {
@@ -277,56 +241,26 @@ public class MeetingDetailView extends AppCompatActivity implements UIthread, Sw
             view[i].animate().scaleY(offset).setDuration(100);
         }
     }
-    private class ListViewAdapter extends BaseAdapter {
 
-        Context context;
-        ArrayList<Information> list;
-
-        ListViewAdapter(Context context, ArrayList<Information> memberList) {
-            list = memberList;
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = inflater.inflate(R.layout.item_listitem, viewGroup, false);
-            TextView username = (TextView) row.findViewById(R.id.meeting_username);
-            TextView time = (TextView) row.findViewById(R.id.meeting_user_time);
-            int end = list.get(i).begin + list.get(i).duration;
-            if (list.get(i).duration != 0) {
-                row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-                username.setText(list.get(i).username);
-                //time.setText(list.get(i).begin + ":00 - " + end + ":00");
-                MutableDateTime start = new MutableDateTime();
-                start.setHourOfDay(list.get(i).begin / 4);
-                start.setMinuteOfHour(list.get(i).begin % 4 * 15);
-                MutableDateTime endTime = new MutableDateTime();
-                endTime.setHourOfDay(end / 4);
-                endTime.setMinuteOfHour(end % 4 * 15);
-                time.setText(start.toString("HH:mm - ") + endTime.toString("HH:mm"));
-            } else {
-                username.setText(list.get(i).username);
-            }
-            if (list.get(i).confirmed == 1) {
-                row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-            }
-            return row;
-        }
+    @Override
+    public void displayMembers(List<UserInfo> members) {
+        Log.d(TAG, "displayMembers: found some Members");
+        this.members.clear();
+        this.members.addAll(members);
+        arrayAdapter.setList(this.members);
+        arrayAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
+    }
+
+    @Override
+    public void displayNoMembers() {
+        Toasty.error(this, "No Members found", Toast.LENGTH_SHORT).show();
+    }
+
+
 }

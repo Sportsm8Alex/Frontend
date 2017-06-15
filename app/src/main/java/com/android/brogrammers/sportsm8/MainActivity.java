@@ -14,7 +14,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +28,8 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
+import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailActivity;
+import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailView;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
@@ -36,14 +37,13 @@ import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
@@ -59,7 +59,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by alex on 10/30/2016.
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @OnClick(R.id.change_start_date)
     public void changeStartDate() {
         CalenderFragment calenderFragment = (CalenderFragment) fragment;
-        calenderFragment.toggleCalendar();
+        calenderFragment.toggleView(startDate);
 
 //        DateTime today = new DateTime();
 //        DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
@@ -368,11 +367,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         } else {
-            locationON=false;
+            locationON = false;
             setLocation.setImageResource(R.drawable.ic_location_off_white_24dp);
             CalenderFragment c1 = (CalenderFragment) fragment;
-            c1.setLocation(0,0,false);
-
+            c1.setLocation(0, 0, false);
+            c1.toggleView(setLocation);
         }
     }
 
@@ -386,11 +385,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 longitude = coord.longitude;
                 latitude = coord.latitude;
                 CalenderFragment c1 = (CalenderFragment) fragment;
-                c1.setLocation(longitude, latitude,true);
-                locationON=true;
+                c1.setLocation(longitude, latitude, true);
+                locationON = true;
                 setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);
+                c1.toggleView(setLocation);
+                c1.setFilterText(place.getAddress());
             }
+        } else if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                CalenderFragment c1 = (CalenderFragment) fragment;
+                c1.onRefresh();
+            }
+
         }
+    }
+
+    public void startMeetingDetaiLView(Meeting meeting) {
+        Intent intent = new Intent(this, MeetingDetailActivity.class);
+        Bundle b = new Bundle();
+        b.putSerializable("MeetingOnDay", meeting);
+        intent.putExtras(b);
+        startActivityForResult(intent, 2);
     }
 }
 

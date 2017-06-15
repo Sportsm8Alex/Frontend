@@ -30,7 +30,7 @@ public class BottomNavBar extends AppCompatActivity{
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                //messageView.setText(TabMessage.get(tabId, false));
+                //messageView.setFilterText(TabMessage.get(tabId, false));
             }
         });
 

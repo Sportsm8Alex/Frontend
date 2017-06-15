@@ -8,8 +8,13 @@ import java.io.Serializable;
 
 public class UserInfo implements Serializable {
     public String email, PPpath, username, friend;
-    public int friendcount, groupcount, confirmed;
-
-
+    public int friendcount, groupcount, confirmed,begin,duration;
     public Boolean selected = false;
+
+    public UserInfo() {
+    }
+
+    public UserInfo(String email) {
+        this.email = email;
+    }
 }

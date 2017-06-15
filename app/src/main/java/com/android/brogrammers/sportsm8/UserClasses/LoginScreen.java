@@ -335,6 +335,12 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+    public static String getRealEmail(){
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        return mAuth.getCurrentUser().getEmail();
+    }
+
+
     public static String getEmailAdress(Context context) {
 
         SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);

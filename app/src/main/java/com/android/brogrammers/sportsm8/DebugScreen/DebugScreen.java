@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
@@ -48,7 +49,6 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
 
     @OnClick(R.id.email_switcher)
     public void onClick(View view) {
-
         String[] emails = getResources().getStringArray(R.array.emails);
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();

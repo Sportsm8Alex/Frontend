@@ -104,7 +104,7 @@ public class AccountPage extends Fragment implements UIthread{
 
         SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email","");
-        emailTV.setText(email);
+        emailTV.setFilterText(email);
 
 
         String params[]= {"IndexAccounts.php","function","getAccountInfo","email",email};

@@ -221,7 +221,7 @@ public class CalenderFragmentOld extends Fragment implements UIthread, SwipeRefr
 
             int todayInWeek = LocalDate.now().getDayOfWeek() - 1;
             /*for(int i=0; i<7; i++){
-                tabLayout.addTab(tabLayout.newTab().setText(btnText[(todayInWeek+i)%7]));
+                tabLayout.addTab(tabLayout.newTab().setFilterText(btnText[(todayInWeek+i)%7]));
             }*/
             return btnText[(todayInWeek + position) % 7];
 

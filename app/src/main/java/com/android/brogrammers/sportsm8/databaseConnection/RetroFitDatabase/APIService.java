@@ -2,14 +2,19 @@ package com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase;
 
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Success;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Completable;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -31,6 +36,10 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")
+    Call<ResponseBody> confirmMeeting2(@Field("function") String function, @Field("meetingID") int meetingID, @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
     Call<Void> setOtherTime(@Field("function") String function, @Field("start") int beginDatabase, @Field("duration") int duration, @Field("meetingID") int meetingID, @Field("email") String email);
 
     @FormUrlEncoded
@@ -39,9 +48,21 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")
+    Call<ResponseBody> addMembersToMeeting2(@Field("function") String function, @Field("MeetingID") int meetingID, @FieldMap Map<String, String> members);
+
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
     Call<Void> createMeeting(@Field("function") String function, @Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String, String> members, @Field("longitude") double
             longitude, @Field("latitude") double latitude);
 
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
+    Call<ArrayList<UserInfo>> getMemberList(@Field("function") String function, @Field("MeetingID") int meetingID);
+
+
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
+    Call<ResponseBody> isMeetingConfirmed(@Field("function") String function, @Field("MeetingID") int meetingID);
 
     //FRIENDSHIPS
     @FormUrlEncoded
@@ -62,11 +83,8 @@ public interface APIService {
     @POST("IndexGroups.php")
     Call<ArrayList<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") String GroupID);
 
-
-    //Not Tested
     @FormUrlEncoded
     @POST("IndexGroups.php")
     Call<Void> addMembersToGroup(@Field("function") String function, @Field("GroupID") String GroupID, @FieldMap Map<String, String> members);
-
 
 }

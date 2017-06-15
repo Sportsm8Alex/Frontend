@@ -15,8 +15,17 @@ public class Meeting implements Serializable {
     public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic, sportID;
     public String startTime, endTime, status, meetingActivity;
     public int[] timeArray = new int[24];
-    public Boolean meetingIsGood = false;
+    public boolean meetingIsGood;
     public float longitude, latitude;
+
+    public Meeting(int meetingID, int minParticipants) {
+        MeetingID = meetingID;
+        this.minParticipants = minParticipants;
+    }
+
+    public Meeting(int meetingID) {
+        MeetingID = meetingID;
+    }
 
     public DateTime getStartDateTime() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");

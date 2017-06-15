@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.CalendarViews.Adapter.CalendarViewPagerAdapter;
@@ -59,6 +60,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     Activity parentActivity;
     SwipeRefreshLayout swipeRefreshLayout;
     MaterialCalendarView calendarView;
+    TextView filterTV;
     private OnFragmentInteractionListener mListener;
     private final ArrayList<DayFragment> mFragmentList = new ArrayList<>();
     Boolean onStartUp = true;
@@ -99,6 +101,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
         swipeRefreshLayout.setRefreshing(true);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewPager);
         calendarView = (MaterialCalendarView) rootView.findViewById(R.id.calendar_calendar);
+        filterTV = (TextView) rootView.findViewById(R.id.filter_tv);
         //changed this method
         viewPagerAdapter = new CalendarViewPagerAdapter(this.getChildFragmentManager(), parentActivity.getApplicationContext(), mFragmentList);
         viewPager.setAdapter(viewPagerAdapter);
@@ -110,7 +113,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 setStartDate(date.getYear(), date.getMonth(), date.getDay());
-                toggleCalendar();
+                ViewHelperClass.expand(calendarView,250);
             }
         });
 
@@ -300,11 +303,15 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
 
     }
 
-    boolean expanded = false;
-
-    public void toggleCalendar() {
-        ViewHelperClass.expand(calendarView, 250);
-        expanded = !expanded;
+    public void toggleView(View view) {
+        switch (view.getId()) {
+            case R.id.setLocation:
+                ViewHelperClass.expand(filterTV, 250);
+                break;
+            case R.id.change_start_date:
+                ViewHelperClass.expand(calendarView, 250);
+                break;
+        }
     }
 
     public void createHighlightList() {
@@ -329,6 +336,11 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
         this.locationMode = locationMode;
         onRefresh();
     }
+
+    public void setFilterText(CharSequence text) {
+       filterTV.setText("Meetings in:  " + text);
+    }
+
 
 
     /**

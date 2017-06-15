@@ -1,8 +1,5 @@
 package com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase;
 
-/**
- * Created by Korbi on 03.06.2017.
- */
 
 public class APIUtils {
 

@@ -53,7 +53,7 @@
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CalendarViews.MeetingDetailView"
+            android:name=".CalendarViews.MeetingDetailMVP.MeetingDetailActivity"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

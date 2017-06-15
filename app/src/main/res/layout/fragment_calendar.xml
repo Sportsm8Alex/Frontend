@@ -5,41 +5,51 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<!--    <HorizontalScrollView
-        android:id="@+id/scrollview_calendar"
-        android:elevation="3dp"
-        android:layout_width="500dp"
-        android:scrollbars="none"
-        android:layout_height="50dp">
+    <!--    <HorizontalScrollView
+            android:id="@+id/scrollview_calendar"
+            android:elevation="3dp"
+            android:layout_width="500dp"
+            android:scrollbars="none"
+            android:layout_height="50dp">
 
-        <LinearLayout
-            android:id="@+id/calendar_scroll_LL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/calendar_scroll_LL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
 
-    </HorizontalScrollView>-->
+            </LinearLayout>
+
+
+        </HorizontalScrollView>-->
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:layout_width="match_parent"
         android:id="@+id/calendar_calendar"
-        app:mcv_showOtherDates="all"
-        app:mcv_firstDayOfWeek="monday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_height="wrap_content" />
+        app:mcv_firstDayOfWeek="monday"
+        app:mcv_showOtherDates="all" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="scrollable"
-        app:tabMaxWidth="100dp"
         android:background="@color/colorPrimary"
+        app:tabMaxWidth="100dp"
+        app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/white" />
+
+    <TextView
+        android:id="@+id/filter_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@color/lightgrey"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:text="Gefiltert für: Vaterstetten" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/calender_refresh"
