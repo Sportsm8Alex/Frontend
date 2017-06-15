@@ -19,11 +19,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Korbi on 23.05.2017.
- */
-
-
 public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<DayFragment> fragmentList = new ArrayList<>();
@@ -86,14 +81,13 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
                 if (onDay.get(i).confirmed == 0) {
                     v.findViewById(R.id.imgView).setVisibility(View.VISIBLE);
                 }
+                if(onDay.get(i).duration!=0){
+                    v.findViewById(R.id.imgView).setVisibility(View.GONE);
+                }
             }
 
         }
         return v;
-    }
-
-    public boolean isNeedsUpdate() {
-        return needsUpdate;
     }
 
     public void setNeedsUpdate(boolean needsUpdate) {

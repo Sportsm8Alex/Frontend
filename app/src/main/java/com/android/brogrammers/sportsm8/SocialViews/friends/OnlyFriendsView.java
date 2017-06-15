@@ -15,10 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialViews.ClickListener;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
@@ -26,11 +24,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Retr
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;

@@ -2,19 +2,13 @@ package com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase;
 
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Success;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Completable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;

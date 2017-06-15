@@ -72,15 +72,13 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     int minMemberCount = 4, minHours = 2;
     List<Information> sportIDs;
     String[] sportArten;
-    Button selectedButton;
-
 
     int sportart_ID = 8008;
     List<UserInfo> Selection = new ArrayList<>();
     List<Group> SelectionGroup = new ArrayList<>();
     private Boolean start;
     private MutableDateTime startTime, endTime;
-    private DateTime datetime, backUpStartTime, backUpEndTime, selectedDate;
+    private DateTime datetime, selectedDate;
     private DateTimeFormatter formatter;
     private boolean enoughPeopleInvited = false;
     private double latitude =0,longitude=0;
@@ -114,9 +112,9 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     RelativeLayout location;
 
     private String extraInfoString;
-    private NumberPicker numHours, minMember;
     private int step = 0;
     private int dynamic = 0;
+    private  Intent intent = new Intent();
     Boolean bBegin = false, bEnd = false, bDate = false;
 
 
@@ -155,7 +153,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
             }
         });
 
-        Intent intent = getIntent();
+        intent = getIntent();
         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd/MM/yyyy");
         selectedDate = DateTime.parse(intent.getStringExtra("date"), dateTimeFormatter);
         selectedDate.plusDays(1);
@@ -318,6 +316,8 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
 
                         @Override
@@ -325,7 +325,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
 
                         }
                     });
-                    finish();
+
 
                 } else {
                     Toasty.error(this, "Falsche Zeit eingestellt", Toast.LENGTH_SHORT).show();

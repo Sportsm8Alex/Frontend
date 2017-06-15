@@ -68,6 +68,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     double longitude, latitude;
     private boolean locationMode;
     APIService apiService = APIUtils.getAPIService();
+    DateTime today = new DateTime();
 
     public CalenderFragment() {
         // Required empty public constructor
@@ -135,12 +136,13 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
                 if (onStartUp) {
                     createFragmentList(14);
                     onStartUp = false;
-                } else {
-                    createFragmentList(mFragmentList.size());
+                    viewPagerAdapter.notifyDataSetChanged();
+                }else{
+                    int position = tabLayout.getSelectedTabPosition();
+                    DayFragment dayFragment =(DayFragment) viewPagerAdapter.getItem(position);
+                    dayFragment.updateInstance(meetings,viewPagerAdapter.getToday().plusDays(position),latitude,longitude,locationMode);
                 }
                 swipeRefreshLayout.setRefreshing(false);
-                viewPagerAdapter.notifyDataSetChanged();
-                viewPagerAdapter.setNeedsUpdate(false);
                 customTabs();
             }
 
@@ -170,6 +172,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     public void onPause() {
         super.onPause();
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -205,7 +208,8 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
 
     @Override
     public void onRefresh() {
-        viewPagerAdapter.setNeedsUpdate(true);
+
+        //viewPagerAdapter.setNeedsUpdate(true);
         getMeetings();
     }
 
@@ -232,7 +236,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
                     meetingsOnDay.add(meetings.get(j));
                 }
             }
-            temp.add(DayFragment.newInstance((count + i), meetingsOnDay));
+            temp.add(DayFragment.newInstance(meetingsOnDay));
         }
         return temp;
     }
@@ -269,7 +273,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
                     }
                 }
             }
-            DayFragment temp = DayFragment.newInstance(j, meetingsOnDay);
+            DayFragment temp = DayFragment.newInstance(meetingsOnDay);
             mFragmentList.add(temp);
         }
     }

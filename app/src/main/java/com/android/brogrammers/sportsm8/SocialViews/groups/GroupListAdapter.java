@@ -18,7 +18,6 @@ import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.SelectableAdapter;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

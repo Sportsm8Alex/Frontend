@@ -6,7 +6,6 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.repositories.UserRepository;
 
-import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +27,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class MeetingDetailViewPresenterTest {

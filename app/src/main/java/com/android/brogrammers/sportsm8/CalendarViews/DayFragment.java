@@ -1,5 +1,6 @@
 package com.android.brogrammers.sportsm8.CalendarViews;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,33 +15,54 @@ import com.android.brogrammers.sportsm8.CalendarViews.Adapter.MeetingCardAdapter
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * CCreated by Korbi on 10/30/2016.
- */
-
 public class DayFragment extends Fragment {
     RecyclerView recyclerView;
     List<Meeting> meetingsOnDay;
+    RecyclerView.Adapter rvAdapter;
     private FloatingActionButton floatingActionButton;
 
-    public static DayFragment newInstance(int position, List<Meeting> meetingsOnDay) {
-
-        // how exactly to hand down meetingsOnDay to MeetingCardAdapter?
-        //#######################??
+    public static DayFragment newInstance(List<Meeting> meetingsOnDay) {
         DayFragment dayFragment = new DayFragment();
         Bundle args = new Bundle();
         Collections.sort(meetingsOnDay,new CustomComperator());
         args.putSerializable("meetingsOnDay", new ArrayList<>(meetingsOnDay));
-        //args.putParcelableArrayList("meetingsOnDay", meetingsOnDay);
         dayFragment.setArguments(args);
         return dayFragment;
     }
 
+    public void updateInstance(List<Meeting> meetings,DateTime today, double latitude,double longitude,boolean locationMode){
+        meetingsOnDay.clear();
+
+        for (int i = 0; i < meetings.size(); i++) {
+            DateTime dt1 = meetings.get(i).getStartDateTime();
+            if (dt1.withTimeAtStartOfDay().equals(today.withTimeAtStartOfDay())) {
+                if (locationMode) {
+                    Location start = new Location("locationA");
+                    start.setLatitude(latitude);
+                    start.setLongitude(longitude);
+                    Location end = new Location("locationB");
+                    end.setLatitude(meetings.get(i).latitude);
+                    end.setLongitude(meetings.get(i).longitude);
+                    double distance = start.distanceTo(end);
+                    if (distance < 5000) {
+                        meetingsOnDay.add(meetings.get(i));
+                    }
+                } else {
+                    meetingsOnDay.add(meetings.get(i));
+                }
+            }
+        }
+        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
+        recyclerView.setAdapter(rvAdapter);
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +80,7 @@ public class DayFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         meetingsOnDay = (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
-        RecyclerView.Adapter rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
+        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
         recyclerView.setAdapter(rvAdapter);
 
         AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);

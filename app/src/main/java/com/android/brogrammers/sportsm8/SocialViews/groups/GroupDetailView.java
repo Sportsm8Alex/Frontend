@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
@@ -27,11 +25,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Retr
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

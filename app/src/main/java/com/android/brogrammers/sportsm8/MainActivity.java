@@ -29,7 +29,6 @@ import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailActivity;
-import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailView;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
@@ -178,15 +177,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-//        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
-//            @Override
-//            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-//                CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
-//                calenderFragment2.setStartDate(date.getYear(), date.getMonth(), date.getDay());
-//                calendarView.setVisibility(View.GONE);
-//                expanded = false;
-//            }
-//        });
     }
 
 
@@ -205,19 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void changeStartDate() {
         CalenderFragment calenderFragment = (CalenderFragment) fragment;
         calenderFragment.toggleView(startDate);
-
-//        DateTime today = new DateTime();
-//        DatePickerDialog dPD = new DatePickerDialog().newInstance(this, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-//        ArrayList<Calendar> highlights = new ArrayList<>();
-//        for (int i = 0; i < arrayListMeetings.size(); i++) {
-//            String x = arrayListMeetings.get(i).startTime;
-//            DateTime dateTime = arrayListMeetings.get(i).getStartDateTime();
-//            Calendar date1 = dateTime.toCalendar(Locale.getDefault());
-//            highlights.add(date1);
-//        }
-//        Calendar[] days = highlights.toArray(new Calendar[highlights.size()]);
-//        dPD.setHighlightedDays(days);
-//        dPD.show(getFragmentManager(), "DatePicker");
     }
 
     @OnClick(R.id.fab_calendar)
@@ -226,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DateTime dateTime = calenderFragment2.getSelectedDate().toDateTime();
         Intent intent = new Intent(this, CreateNewMeeting.class);
         intent.putExtra("date", dateTime.toString("dd/MM/yyyy"));
-        startActivity(intent);
+        startActivityForResult(intent, 3);
     }
 
     @Override
@@ -379,26 +356,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        CalenderFragment c1 = (CalenderFragment) fragment;
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
                 LatLng coord = place.getLatLng();
                 longitude = coord.longitude;
                 latitude = coord.latitude;
-                CalenderFragment c1 = (CalenderFragment) fragment;
                 c1.setLocation(longitude, latitude, true);
                 locationON = true;
                 setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);
                 c1.toggleView(setLocation);
                 c1.setFilterText(place.getAddress());
             }
-        } else if (requestCode == 2) {
+        } else if (requestCode == 2 || resultCode == 3) {
             if (resultCode == RESULT_OK) {
-                CalenderFragment c1 = (CalenderFragment) fragment;
                 c1.onRefresh();
             }
-
         }
+
     }
 
     public void startMeetingDetaiLView(Meeting meeting) {

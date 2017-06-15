@@ -19,7 +19,6 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.RetroFitClient;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

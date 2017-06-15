@@ -18,14 +18,11 @@ import android.view.ViewGroup;
 import com.android.brogrammers.sportsm8.CalendarViews.DayFragment;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
@@ -206,7 +203,7 @@ public class CalenderFragmentOld extends Fragment implements UIthread, SwipeRefr
                 }
             }
 
-            return DayFragment.newInstance(position, meetingsOnDay); //position+1 ???
+            return DayFragment.newInstance(meetingsOnDay); //position+1 ???
         }
 
         @Override

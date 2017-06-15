@@ -1,7 +1,5 @@
 package com.android.brogrammers.sportsm8.repositories.impl;
 
-import android.content.SharedPreferences;
-
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
@@ -9,17 +7,12 @@ import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.repositories.UserRepository;
 
-import org.joda.time.DateTime;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 public class DatabaseUserRepository implements UserRepository {
 

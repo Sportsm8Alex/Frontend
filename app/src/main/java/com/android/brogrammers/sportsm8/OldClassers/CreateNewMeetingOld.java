@@ -202,7 +202,6 @@ public class CreateNewMeetingOld extends Activity implements DatePickerDialog.On
             }
             for (int j = 0; j < temp.size(); j++) {
                 Boolean tempBool = false;
-                int tempInt = 0;
                 for (int h = 0; h < Selection.size(); h++) {
                     if (temp.get(j).email.equals(Selection.get(h).email)) {
                         tempBool = true;

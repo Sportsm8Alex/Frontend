@@ -3,7 +3,6 @@ package com.android.brogrammers.sportsm8.repositories.impl;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Success;
 import com.android.brogrammers.sportsm8.repositories.MeetingsRepository;
 
 import java.util.concurrent.Callable;
