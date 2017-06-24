@@ -11,11 +11,14 @@ import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarViews.DayFragment;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Match;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.databinding.ItemMatchBinding;
 import com.android.brogrammers.sportsm8.databinding.ItemMeetingsBinding;
 
 import org.joda.time.MutableDateTime;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,8 +27,11 @@ import java.util.List;
 
 public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder>{
 
+    private static final int MATCH = 1;
+    private static final int MEETING = 2;
     private Context context;
     private List<Meeting> meetingsOnDay;
+    private List<Match> matchesOnDay = Arrays.asList(new Match(1,2,3,4,21,21,"2012-12-12 12:12:12","team1","team2"));
     private DatabaseHelperMeetings databaseHelperMeetings;
     private MeetingsViewHolder meetingsViewHolder;
     private DayFragment dayFragment;
@@ -39,11 +45,16 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     //doesnt need an int position because the card looks the same for all; still this is iterated through before and just like onBindViewHolder!
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemMeetingsBinding viewDataBinding = DataBindingUtil.inflate( LayoutInflater.from(context),R.layout.item_meetings,parent,false);
-        viewDataBinding.setPresenter(dayFragment);
-        //this is what the recyclerViewAdapter returns to the recyclerView. Equivalent to FragmentPagerAdapter's getItem which returns the Fragment
         databaseHelperMeetings = new DatabaseHelperMeetings(context);
-        return new MeetingsViewHolder(viewDataBinding);
+        if(viewType==MEETING) {
+            ItemMeetingsBinding viewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_meetings, parent, false);
+            viewDataBinding.setPresenter(dayFragment);
+            return new MeetingsViewHolder(viewDataBinding);
+        }else{
+            ItemMatchBinding viewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.item_match,parent,false);
+            return new MeetingsViewHolder(viewDataBinding);
+        }
+        //this is what the recyclerViewAdapter returns to the recyclerView. Equivalent to FragmentPagerAdapter's getItem which returns the Fragment
     }
 
     //onBindViewholder seems to be iterated through, probably getItemCount() times!!
@@ -51,10 +62,23 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     public void onBindViewHolder(MeetingsViewHolder meetingsViewHolder, int position) {
         this.meetingsViewHolder = meetingsViewHolder;
         ViewDataBinding viewDataBinding =  this.meetingsViewHolder.getViewDataBinding();
-        if (meetingsOnDay.get(position).dynamic==1) getOptimalTime(position);
-        viewDataBinding.setVariable(BR.meeting,meetingsOnDay.get(position));
+
+        switch (meetingsViewHolder.getItemViewType()){
+            case MEETING:
+                viewDataBinding.setVariable(BR.meeting,meetingsOnDay.get(position-matchesOnDay.size()));
+                break;
+            case MATCH:
+                viewDataBinding.setVariable(BR.match,matchesOnDay.get(position));
+                break;
+
+        }
         viewDataBinding.executePendingBindings();
+
+       // if (meetingsOnDay.get(position).dynamic==1) getOptimalTime(position);
+
+
     }
+
 
 
     private void getOptimalTime(int position) {
@@ -101,9 +125,17 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
 
     @Override
     public int getItemCount() {
-        return meetingsOnDay.size();
+        return meetingsOnDay.size()+matchesOnDay.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+       if(matchesOnDay.size()<=position){
+           return MEETING;
+       }else{
+           return MATCH;
+       }
+    }
 
     class MeetingsViewHolder extends RecyclerView.ViewHolder {
         private ViewDataBinding mViewDataBinding;
@@ -117,6 +149,8 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         public ViewDataBinding getViewDataBinding() {
             return mViewDataBinding;
         }
+
+
     }
 
 }
