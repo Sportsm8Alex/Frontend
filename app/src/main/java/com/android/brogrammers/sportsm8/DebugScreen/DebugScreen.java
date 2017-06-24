@@ -11,6 +11,9 @@ import android.widget.Button;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.Display;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -70,6 +73,17 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
         randomEndTime.addHours(2);
         String[] params = {"IndexMeetings.php", "function", "newMeeting", "startTime", formatter.print(randomStartTime), "endTime", formatter.print(randomEndTime), "minPar", 2 + "", "member", email, "activity", "TEST_MEETING", "sportID", "" + randInt, "dynamic", 0 + ""};
         db.execute(params);
+    }
+
+    @OnClick(R.id.searchUpdates)
+    public void searchForUpdates(){
+        AppUpdater appUpdater = new AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("http://sportsm8.bplaced.net/Update/update.json")
+                .setDisplay(Display.DIALOG)
+                .showAppUpdated(true);
+        appUpdater.start();
+
     }
 
     @Override

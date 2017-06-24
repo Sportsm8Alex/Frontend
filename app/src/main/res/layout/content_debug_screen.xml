@@ -26,4 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:background="@color/grey"
+        android:layout_height="wrap_content"
+        android:text="Search For Updates"
+        android:id="@+id/searchUpdates"/>
+
 </LinearLayout>

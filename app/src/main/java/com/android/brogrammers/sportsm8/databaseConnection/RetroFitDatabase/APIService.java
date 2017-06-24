@@ -1,7 +1,10 @@
 package com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase;
 
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Match;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Sport;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Team;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 
 import java.util.List;
@@ -80,5 +83,36 @@ public interface APIService {
     @FormUrlEncoded
     @POST("IndexGroups.php")
     Call<Void> addMembersToGroup(@Field("function") String function, @Field("GroupID") String GroupID, @FieldMap Map<String, String> members);
+
+
+    @FormUrlEncoded
+    @POST("IndexGroups.php")
+    Call<Void> createGroup(@Field("function") String function, @Field("groupName") String groupName, @FieldMap Map<String, String> members);
+
+
+
+    ///////TEAMS
+    @FormUrlEncoded
+    @POST("IndexTeams.php")
+    Call<List<Team>> getTeams(@Field("function") String function, @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("IndexTeams.php")
+    Call<List<UserInfo>> getTeamMembers(@Field("function") String function,@Field("teamID") int teamID);
+
+    @FormUrlEncoded
+    @POST("IndexTeams.php")
+    Call<Void> createTeam(@Field("function") String function, @Field("teamName") String groupName,@Field("longitude") double longitude,@Field("latitude") double latitude,@Field("sportID") int sportID  , @FieldMap Map<String, String> members);
+
+///////////Sports
+    @FormUrlEncoded
+    @POST("IndexSports.php")
+    Call<List<Sport>> getSports(@Field("function") String function);
+
+
+    //////////////Matches
+    @FormUrlEncoded
+    @POST("IndexMatches.php")
+    Call<List<Match>> getFriendsMatches(@Field("function") String function,@Field("email") String email);
 
 }

@@ -2,10 +2,10 @@ package com.android.brogrammers.sportsm8.SocialViews;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -23,7 +23,7 @@ import android.view.WindowManager;
 import com.android.brogrammers.sportsm8.SocialViews.friends.FriendsListAdapter;
 import com.android.brogrammers.sportsm8.SocialViews.friends.FriendsListFragment;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.SocialViews.groups.CreateGroupDialog;
+import com.android.brogrammers.sportsm8.SocialViews.groups.CreateTeamGroup;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupListAdapter;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupsListFragment;
 import com.android.brogrammers.sportsm8.R;
@@ -44,9 +44,9 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link FragmentSocial#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener {
+public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewPager.OnPageChangeListener, ClickListener{
     Activity parentActivity;
-    private List<UserInfo> friends,selection;
+    private List<UserInfo> friends, selection;
     private List<Group> groups;
     private FriendsListFragment friendsListFragment;
     private GroupsListFragment groupsListFragment;
@@ -57,12 +57,10 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
     private TabLayout tabs;
 
 
-    private CharSequence Titles[] = {"Friends", "Groups"};
-    private int NumOfTabs = 2;
+    private CharSequence Titles[] = {"Friends", "Groups", "Teams"};
+    private int NumOfTabs = 3;
 
     Toolbar toolbar;
-    AppBarLayout.LayoutParams params;
-    AppBarLayout.LayoutParams params2;
 
     //Actionmode
     private ActionMode actionMode;
@@ -234,7 +232,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
             }
         }
 
-        CreateGroupDialog createGroupDialog = new CreateGroupDialog();
+        CreateTeamGroup createGroupDialog = new CreateTeamGroup();
         Bundle bundle = new Bundle();
         bundle.putSerializable("GroupList", new ArrayList<>(selection));
         createGroupDialog.setArguments(bundle);
@@ -256,8 +254,10 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-        friendsListFragment.updateFriendsList();
-        groupsListFragment.updateGroupList();
+        int position = tabs.getSelectedTabPosition();
+        if (position == 0) friendsListFragment.updateFriendsList();
+        else if (position == 1) groupsListFragment.updateGroupList();
+        else if (position==2) swipeRefreshLayout.setRefreshing(false);
     }
 
     /**

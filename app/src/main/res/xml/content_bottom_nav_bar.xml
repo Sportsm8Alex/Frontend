@@ -2,8 +2,8 @@
 <tabs>
     <tab
         id="@+id/tab_account"
-        icon="@drawable/ic_directions_run_black_24dp"
-        title="Account"/>
+        icon="@drawable/ic_line_weight_black_24dp"
+        title="Match Feed"/>
     <tab
         id="@+id/tab_calendar"
         icon="@drawable/ic_insert_invitation_black_24dp"

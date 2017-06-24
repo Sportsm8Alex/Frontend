@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -19,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +32,7 @@ import com.android.brogrammers.sportsm8.ActivitiesViews.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.CalendarViews.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailActivity;
 import com.android.brogrammers.sportsm8.DebugScreen.DebugScreen;
+import com.android.brogrammers.sportsm8.SocialFeed.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialViews.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialViews.friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
@@ -37,6 +40,9 @@ import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.databaseConnection.Database;
 import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.Display;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -53,12 +59,18 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
 
 /**
  * Created by alex on 10/30/2016.
@@ -73,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BottomNavigationView bottomNavigationView;
     private double longitude, latitude;
     private boolean locationON = false;
-    //to prevent crashes
-    String JsonString = "[{\"MeetingID\":261,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-01-28 20:18:30\",\"endTime\":\"2017-01-28 21:18:30\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":1,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},{\"MeetingID\":262,\"status\":0,\"dynamic\":0,\"minParticipants\":4,\"startTime\":\"2017-02-02 16:51:34\",\"endTime\":\"2017-02-02 17:51:34\",\"sportID\":0,\"meetingActivity\":\"\",\"hour1\":0,\"hour2\":0,\"hour3\":0,\"hour4\":0,\"hour5\":0,\"hour6\":0,\"hour7\":0,\"hour8\":0,\"hour9\":0,\"hour10\":0,\"hour11\":0,\"hour12\":0,\"hour13\":0,\"hour14\":0,\"hour15\":0,\"hour16\":0,\"hour17\":0,\"hour18\":0,\"hour19\":0,\"hour20\":0,\"hour21\":0,\"hour22\":0,\"hour23\":0,\"hour24\":0,\"hour25\":0,\"hour26\":0,\"hour27\":0,\"hour28\":0,\"hour29\":0,\"hour30\":0,\"hour31\":0,\"hour32\":0,\"hour33\":0,\"hour34\":0,\"hour35\":0,\"hour36\":0,\"hour37\":0,\"hour38\":0,\"hour39\":0,\"hour40\":0,\"hour41\":0,\"hour42\":0,\"hour43\":0,\"hour44\":0,\"hour45\":0,\"hour46\":0,\"hour47\":0,\"hour48\":0,\"hour49\":0,\"hour50\":0,\"hour51\":0,\"hour52\":0,\"hour53\":0,\"hour54\":0,\"hour55\":0,\"hour56\":0,\"hour57\":0,\"hour58\":0,\"hour59\":0,\"hour60\":0,\"hour61\":0,\"hour62\":0,\"hour63\":0,\"hour64\":0,\"hour65\":0,\"hour66\":0,\"hour67\":0,\"hour68\":0,\"hour69\":0,\"hour70\":0,\"hour71\":0,\"hour72\":0,\"hour73\":0,\"hour74\":0,\"hour75\":0,\"hour76\":0,\"hour77\":0,\"hour78\":0,\"hour79\":0,\"hour80\":0,\"hour81\":0,\"hour82\":0,\"hour83\":0,\"hour84\":0,\"hour85\":0,\"hour86\":0,\"hour87\":0,\"hour88\":0,\"hour89\":0,\"hour90\":0,\"hour91\":0,\"hour92\":0,\"hour93\":0,\"hour94\":0,\"hour95\":0,\"hour96\":0,\"begin\":0,\"duration\":0,\"confirmed\":0,\"timeArray\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]";
-
 
     List<Information> arrayListMeetings;
 
@@ -120,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // don't start new activities
                     case R.id.tab_account:
                         floatingActionButton.setVisibility(View.GONE);
-                        fragment = new AccountPage();
+                       // fragment = new AccountPage();
+                        fragment = new SocialFeedActivity();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
                                 .scaleY(0)
@@ -129,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         appBarLayout.setExpanded(true);
                         startDate.setVisibility(View.GONE);
                         setLocation.setVisibility(View.GONE);
-                        textView.setText("My Account");
+                        textView.setText("Match Feed");
                         break;
                     case R.id.tab_calendar:
                         floatingActionButton.setVisibility(View.VISIBLE);
@@ -177,6 +187,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+        AppUpdater appUpdater = new AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("http://sportsm8.bplaced.net/Update/update.json")
+                .setDisplay(Display.DIALOG)
+                .showAppUpdated(true);
+        appUpdater.start();
     }
 
 
@@ -356,33 +372,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        CalenderFragment c1 = (CalenderFragment) fragment;
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, data);
-                LatLng coord = place.getLatLng();
-                longitude = coord.longitude;
-                latitude = coord.latitude;
-                c1.setLocation(longitude, latitude, true);
-                locationON = true;
-                setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);
-                c1.toggleView(setLocation);
-                c1.setFilterText(place.getAddress());
-            }
-        } else if (requestCode == 2 || resultCode == 3) {
-            if (resultCode == RESULT_OK) {
-                c1.onRefresh();
+        if (requestCode < 5) {
+            CalenderFragment c1 = (CalenderFragment) fragment;
+            if (requestCode == 1) {
+                if (resultCode == RESULT_OK) {
+                    Place place = PlacePicker.getPlace(this, data);
+                    LatLng coord = place.getLatLng();
+                    longitude = coord.longitude;
+                    latitude = coord.latitude;
+                    c1.setLocation(longitude, latitude, true);
+                    locationON = true;
+                    setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);
+                    c1.toggleView(setLocation);
+                    c1.setFilterText(place.getAddress());
+                }
+            } else if (requestCode == 2 || resultCode == 3) {
+                if (resultCode == RESULT_OK) {
+                    c1.onRefresh();
+                }
             }
         }
 
     }
 
-    public void startMeetingDetaiLView(Meeting meeting) {
-        Intent intent = new Intent(this, MeetingDetailActivity.class);
-        Bundle b = new Bundle();
-        b.putSerializable("MeetingOnDay", meeting);
-        intent.putExtras(b);
-        startActivityForResult(intent, 2);
+    private boolean writeResponseBodyToDisk(ResponseBody body) {
+        try {
+            // todo change the file location/name according to your needs
+            File update = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + "update.apk");
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(update);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+
+                    Log.d("TAG", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
     }
+
 }
 

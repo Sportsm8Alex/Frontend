@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.android.brogrammers.sportsm8.SocialViews.Teams.TeamsFragment.TeamsFragmentActivity;
 import com.android.brogrammers.sportsm8.SocialViews.friends.FriendsListFragment;
 import com.android.brogrammers.sportsm8.SocialViews.groups.GroupsListFragment;
 
@@ -28,8 +29,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         if(position==0) {
             return new FriendsListFragment();
-        }else
+        }else if (position ==1) {
             return new GroupsListFragment();
+        }else {
+            return new TeamsFragmentActivity();
+        }
 
     }
     public int getPosition(){

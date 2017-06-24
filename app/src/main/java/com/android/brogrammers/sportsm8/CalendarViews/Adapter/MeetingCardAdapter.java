@@ -1,98 +1,61 @@
 package com.android.brogrammers.sportsm8.CalendarViews.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.MainActivity;
+import com.android.brogrammers.sportsm8.BR;
+import com.android.brogrammers.sportsm8.CalendarViews.DayFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
-import com.android.brogrammers.sportsm8.repositories.impl.DatabaseMeetingsRepository;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import com.android.brogrammers.sportsm8.databinding.ItemMeetingsBinding;
 
-import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 
-import java.io.IOException;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 /**
  * Created by Korbi on 10/30/2016.
  */
 
-public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder> implements UIthread {
+public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder>{
 
     private Context context;
     private List<Meeting> meetingsOnDay;
-    private int begin, beginMinute;
     private DatabaseHelperMeetings databaseHelperMeetings;
-    private DatabaseMeetingsRepository meetingsRepository = new DatabaseMeetingsRepository();
+    private MeetingsViewHolder meetingsViewHolder;
+    private DayFragment dayFragment;
 
-    public MeetingCardAdapter(Context context, List<Meeting> meetingsOnDay) {
+    public MeetingCardAdapter(Context context, List<Meeting> meetingsOnDay,DayFragment dayFragment) {
         this.context = context;
         this.meetingsOnDay = meetingsOnDay;
+        this.dayFragment =dayFragment;
     }
 
     //doesnt need an int position because the card looks the same for all; still this is iterated through before and just like onBindViewHolder!
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+        ItemMeetingsBinding viewDataBinding = DataBindingUtil.inflate( LayoutInflater.from(context),R.layout.item_meetings,parent,false);
+        viewDataBinding.setPresenter(dayFragment);
         //this is what the recyclerViewAdapter returns to the recyclerView. Equivalent to FragmentPagerAdapter's getItem which returns the Fragment
-        View view = LayoutInflater.from(context).inflate(R.layout.item_meetings, parent, false);
-        ButterKnife.bind(this, view);
         databaseHelperMeetings = new DatabaseHelperMeetings(context);
-        return new MeetingsViewHolder(view);
+        return new MeetingsViewHolder(viewDataBinding);
     }
 
     //onBindViewholder seems to be iterated through, probably getItemCount() times!!
     @Override
     public void onBindViewHolder(MeetingsViewHolder meetingsViewHolder, int position) {
-        DateTime timeS = meetingsOnDay.get(position).getStartDateTime();
-        DateTime timeE = meetingsOnDay.get(position).getEndDateTime();
-        meetingsViewHolder.time.setText(timeS.toString("HH:mm") + " - " + timeE.toString("HH:mm"));
-        meetingsViewHolder.textview.setText(timeE.toString("dd.MM.YYYY"));
-        //TODO: Change php to Json_Check_numeric and Attribute in Information to int
-        meetingsViewHolder.meetingName.setText(meetingsOnDay.get(position).meetingActivity);
-        final Meeting infoData = meetingsOnDay.get(position);
-        if (meetingsOnDay.get(position).dynamic == 1) {
-            getOptimalTime(position);
-            meetingsViewHolder.otherTime.setVisibility(View.VISIBLE);
-            if (meetingsOnDay.get(position).meetingIsGood && meetingsOnDay.get(position).duration != 0) {
-                setCardReady(meetingsViewHolder, position);
-            } else if (meetingsOnDay.get(position).duration == 0) {
-                setCardUndecided(meetingsViewHolder, position);
-            } else if (meetingsOnDay.get(position).duration != 0) {
-                setCardWaiting(meetingsViewHolder, position);
-            }
-        } else {
-            if (Integer.valueOf(meetingsOnDay.get(position).status) == 0 && meetingsOnDay.get(position).confirmed == 1) {
-                setCardWaiting(meetingsViewHolder, position);
-            } else if (Integer.valueOf(meetingsOnDay.get(position).status) == 1 && meetingsOnDay.get(position).confirmed == 1) {
-                setCardReady(meetingsViewHolder, position);
-            }
-        }
-        meetingsViewHolder.decline.setTag(position);
-        onClickEvents(meetingsViewHolder, position, infoData);
+        this.meetingsViewHolder = meetingsViewHolder;
+        ViewDataBinding viewDataBinding =  this.meetingsViewHolder.getViewDataBinding();
+        if (meetingsOnDay.get(position).dynamic==1) getOptimalTime(position);
+        viewDataBinding.setVariable(BR.meeting,meetingsOnDay.get(position));
+        viewDataBinding.executePendingBindings();
     }
+
 
     private void getOptimalTime(int position) {
         int[] timeArray = meetingsOnDay.get(position).timeArray;
@@ -111,8 +74,8 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
                     startTime.setMinuteOfHour(begin % 4 * 15);
                     endTime.setHourOfDay(i / 4);
                     endTime.setMinuteOfHour(i % 4 * 15);
-                    meetingsOnDay.get(position).startTime = startTime.toString("YYYY-MM-dd HH:mm:ss");
-                    meetingsOnDay.get(position).endTime = endTime.toString("YYYY-MM-dd HH:mm:ss");
+                    meetingsOnDay.get(position).setStartTime(startTime.toString("YYYY-MM-dd HH:mm:ss"));
+                    meetingsOnDay.get(position).setEndTime(endTime.toString("YYYY-MM-dd HH:mm:ss"));
                     dur = begin - i - 1;
                     meetingsOnDay.get(position).meetingIsGood = true;
                 } else {
@@ -125,97 +88,11 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
 
     }
 
-    private void onClickEvents(final MeetingsViewHolder meetingsViewHolder, final int position, final Meeting infoData) {
-
-
-        meetingsViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) context).startMeetingDetaiLView(meetingsOnDay.get(position));
-            }
-        });
-        meetingsViewHolder.accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                infoData.confirmed = 1;
-                databaseHelperMeetings.confirm(infoData);
-
-                meetingsRepository.isMeetingReady(infoData)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
-                            @Override
-                            public void onSuccess(@NonNull ResponseBody responseBody) {
-                                int x = 0;
-                                try {
-                                    x = Integer.valueOf(responseBody.string());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                if (x < infoData.minParticipants) {
-                                    setCardWaiting(meetingsViewHolder, position);
-                                } else
-                                    setCardReady(meetingsViewHolder, position);
-                            }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-
-                            }
-                        });
-            }
-        });
-        meetingsViewHolder.decline_2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeItem(infoData);
-            }
-        });
-
-        meetingsViewHolder.decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeItem(infoData);
-            }
-        });
-        meetingsViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (meetingsOnDay.get(position).duration != 0 || meetingsOnDay.get(position).confirmed == 1) {
-                    meetingsViewHolder.decline_2.setVisibility(View.VISIBLE);
-                }
-                return true;
-            }
-        });
-
-        meetingsViewHolder.otherTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-                        begin = hourOfDay;
-                        beginMinute = minute;
-                        TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePickerDialog view, int endHourOfDay, int endMinute, int second) {
-                                databaseHelperMeetings.setOtherTime(begin, beginMinute, endHourOfDay, endMinute, meetingsOnDay.get(position));
-                                setCardWaiting(meetingsViewHolder, position);
-                            }
-                        }, 0, 0, true);
-                        tdp2.setTimeInterval(1, 15);
-                        tdp2.show(((Activity) context).getFragmentManager(), "tag");
-                    }
-                }, 0, 0, true);
-                tdp.setTimeInterval(1, 15);
-                tdp.show(((Activity) context).getFragmentManager(), "tag");
-            }
-        });
+    public void setMeetingsOnDay(List<Meeting> meetingsOnDay) {
+        this.meetingsOnDay = meetingsOnDay;
     }
 
-
     public void removeItem(Meeting infoData) {
-        databaseHelperMeetings.declineMeeting(infoData);
         int position = meetingsOnDay.indexOf(infoData);
         meetingsOnDay.remove(position);
         notifyItemRemoved(position);
@@ -227,78 +104,18 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         return meetingsOnDay.size();
     }
 
-    @Override
-    public void updateUI() {
-
-    }
-
-    @Override
-    public void updateUI(String answer) {
-
-    }
-
-    //Help Methods for setting view attributes to declutter Code
-    private void setCardWaiting(MeetingsViewHolder viewHolder, int position) {
-        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-        viewHolder.badge.setImageResource(R.drawable.waiting);
-        ViewHelperClass.setInvisible(new View[]{viewHolder.accept, viewHolder.decline, viewHolder.otherTime});
-        if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
-    }
-
-    private void setCardUndecided(MeetingsViewHolder viewHolder, int position) {
-        viewHolder.badge.setImageResource(R.drawable.unanswered);
-        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
-        viewHolder.accept.setVisibility(View.VISIBLE);
-        viewHolder.decline.setVisibility(View.VISIBLE);
-    }
-
-    private void setCardReady(MeetingsViewHolder viewHolder, int position) {
-        viewHolder.badge.setImageResource(R.drawable.confirmed_white);
-        viewHolder.indicator.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
-        ViewHelperClass.setInvisible(new View[]{viewHolder.accept, viewHolder.decline, viewHolder.otherTime});
-        if (meetingsOnDay.get(position).dynamic == 1) setMyTime(viewHolder, position);
-    }
-
-    private void setMyTime(MeetingsViewHolder viewHolder, int position) {
-        viewHolder.myTime.setVisibility(View.VISIBLE);
-        int end = meetingsOnDay.get(position).begin + meetingsOnDay.get(position).duration;
-        MutableDateTime start = new MutableDateTime();
-        start.setHourOfDay(meetingsOnDay.get(position).begin / 4);
-        start.setMinuteOfHour(meetingsOnDay.get(position).begin % 4 * 15);
-        MutableDateTime endTime = new MutableDateTime();
-        endTime.setHourOfDay(end / 4);
-        endTime.setMinuteOfHour(end % 4 * 15);
-        viewHolder.myTime.setText(start.toString("HH:mm - ") + endTime.toString("HH:mm"));
-    }
-
 
     class MeetingsViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.indicator_view)
-        View indicator;
-        @BindView(R.id.meeting_name)
-        TextView meetingName;
-        @BindView(R.id.ll_time)
-        TextView time;
-        @BindView(R.id.date_textview)
-        TextView textview;
-        @BindView(R.id.myTime_textView)
-        TextView myTime;
-        @BindView(R.id.decline_meeting_button)
-        Button decline;
-        @BindView(R.id.decline_meeting_button_2)
-        Button decline_2;
-        @BindView(R.id.accept_meeting_button)
-        Button accept;
-        @BindView(R.id.other_time)
-        Button otherTime;
-        @BindView(R.id.meeting_card)
-        CardView cardView;
-        @BindView(R.id.status_badge)
-        ImageView badge;
+        private ViewDataBinding mViewDataBinding;
 
-        public MeetingsViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public MeetingsViewHolder(ViewDataBinding viewDataBinding) {
+            super(viewDataBinding.getRoot());
+            mViewDataBinding = viewDataBinding;
+//            ButterKnife.bind(this, itemView);
+        }
+
+        public ViewDataBinding getViewDataBinding() {
+            return mViewDataBinding;
         }
     }
 

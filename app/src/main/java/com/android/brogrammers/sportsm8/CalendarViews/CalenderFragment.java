@@ -230,7 +230,7 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
         for (int i = 0; i < 7; i++) {
             List<Meeting> meetingsOnDay = new ArrayList<>();
             for (int j = 0; j < meetings.size(); j++) {
-                String date = meetings.get(j).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
+                String date = meetings.get(j).getDay(); //problem if no meetingsOnDay yet!?
                 int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
                 if (dateOfMeeting == viewPagerAdapter.getToday().getDayOfYear() + (count + i)) {
                     meetingsOnDay.add(meetings.get(j));
@@ -339,7 +339,11 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
         this.latitude = latitude;
         this.longitude = longitude;
         this.locationMode = locationMode;
-        onRefresh();
+        viewPagerAdapter.setNeedsUpdate(true);
+        createFragmentList(tabLayout.getTabCount());
+        viewPagerAdapter.notifyDataSetChanged();
+        customTabs();
+        viewPagerAdapter.setNeedsUpdate(false);
     }
 
     public void setFilterText(CharSequence text) {

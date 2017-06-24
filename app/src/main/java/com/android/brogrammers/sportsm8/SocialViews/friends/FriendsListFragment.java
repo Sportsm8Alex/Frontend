@@ -47,19 +47,19 @@ public class FriendsListFragment extends Fragment {
     }
 
     public void updateFriendsList() {
-        SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String email = sharedPrefs.getString("email", "");
-        apiService.getFriends("getFriends", email).enqueue(new Callback<List<UserInfo>>() {
-            @Override
-            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
-                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "friends", getContext());
-                updateUI();
-            }
+            SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
+            String email = sharedPrefs.getString("email", "");
+            apiService.getFriends("getFriends", email).enqueue(new Callback<List<UserInfo>>() {
+                @Override
+                public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
+                    RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "friends", getContext());
+                    updateUI();
+                }
 
-            @Override
-            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
-            }
-        });
+                @Override
+                public void onFailure(Call<List<UserInfo>> call, Throwable t) {
+                }
+            });
     }
 
     public void updateUI() {
@@ -74,7 +74,7 @@ public class FriendsListFragment extends Fragment {
             adapter.notifyDataSetChanged();
             //stops loading animation
             fragmentSocial.setSwipeRefreshLayout(false);
-        }else updateFriendsList();
+        } else updateFriendsList();
 
     }
 }

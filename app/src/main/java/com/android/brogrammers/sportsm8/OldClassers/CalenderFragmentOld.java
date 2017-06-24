@@ -196,7 +196,7 @@ public class CalenderFragmentOld extends Fragment implements UIthread, SwipeRefr
             int today = LocalDate.now().getDayOfYear();
             System.out.println("THIS IS TODAY " + today);
             for (int i = 0; i < meetings.size(); i++) {
-                String date = meetings.get(i).startTime.substring(0, 10); //problem if no meetingsOnDay yet!?
+                String date = meetings.get(i).getDay(); //problem if no meetingsOnDay yet!?
                 int dateOfMeeting = DateTimeFormat.forPattern("yyyy-MM-dd").parseLocalDate(date).getDayOfYear();
                 if (dateOfMeeting == today + position) {
                     meetingsOnDay.add(meetings.get(i));

@@ -1,5 +1,6 @@
 package com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;

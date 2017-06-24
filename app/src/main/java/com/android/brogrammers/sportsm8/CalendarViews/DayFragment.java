@@ -1,7 +1,10 @@
 package com.android.brogrammers.sportsm8.CalendarViews;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -12,32 +15,46 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.brogrammers.sportsm8.CalendarViews.Adapter.MeetingCardAdapter;
+import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailActivity;
+import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.databaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.repositories.impl.DatabaseMeetingsRepository;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+
 public class DayFragment extends Fragment {
-    RecyclerView recyclerView;
-    List<Meeting> meetingsOnDay;
-    RecyclerView.Adapter rvAdapter;
+    private RecyclerView recyclerView;
+    private List<Meeting> meetingsOnDay;
+    private MeetingCardAdapter rvAdapter;
     private FloatingActionButton floatingActionButton;
+    private DatabaseMeetingsRepository meetingsRepository = new DatabaseMeetingsRepository();
+    private int position;
+    private DatabaseHelperMeetings databaseHelperMeetings;
 
     public static DayFragment newInstance(List<Meeting> meetingsOnDay) {
         DayFragment dayFragment = new DayFragment();
         Bundle args = new Bundle();
-        Collections.sort(meetingsOnDay,new CustomComperator());
+        Collections.sort(meetingsOnDay, new CustomComperator());
         args.putSerializable("meetingsOnDay", new ArrayList<>(meetingsOnDay));
         dayFragment.setArguments(args);
         return dayFragment;
     }
 
-    public void updateInstance(List<Meeting> meetings,DateTime today, double latitude,double longitude,boolean locationMode){
+    public void updateInstance(List<Meeting> meetings, DateTime today, double latitude, double longitude, boolean locationMode) {
         meetingsOnDay.clear();
 
         for (int i = 0; i < meetings.size(); i++) {
@@ -59,7 +76,7 @@ public class DayFragment extends Fragment {
                 }
             }
         }
-        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
+        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay, this);
         recyclerView.setAdapter(rvAdapter);
 
     }
@@ -67,6 +84,7 @@ public class DayFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseHelperMeetings = new DatabaseHelperMeetings(getContext());
     }
 
     @Override
@@ -80,7 +98,7 @@ public class DayFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.meetings_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         meetingsOnDay = (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
-        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay);
+        rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay, this);
         recyclerView.setAdapter(rvAdapter);
 
         AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
@@ -97,12 +115,101 @@ public class DayFragment extends Fragment {
         return view;
     }
 
-    public List<Meeting> getMeetingsOnDay(){
+    public List<Meeting> getMeetingsOnDay() {
         return (ArrayList<Meeting>) this.getArguments().getSerializable("meetingsOnDay");
     }
 
+    public void startDetailView(Meeting meeting) {
+        Intent intent = new Intent(getContext(), MeetingDetailActivity.class);
+        Bundle b = new Bundle();
+        b.putSerializable("MeetingOnDay", meeting);
+        intent.putExtras(b);
+        startActivityForResult(intent, 2);
+    }
 
-    public static class CustomComperator implements Comparator<Meeting>{
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+            ((CalenderFragment) getParentFragment()).onRefresh();
+            //TODO: Refresh better
+        }
+    }
+
+    public void declineMeeting(final Meeting meeting) {
+        databaseHelperMeetings.declineMeeting(meeting);
+        rvAdapter.removeItem(meeting);
+
+    }
+
+    public boolean showDeclineButton(View view, Meeting meeting) {
+        if (meeting.duration != 0 || meeting.confirmed == 1)
+            view.findViewById(R.id.decline_meeting_button_2).setVisibility(View.VISIBLE);
+        return true;
+    }
+
+    public void setOtherTime(final Meeting meeting) {
+        TimePickerDialog tdp = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                final int begin = hourOfDay;
+                final int beginMinute = minute;
+                TimePickerDialog tdp2 = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int endHourOfDay, int endMinute, int second) {
+                        databaseHelperMeetings.setOtherTime(begin, beginMinute, endHourOfDay, endMinute, meeting);
+                        position = meetingsOnDay.indexOf(meeting);
+                        meetingsOnDay.get(position).confirmed = 1;
+                        rvAdapter.setMeetingsOnDay(meetingsOnDay);
+                        rvAdapter.notifyDataSetChanged();
+                        //TODO: Check if time is ok
+                    }
+                }, 0, 0, true);
+                tdp2.setTimeInterval(1, 15);
+                tdp2.show(((Activity) getContext()).getFragmentManager(), "tag");
+            }
+        }, 0, 0, true);
+        tdp.setTimeInterval(1, 15);
+        tdp.show(((Activity) getContext()).getFragmentManager(), "tag");
+
+    }
+
+    public void acceptMeeting(final Meeting meeting) {
+        databaseHelperMeetings.confirm(meeting);
+        position = meetingsOnDay.indexOf(meeting);
+        meetingsOnDay.get(position).confirmed = 1;
+        rvAdapter.setMeetingsOnDay(meetingsOnDay);
+        rvAdapter.notifyDataSetChanged();
+        meetingsRepository.isMeetingReady(meeting)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                    @Override
+                    public void onSuccess(@NonNull ResponseBody responseBody) {
+                        int x = 0;
+                        try {
+                            x = Integer.valueOf(responseBody.string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (x >= meeting.minParticipants) {
+                            meetingsOnDay.get(position).status = 1;
+                            rvAdapter.setMeetingsOnDay(meetingsOnDay);
+                            rvAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
+
+
+    }
+
+    public static class CustomComperator implements Comparator<Meeting> {
 
         @Override
         public int compare(Meeting o1, Meeting o2) {

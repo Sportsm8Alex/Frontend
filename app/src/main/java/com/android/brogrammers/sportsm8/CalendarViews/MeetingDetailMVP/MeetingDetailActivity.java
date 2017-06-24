@@ -3,6 +3,7 @@ package com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -103,8 +104,8 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         //Set Views
         textView_time.setText(startDateTime.toString("HH:mm") + "-" + endDateTime.toString("HH:mm"));
         textView_date.setText(startDateTime.toString("dd.MM.YYYY"));
-        if (Integer.valueOf(thisMeeting.sportID) < bannerArray.length()) {
-            bannerImage.setImageResource(bannerArray.getResourceId(Integer.valueOf(thisMeeting.sportID), R.drawable.custommeeting));
+        if (thisMeeting.sportID < bannerArray.length()) {
+            bannerImage.setImageResource(bannerArray.getResourceId(thisMeeting.sportID, R.drawable.custommeeting));
         }
         textView_sportID.setText(thisMeeting.meetingActivity);
         members = new ArrayList<>();
@@ -132,6 +133,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         }
         intent = new Intent();
         //    swipeRefreshLayout.setOnRefreshListener(this);
+
     }
 
     private void rangeBarSetup() {

@@ -1,5 +1,7 @@
 package com.android.brogrammers.sportsm8.CalendarViews;
 
+import android.support.annotation.NonNull;
+
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailView;
 import com.android.brogrammers.sportsm8.CalendarViews.MeetingDetailMVP.MeetingDetailViewPresenter;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
@@ -22,7 +24,6 @@ import java.util.Map;
 
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;

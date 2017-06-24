@@ -119,4 +119,6 @@
     <string name="Sport_Meeting">Sport machen</string>
     <string name="more_settings_button">More Settings</string>
     <string name="ortswahl">location_selection</string>
+    <string name="name">Name</string>
+    <string name="create">Create</string>
 </resources>

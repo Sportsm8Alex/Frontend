@@ -2,6 +2,7 @@ package com.android.brogrammers.sportsm8.databaseConnection;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
 
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
@@ -27,6 +28,15 @@ public class DatabaseHelperMeetings implements Callback {
     }
 
     public void confirm(Meeting meetingConfirm) {
+        if (meetingConfirm.dynamic == 0) {
+            apiService.confirmMeeting("confirmAtt", meetingConfirm.MeetingID, email).enqueue(this);
+        } else {
+            DateTime timeS = meetingConfirm.getStartDateTime();
+            DateTime timeE = meetingConfirm.getEndDateTime();
+            setOtherTime(timeS.getHourOfDay(), timeS.getMinuteOfHour(), timeE.getHourOfDay(), timeE.getMinuteOfHour(), meetingConfirm);
+        }
+    }
+    public void confirm2(View view, Meeting meetingConfirm) {
         if (meetingConfirm.dynamic == 0) {
             apiService.confirmMeeting("confirmAtt", meetingConfirm.MeetingID, email).enqueue(this);
         } else {

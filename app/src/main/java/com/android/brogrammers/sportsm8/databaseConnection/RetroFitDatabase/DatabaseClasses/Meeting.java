@@ -1,6 +1,10 @@
 package com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses;
 
+import android.databinding.BindingAdapter;
+import android.widget.TextView;
+
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -12,11 +16,15 @@ import java.io.Serializable;
 
 public class Meeting implements Serializable {
 
-    public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic, sportID;
-    public String startTime, endTime, status, meetingActivity;
+    public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic, sportID, status;
+    public String meetingActivity;
+    private String startTime;
+    private String endTime;
+    private String day;
     public int[] timeArray = new int[24];
     public boolean meetingIsGood;
     public float longitude, latitude;
+    private String mytime;
 
     public Meeting(int meetingID, int minParticipants) {
         MeetingID = meetingID;
@@ -38,12 +46,56 @@ public class Meeting implements Serializable {
         return formatter.parseDateTime(endTime);
     }
 
+    public String getDay() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        return formatter.parseDateTime(startTime).toString("yyyy-MM-dd");
+    }
+
+
+    public String getStartTime() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        return formatter.parseDateTime(startTime).toString("HH:mm");
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getEndTime() {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        return formatter.parseDateTime(endTime).toString("HH:mm");
+    }
+
+
     public void setStartDateTime(DateTime dateTime) {
         startTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
     }
 
     public void setEndStartDateTime(DateTime dateTime) {
         endTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
+    }
+
+    @BindingAdapter({"date", "format"})
+    public static void setDate(TextView view, String time, String format) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+        DateTime dateTime = formatter.parseDateTime(time);
+        view.setText(dateTime.toString(format));
+    }
+
+    public String getMytime() {
+        int end = begin + duration;
+        MutableDateTime start = new MutableDateTime();
+        start.setHourOfDay(begin / 4);
+        start.setMinuteOfHour(begin % 4 * 15);
+        MutableDateTime endTime = new MutableDateTime();
+        endTime.setHourOfDay(end / 4);
+        endTime.setMinuteOfHour(end % 4 * 15);
+        return start.toString("HH:mm - ") + endTime.toString("HH:mm");
     }
 }
 

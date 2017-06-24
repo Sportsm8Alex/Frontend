@@ -11,5 +11,16 @@
         <item>@drawable/custommeeting</item>
     </integer-array>
 
+    <integer-array name="sportLogos">
+        <item>@drawable/beachball</item>
+        <item>@drawable/footballlogo</item>
+        <item>@drawable/footballlogo</item>
+        <item>@drawable/footballlogo</item>
+        <item>@drawable/basketballlogo</item>
+        <item>@drawable/basketballlogo</item>
+        <item>@drawable/basketballlogo</item>
+        <item>@drawable/basketballlogo</item>
+    </integer-array>
+
 
 </resources>

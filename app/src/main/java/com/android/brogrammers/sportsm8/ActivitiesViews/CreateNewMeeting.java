@@ -34,6 +34,7 @@ import com.android.brogrammers.sportsm8.databaseConnection.Information;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Sport;
 import com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
 import com.schibstedspain.leku.LocationPickerActivity;
@@ -67,10 +68,10 @@ import retrofit2.Response;
  * Created by Korbi on 22.10.2016.
  */
 
-public class CreateNewMeeting extends Activity implements UIthread, View.OnClickListener {
+public class CreateNewMeeting extends Activity implements View.OnClickListener {
 
     int minMemberCount = 4, minHours = 2;
-    List<Information> sportIDs;
+    List<Sport> sportIDs;
     String[] sportArten;
 
     int sportart_ID = 8008;
@@ -81,7 +82,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     private DateTime datetime, selectedDate;
     private DateTimeFormatter formatter;
     private boolean enoughPeopleInvited = false;
-    private double latitude =0,longitude=0;
+    private double latitude = 0, longitude = 0;
     private APIService apiService = APIUtils.getAPIService();
 
     @BindView(R.id.edittext_choose_activity)
@@ -114,7 +115,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     private String extraInfoString;
     private int step = 0;
     private int dynamic = 0;
-    private  Intent intent = new Intent();
+    private Intent intent = new Intent();
     Boolean bBegin = false, bEnd = false, bDate = false;
 
 
@@ -312,7 +313,7 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
                     for (int i = 0; i < Selection.size(); i++) {
                         members.put("members" + i, Selection.get(i).email);
                     }
-                    apiService.createMeeting("newMeeting", formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members,longitude, latitude).enqueue(new Callback<Void>() {
+                    apiService.createMeeting("newMeeting", formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members, longitude, latitude).enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
@@ -417,9 +418,9 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
             }
             mergeGroupsAndFriends();
             checkMemberCount();
-        }else if(requestCode==1){
-            if(resultCode== RESULT_OK){
-                longitude= data.getDoubleExtra(LocationPickerActivity.LONGITUDE, 0);
+        } else if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                longitude = data.getDoubleExtra(LocationPickerActivity.LONGITUDE, 0);
                 latitude = data.getDoubleExtra(LocationPickerActivity.LATITUDE, 0);
             }
         }
@@ -439,35 +440,29 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
         }
     }
 
-    @Override
-    public void updateUI() {
-
-    }
 
     private void createList() {
-        String[] params = {"IndexSports.php", "function", "getData"};
-        //must parent Activity implement UIThread?
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
-        updateUI("");
+        apiService.getSports("getData").enqueue(new Callback<List<Sport>>() {
+            @Override
+            public void onResponse(Call<List<Sport>> call, Response<List<Sport>> response) {
+                sportIDs = response.body();
+                sportArten = new String[sportIDs.size()];
+                for (int i = 0; i < sportIDs.size(); i++) {
+                    sportArten[i]=sportIDs.get(i).sportname;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Sport>> call, Throwable t) {
+
+            }
+        });
+
     }
 
-    @Override
-    public void updateUI(String answer) {
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexSports", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexSportsgetDataJSON", "");
-        try {
-            sportIDs = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-        if (sportIDs != null) {
-            sportArten = new String[sportIDs.size()];
-            for (int j = 0; j < sportIDs.size(); j++) {
-                sportArten[j] = sportIDs.get(j).sportname;
-            }
-        }
-    }
+
+
+
 
 
     @OnEditorAction(R.id.edittext_choose_activity)
@@ -507,8 +502,8 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
                     editTextChooseActivity.setCursorVisible(false);
                     listView_activities.setVisibility(View.GONE);
                     extraInfoString = sResult[position];
-                    minMemberCount = Integer.parseInt(sportIDs.get(position).minPartySize);
-                    sportart_ID = Integer.parseInt(sportIDs.get(position).sportID);
+                    minMemberCount = sportIDs.get(position).minPartySize;
+                    sportart_ID = sportIDs.get(position).sportID;
                     minPartySizeTextView.setText(minMemberCount + "");
                     checkMemberCount();
                 }
@@ -525,8 +520,6 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
     @Override
     public void onClick(View v) {
         Intent intent = new LocationPickerActivity.Builder()
-                .withSearchZone("es_ES")
-                .shouldReturnOkOnBackPressed()
                 .withStreetHidden()
                 .withCityHidden()
                 .withZipCodeHidden()
@@ -534,7 +527,6 @@ public class CreateNewMeeting extends Activity implements UIthread, View.OnClick
                 .build(getApplicationContext());
 
         startActivityForResult(intent, 1);
-
 
 
 //        int PLACE_PICKER_REQUEST = 1;
