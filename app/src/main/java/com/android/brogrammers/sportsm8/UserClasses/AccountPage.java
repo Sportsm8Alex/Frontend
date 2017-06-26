@@ -11,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.ActivitiesViews.ActivitiesFragment;
+import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.Information;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
+import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;

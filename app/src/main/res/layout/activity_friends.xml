@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.android.brogrammers.sportsm8.SocialViews.Friends">
+    tools:context="com.android.brogrammers.sportsm8.SocialTab.Friends">
 
 
     <android.support.design.widget.AppBarLayout

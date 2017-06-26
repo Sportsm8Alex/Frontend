@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
+import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -92,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
     }
     public void syncDatabases(String enteredUsername,String enteredPassword,String enteredEmail){
-        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "email", enteredUsername, "password", enteredPassword, "email", enteredEmail};
+        String[] params = {"IndexAccounts.php", "function", "createNewAccount","password", enteredPassword, "email", enteredEmail,"username",enteredUsername};
         Database db = new Database(this, getBaseContext());
         db.execute(params);
     }

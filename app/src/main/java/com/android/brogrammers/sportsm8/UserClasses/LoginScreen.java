@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.databaseConnection.Database;
-import com.android.brogrammers.sportsm8.databaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
+import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

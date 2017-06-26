@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 2
-        versionName "1.1.5"
+        versionName "1.1.6"
         multiDexEnabled true
     }
     packagingOptions {
@@ -68,6 +68,7 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:3.0.0'
     compile 'com.github.GrenderG:Toasty:1.1.2'
     compile 'com.roughike:bottom-bar:2.3.1'
+    compile 'com.github.BeppiMenozzi:TriStateToggleButton:1.1.4'
 
     /////HELPERLIBRARIES
     compile 'com.google.code.gson:gson:2.8.0'

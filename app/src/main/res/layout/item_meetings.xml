@@ -10,10 +10,10 @@
         <import type="android.view.View"/>
         <variable
             name="presenter"
-            type="com.android.brogrammers.sportsm8.CalendarViews.DayFragment"/>
+            type="com.android.brogrammers.sportsm8.CalendarTab.DayFragment"/>
         <variable
             name="meeting"
-            type="com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Meeting" />
+            type="com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting" />
     </data>
 
 

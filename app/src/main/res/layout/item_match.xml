@@ -7,7 +7,7 @@
 
         <variable
             name="match"
-            type="com.android.brogrammers.sportsm8.databaseConnection.RetroFitDatabase.DatabaseClasses.Match" />
+            type="com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Match" />
     </data>
 
     <android.support.v7.widget.CardView

@@ -37,13 +37,13 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TestDirectory.BottomNavBar"
+            android:name=".ZZOldClassers.TestDirectory.BottomNavBar"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserClasses.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".OldClassers.CreateNewMeetingOld"
+            android:name=".ZZOldClassers.CreateNewMeetingOld"
             android:theme="@style/AppTheme.Custom1" />
         <activity
             android:name=".UserClasses.AccountPage"
@@ -55,28 +55,28 @@
                 android:value="com.android.brogrammers.sportsm8.MainActivity" />
         </activity>
         <activity
-            android:name=".SocialViews.friends.OnlyFriendsView"
+            android:name=".SocialTab.friends.OnlyFriendsView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CalendarViews.MeetingDetailMVP.MeetingDetailActivity"
+            android:name=".CalendarTab.MeetingDetailMVP.MeetingDetailActivity"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SocialViews.groups.GroupDetailView"
+            android:name=".SocialTab.groups.GroupDetailView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SocialViews.SelectorContainer" />
+        <activity android:name=".SocialTab.SelectorContainer" />
         <activity
-            android:name=".ActivitiesViews.CreateNewMeeting"
+            android:name=".CalendarTab.CreateNewMeeting"
             android:label="@string/title_activity_create_new_meeting2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SocialViews.Teams.TeamsDetailView.TeamDetailActivity"
+            android:name=".SocialTab.Teams.TeamsDetailView.TeamDetailActivity"
             android:label="TeamDetail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DebugScreen.DebugScreen"
+            android:name=".ZDebugScreen.DebugScreen"
             android:label="@string/title_activity_debug_screen"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
