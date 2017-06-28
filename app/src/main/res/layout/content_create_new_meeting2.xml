@@ -63,7 +63,7 @@
                 android:layout_weight="1"
                 android:background="@{newMeeting.dynamic == 2 ? @color/colorPrimary : @color/grey}"
                 android:onClick="@{()->newMeeting.setDynamic(2)}"
-                android:text="Dynamic Time"
+                android:text="Free Time"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 

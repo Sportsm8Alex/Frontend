@@ -13,13 +13,16 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -36,6 +39,7 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.SelectorContainer;
+import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.databinding.ActivityCreateNewMeetingTwoBinding;
 import com.android.databinding.library.baseAdapters.BR;
 import com.schibstedspain.leku.LocationPickerActivity;
@@ -57,6 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
@@ -110,10 +115,13 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
     ImageView expandArrow;
     @BindView(R.id.location_RL)
     RelativeLayout location;
-
+    @BindView(R.id.button_clear_choose_activity)
+    ImageButton clearEditText;
 
     private String extraInfoString;
     private int step = 0;
+
+
     public int dynamic = 1;
     private Intent intent = new Intent();
     Boolean bBegin = false, bEnd = false, bDate = false;
@@ -152,6 +160,9 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     hideKeyboard();
+                    ViewHelperClass.expand(clearEditText,255);
+                } else {
+                    ViewHelperClass.expand(clearEditText,255);
                 }
             }
         });
@@ -181,6 +192,7 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
         editTextChooseActivity.clearFocus();
         finish();
     }
+
 
     @OnClick(R.id.add_friends_RL)
     void addFriends() {
@@ -225,7 +237,7 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 }, startTime.getHourOfDay(), startTime.getMinuteOfHour(), true);
-                if (checkSwitch.isChecked()) tdp.setTimeInterval(1, 15);
+//                if (checkSwitch.isChecked()) tdp.setTimeInterval(1, 15);
                 tdp.show(getFragmentManager(), "TimePickerDialog");
                 break;
             case R.id.button_end_time:
@@ -242,13 +254,14 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
                         }
                     }
                 }, startTime.getHourOfDay() + 2, startTime.getMinuteOfHour(), true);
-                if (checkSwitch.isChecked()) tdp2.setTimeInterval(1, 15);
+//                if (checkSwitch.isChecked()) tdp2.setTimeInterval(1, 15);
                 tdp2.show(getFragmentManager(), "TimePickerDialog");
                 break;
         }
 
 
     }
+
 
     @OnClick(R.id.more_settings_RL)
     public void expandSettings() {
@@ -304,11 +317,11 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
         if (enoughPeopleInvited) {
             if (minMemberCount != 0 && minHours != 0) {
                 if (startTime.isBefore(endTime)) {
-                    if (checkSwitch.isChecked()) {
-                        dynamic = 1;
-                        startTime.setMinuteOfHour((startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15));
-                        endTime.setMinuteOfHour((endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15));
-                    }
+//                    if (checkSwitch.isChecked()) {
+//                        dynamic = 1;
+//                        startTime.setMinuteOfHour((startTime.getMinuteOfHour() - startTime.getMinuteOfHour() % 15));
+//                        endTime.setMinuteOfHour((endTime.getMinuteOfHour() - endTime.getMinuteOfHour() % 15));
+//                    }
                     SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
                     String email = sharedPrefs.getString("email", "");
                     Map<String, String> members = new HashMap<>();
@@ -464,9 +477,12 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
 
 
     @OnEditorAction(R.id.edittext_choose_activity)
-    public boolean enterPressed() {
-        hideKeyboard();
-        listView_activities.setVisibility(View.GONE);
+    public boolean enterPressed(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            hideKeyboard();
+            listView_activities.setVisibility(View.GONE);
+            editTextChooseActivity.clearFocus();
+        }
         return true;
     }
 
@@ -538,9 +554,16 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
 //        }
     }
 
-    public void setDynamic(int dynamicValue){
-        dynamic= dynamicValue;
-        binding.notifyPropertyChanged(BR._all);
+    public void setDynamic(int dynamicValue) {
+        dynamic = dynamicValue;
+        findViewById(R.id.dynamic_time_button).setBackgroundColor(dynamic == 2 ? ContextCompat.getColor(this, R.color.colorPrimary) : ContextCompat.getColor(this, R.color.grey));
+        findViewById(R.id.fluent_time_button).setBackgroundColor(dynamic == 1 ? ContextCompat.getColor(this, R.color.colorPrimary) : ContextCompat.getColor(this, R.color.grey));
+        findViewById(R.id.fluent_time_button).setBackgroundColor(dynamic == 1 ? ContextCompat.getColor(this, R.color.colorPrimary) : ContextCompat.getColor(this, R.color.grey));
+        findViewById(R.id.fixed_time_button).setBackgroundColor(dynamic == 0 ? ContextCompat.getColor(this, R.color.colorPrimary) : ContextCompat.getColor(this, R.color.grey));
+    }
+
+    public int getDynamic() {
+        return dynamic;
     }
 
     @Override

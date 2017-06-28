@@ -78,7 +78,7 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
                 tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             }
             for (int i = 0; i < onDay.size(); i++) {
-                if (onDay.get(i).confirmed == 0) {
+                if (onDay.get(i).getConfirmed() == 0) {
                     v.findViewById(R.id.imgView).setVisibility(View.VISIBLE);
                 }
                 if(onDay.get(i).duration!=0){

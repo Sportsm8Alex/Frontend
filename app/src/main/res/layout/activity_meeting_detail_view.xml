@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="Meeting"
+            type="com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting" />
+    </data>
 
 <android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     tools:context="com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    >
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/meeting_detail_collABL"
@@ -176,9 +186,11 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-            <include layout="@layout/content_meeting_detail_view"/>
+            <include layout="@layout/content_meeting_detail_view"
+                bind:Meeting="@{Meeting}"/>
 
         </android.support.v4.widget.NestedScrollView>
 
 
     </android.support.design.widget.CoordinatorLayout>
+</layout>

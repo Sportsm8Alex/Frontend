@@ -1,7 +1,11 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.widget.TextView;
+
+import com.android.databinding.library.baseAdapters.BR;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -13,9 +17,18 @@ import java.io.Serializable;
  * Created by Korbi on 03.06.2017.
  */
 
-public class Meeting implements Serializable {
+public class Meeting extends BaseObservable implements Serializable {
 
-    public int MeetingID, confirmed = 0, minParticipants, begin, duration, dynamic, sportID, status;
+    public int MeetingID;
+
+
+    private int confirmed = 0;
+    public int minParticipants;
+    public int begin;
+    public int duration;
+    public int dynamic;
+    public int sportID;
+    public int status;
     public String meetingActivity;
     private String startTime;
     private String endTime;
@@ -90,8 +103,19 @@ public class Meeting implements Serializable {
 
     public String getMytime() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        if(!myendTime.toString().equals("0000-00-00 00:00:00")) return formatter.parseDateTime(mystartTime).toString("HH:mm - ") + formatter.parseDateTime(myendTime).toString("HH:mm");
+        if (!myendTime.toString().equals("0000-00-00 00:00:00"))
+            return formatter.parseDateTime(mystartTime).toString("HH:mm - ") + formatter.parseDateTime(myendTime).toString("HH:mm");
         else return "";
+    }
+
+    public void setConfirmed(int confirmed) {
+        this.confirmed = confirmed;
+        notifyPropertyChanged(BR.meeting);
+    }
+
+    @Bindable
+    public int getConfirmed() {
+        return confirmed;
     }
 }
 

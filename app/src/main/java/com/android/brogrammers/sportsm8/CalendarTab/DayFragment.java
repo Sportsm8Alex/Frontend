@@ -13,9 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.CalendarTab.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.TimeCalcObject;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
@@ -23,6 +25,7 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.Dat
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,10 +33,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+
+import static android.R.attr.checked;
 
 public class DayFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -142,7 +148,7 @@ public class DayFragment extends Fragment {
     }
 
     public boolean showDeclineButton(View view, Meeting meeting) {
-        if (meeting.duration != 0 || meeting.confirmed == 1)
+        if (meeting.duration != 0 || meeting.getConfirmed() == 1)
             view.findViewById(R.id.decline_meeting_button_2).setVisibility(View.VISIBLE);
         return true;
     }
@@ -158,22 +164,35 @@ public class DayFragment extends Fragment {
                     public void onTimeSet(TimePickerDialog view, int endHourOfDay, int endMinute, int second) {
                         DateTime startTime = meeting.getStartDateTime().withTimeAtStartOfDay();
                         DateTime endTime = meeting.getStartDateTime().withTimeAtStartOfDay();
-                        endTime = endTime.plusMinutes(endHourOfDay*60+endMinute);
-                        startTime = startTime.plusMinutes(begin*60+beginMinute);
-                        databaseHelperMeetings.setOtherTime2(startTime,endTime, meeting);
-                       // databaseHelperMeetings.setOtherTime(begin, beginMinute, endHourOfDay, endMinute, meeting);
-                        position = meetingsOnDay.indexOf(meeting);
-                        meetingsOnDay.get(position).confirmed = 1;
-                        rvAdapter.setMeetingsOnDay(meetingsOnDay);
-                        rvAdapter.notifyDataSetChanged();
-                        //TODO: Check if time is ok
+                        endTime = endTime.plusMinutes(endHourOfDay * 60 + endMinute);
+                        startTime = startTime.plusMinutes(begin * 60 + beginMinute);
+                        boolean checked = false;
+                        if (meeting.dynamic == 2) checked = true;
+                        else {
+                            DateTime actualStart = meeting.getStartDateTime();
+                            DateTime actualEnd = meeting.getEndDateTime();
+                            if(Minutes.minutesBetween(actualStart,endTime).getMinutes()<30) checked=false;
+                            else if(Minutes.minutesBetween(startTime,actualEnd).getMinutes()<30) checked = false;
+                            else checked=true;
+                        }
+
+                        if (checked) {
+                            databaseHelperMeetings.setOtherTime2(startTime, endTime, meeting);
+                            position = meetingsOnDay.indexOf(meeting);
+                            meetingsOnDay.get(position).setConfirmed(1);
+                            rvAdapter.setMeetingsOnDay(meetingsOnDay);
+                            rvAdapter.notifyDataSetChanged();
+                            //TODO: Check if time is ok
+                        } else {
+                            Toasty.info(getContext(), "Die Ausgewählte Zeit muss sich mit der Ursprünglichen überschneiden", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }, 0, 0, true);
-                tdp2.setTimeInterval(1, 15);
+                //tdp2.setTimeInterval(1, 15);
                 tdp2.show(((Activity) getContext()).getFragmentManager(), "tag");
             }
         }, 0, 0, true);
-        tdp.setTimeInterval(1, 15);
+       // tdp.setTimeInterval(1, 15);
         tdp.show(((Activity) getContext()).getFragmentManager(), "tag");
 
     }
@@ -181,7 +200,7 @@ public class DayFragment extends Fragment {
     public void acceptMeeting(final Meeting meeting) {
         databaseHelperMeetings.confirm(meeting);
         position = meetingsOnDay.indexOf(meeting);
-        meetingsOnDay.get(position).confirmed = 1;
+        meetingsOnDay.get(position).setConfirmed(1);
         rvAdapter.setMeetingsOnDay(meetingsOnDay);
         rvAdapter.notifyDataSetChanged();
         meetingsRepository.isMeetingReady(meeting)

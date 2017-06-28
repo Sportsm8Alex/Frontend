@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.friends.OnlyFriendsView;
@@ -29,6 +30,7 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIU
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseUserRepository;
+import com.android.brogrammers.sportsm8.databinding.ActivityMeetingDetailViewBinding;
 
 import org.joda.time.DateTime;
 
@@ -90,12 +92,11 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new MeetingDetailViewPresenter(this, new DatabaseUserRepository(), AndroidSchedulers.mainThread());
-        setContentView(R.layout.activity_meeting_detail_view);
-      //  ActivityMeetingDetailViewBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_meeting_detail_view);
-
+       // setContentView(R.layout.activity_meeting_detail_view);
+        ActivityMeetingDetailViewBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_meeting_detail_view);
         Bundle b = getIntent().getExtras();
         thisMeeting = (Meeting) b.getSerializable("MeetingOnDay");
-      //  binding.setMeeting(thisMeeting);
+        binding.setVariable(BR.meeting,thisMeeting);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -134,7 +135,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         } else {
             rangeBarSetup();
         }
-        if (thisMeeting.confirmed == 1 || thisMeeting.duration != 0) {
+        if (thisMeeting.getConfirmed() == 1 || thisMeeting.duration != 0) {
             ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
         }
         intent = new Intent();
