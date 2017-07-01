@@ -19,12 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.android.brogrammers.sportsm8.SocialTab.friends.FriendsListAdapter;
-import com.android.brogrammers.sportsm8.SocialTab.friends.FriendsListFragment;
-import com.android.brogrammers.sportsm8.SocialTab.friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.SocialTab.groups.CreateTeamGroup;
-import com.android.brogrammers.sportsm8.SocialTab.groups.GroupListAdapter;
-import com.android.brogrammers.sportsm8.SocialTab.groups.GroupsListFragment;
+import com.android.brogrammers.sportsm8.SocialTab.Adapter.ViewPagerAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.FriendsListAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.FriendsListFragment;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
+import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupListAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupsListFragment;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
@@ -103,6 +103,7 @@ public class FragmentSocial extends Fragment implements SwipeRefreshLayout.OnRef
         }
         if (addToMeetingMode) {
             actionMode = ((AppCompatActivity) parentActivity).startSupportActionMode(actionModeCallBack);
+            NumOfTabs=2;
         }
         friends = new ArrayList<>();
         groups = new ArrayList<>();

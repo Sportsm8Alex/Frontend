@@ -1,18 +1,18 @@
-package com.android.brogrammers.sportsm8.SocialTab;
+package com.android.brogrammers.sportsm8.SocialTab.Adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment.TeamsFragmentActivity;
-import com.android.brogrammers.sportsm8.SocialTab.friends.FriendsListFragment;
-import com.android.brogrammers.sportsm8.SocialTab.groups.GroupsListFragment;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.FriendsListFragment;
+import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupsListFragment;
 
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    CharSequence Titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
-    int NumbOfTabs; // Store the number of tabs, this will also be passed when the ViewPagerAdapter is created
+    private CharSequence Titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
+    private int NumbOfTabs; // Store the number of tabs, this will also be passed when the ViewPagerAdapter is created
 
 
     // Build a Constructor and assign the passed Values to appropriate values in the class
@@ -35,6 +35,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             return new TeamsFragmentActivity();
         }
 
+    }
+
+    public void removeTeamTab(){
+        NumbOfTabs=2;
     }
     public int getPosition(){
         return getPosition();

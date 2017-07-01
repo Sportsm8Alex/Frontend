@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab.friends;
+package com.android.brogrammers.sportsm8.SocialTab.Friends;
 
 import android.content.Context;
 import android.content.Intent;

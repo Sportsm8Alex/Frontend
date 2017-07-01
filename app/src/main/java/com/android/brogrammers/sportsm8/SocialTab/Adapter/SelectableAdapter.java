@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab;
+package com.android.brogrammers.sportsm8.SocialTab.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;

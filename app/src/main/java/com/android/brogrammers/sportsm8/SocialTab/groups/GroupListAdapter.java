@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab.groups;
+package com.android.brogrammers.sportsm8.SocialTab.Groups;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,9 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.SocialTab.SelectableAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupDetail.GroupDetailActivity;
 
 import java.util.List;
 
@@ -98,9 +99,9 @@ public class GroupListAdapter extends SelectableAdapter<GroupListAdapter.MyViewH
             switch (view.getId()) {
                 case R.id.group_card:
                     if (!selectionMode) {
-                        Intent intent = new Intent(context, GroupDetailView.class);
+                        Intent intent = new Intent(context, GroupDetailActivity.class);
                         Bundle b = new Bundle();
-                        b.putString("GroupID", data.get(getAdapterPosition()).GroupID);
+                        b.putInt("GroupID", data.get(getAdapterPosition()).GroupID);
                         b.putString("GroupName", data.get(getAdapterPosition()).GroupName);
                         intent.putExtras(b);
                         context.startActivity(intent);

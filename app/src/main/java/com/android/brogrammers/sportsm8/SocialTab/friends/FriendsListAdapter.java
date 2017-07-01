@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab.friends;
+package com.android.brogrammers.sportsm8.SocialTab.Friends;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.SocialTab.SelectableAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;

@@ -55,7 +55,7 @@
                 android:value="com.android.brogrammers.sportsm8.MainActivity" />
         </activity>
         <activity
-            android:name=".SocialTab.friends.OnlyFriendsView"
+            android:name=".SocialTab.Friends.OnlyFriendsView"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -63,7 +63,7 @@
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SocialTab.groups.GroupDetailView"
+            android:name=".SocialTab.Groups.GroupDetail.GroupDetailActivity"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SocialTab.SelectorContainer" />

@@ -7,8 +7,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
 import com.android.brogrammers.sportsm8.R;
 
+/**
+ * Helper Class to reuse Social Fragment for Memberselection
+ */
 public class SelectorContainer extends AppCompatActivity implements FragmentSocial.OnFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
@@ -22,7 +26,7 @@ public class SelectorContainer extends AppCompatActivity implements FragmentSoci
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragment = new FragmentSocial();
         Bundle bundle = getIntent().getExtras();
-        bundle.putBoolean("addToMeetingMode",true);
+        bundle.putBoolean("addToMeetingMode", true);
         fragment.setArguments(bundle);
         fragmentTransaction.add(R.id.selector_container, fragment);
         fragmentTransaction.commit();

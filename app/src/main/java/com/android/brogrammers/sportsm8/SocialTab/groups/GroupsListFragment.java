@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab.groups;
+package com.android.brogrammers.sportsm8.SocialTab.Groups;
 
 import android.content.Context;
 import android.content.SharedPreferences;

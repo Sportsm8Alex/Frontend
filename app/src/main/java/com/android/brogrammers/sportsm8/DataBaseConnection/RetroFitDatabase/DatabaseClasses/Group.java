@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class Group implements Serializable {
 
-    public String GroupID, GroupName;
-
+    public String GroupName;
+    public int GroupID;
     public Boolean selected = false;
 }

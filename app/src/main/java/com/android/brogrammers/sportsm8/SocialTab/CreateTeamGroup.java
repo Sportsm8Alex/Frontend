@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.SocialTab.groups;
+package com.android.brogrammers.sportsm8.SocialTab;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
@@ -35,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,6 +47,7 @@ import retrofit2.Response;
 
 public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
     private List<UserInfo> selection;
+    private List<Sport> sports;
     private String name;
     private APIService apiService;
     private boolean isCreatingTeam;
@@ -80,6 +83,7 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
         apiService.getSports("getData").enqueue(new Callback<List<Sport>>() {
             @Override
             public void onResponse(Call<List<Sport>> call, Response<List<Sport>> response) {
+                sports=response.body();
                 setUpSpinner(response.body());
             }
 
@@ -149,17 +153,21 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
         }
 
         if (isCreatingTeam) {
-            apiService.createTeam("newTeam", name, longitude, latitude, sportID, members).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+            if(selection.size()==sports.get(sportID).teamSize+1||sportID==8008) {
+                apiService.createTeam("newTeam", name, longitude, latitude, sportID, members).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
 
-                }
+                    }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
 
-                }
-            });
+                    }
+                });
+            }else {
+                 Toasty.error(getContext(), "Du brauchst genau "+sports.get(sportID).teamSize+" Teilnehmer für dein Team", Toast.LENGTH_SHORT).show();
+            }
         } else {
             apiService.createGroup("newGroup", name, members).enqueue(new Callback<Void>() {
                 @Override

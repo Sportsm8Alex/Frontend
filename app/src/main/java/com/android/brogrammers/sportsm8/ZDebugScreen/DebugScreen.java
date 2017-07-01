@@ -76,7 +76,7 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
     }
 
     @OnClick(R.id.searchUpdates)
-    public void searchForUpdates(){
+    public void searchForUpdates() {
         AppUpdater appUpdater = new AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.JSON)
                 .setUpdateJSON("http://sportsm8.bplaced.net/Update/update.json")
@@ -93,7 +93,7 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
 
     @Override
     public void updateUI(String answer) {
-        while (newmeetings < 10){
+        while (newmeetings < 10) {
             createRandomMeetings();
             newmeetings++;
         }

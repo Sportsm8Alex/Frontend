@@ -33,7 +33,7 @@ import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
 import com.android.brogrammers.sportsm8.ZDebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.SocialTab.friends.OnlyFriendsView;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // don't start new activities
                     case R.id.tab_account:
                         floatingActionButton.setVisibility(View.GONE);
-                       // fragment = new AccountPage();
+                        // fragment = new AccountPage();
                         fragment = new SocialFeedActivity();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
@@ -393,54 +393,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private boolean writeResponseBodyToDisk(ResponseBody body) {
-        try {
-            // todo change the file location/name according to your needs
-            File update = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + "update.apk");
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(update);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
-                        break;
-                    }
-
-                    outputStream.write(fileReader, 0, read);
-
-                    fileSizeDownloaded += read;
-
-                    Log.d("TAG", "file download: " + fileSizeDownloaded + " of " + fileSize);
-                }
-
-                outputStream.flush();
-
-                return true;
-            } catch (IOException e) {
-                return false;
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-            return false;
-        }
-    }
 
 }
 

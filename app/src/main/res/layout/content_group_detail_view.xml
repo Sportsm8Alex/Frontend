@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.android.brogrammers.sportsm8.SocialTab.groups.GroupDetailView"
+    tools:context="com.android.brogrammers.sportsm8.SocialTab.Groups.GroupDetail.GroupDetailActivity"
     tools:showIn="@layout/activity_group_detail_view">
 
     <RelativeLayout

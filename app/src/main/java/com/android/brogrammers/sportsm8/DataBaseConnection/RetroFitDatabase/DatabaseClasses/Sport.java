@@ -8,6 +8,6 @@ import java.io.Serializable;
 
 public class Sport implements Serializable {
 
-    public int sportID,team,minPartySize;
+    public int sportID,team,minPartySize,teamSize;
     public String sportname;
 }

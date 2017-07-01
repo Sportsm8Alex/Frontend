@@ -530,30 +530,6 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
         imm.hideSoftInputFromWindow(editTextChooseActivity.getWindowToken(), 0);
     }
 
-    @OnClick({R.id.fixed_time_button, R.id.fluent_time_button, R.id.dynamic_time_button})
-    public void timeSwitchOption(View view) {
-//        switch (view.getId()) {
-//            case R.id.fixed_time_button:
-//                view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-//                findViewById(R.id.dynamic_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                findViewById(R.id.fluent_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                dynamic = 0;
-//                break;
-//            case R.id.dynamic_time_button:
-//                view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-//                findViewById(R.id.fluent_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                findViewById(R.id.fixed_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                dynamic = 1;
-//                break;
-//            case R.id.fluent_time_button:
-//                view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-//                findViewById(R.id.dynamic_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                findViewById(R.id.fixed_time_button).setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-//                dynamic = 1;
-//                break;
-//        }
-    }
-
     public void setDynamic(int dynamicValue) {
         dynamic = dynamicValue;
         findViewById(R.id.dynamic_time_button).setBackgroundColor(dynamic == 2 ? ContextCompat.getColor(this, R.color.colorPrimary) : ContextCompat.getColor(this, R.color.grey));

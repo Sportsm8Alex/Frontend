@@ -88,16 +88,20 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") String GroupID);
+    Call<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") int GroupID);
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<Void> addMembersToGroup(@Field("function") String function, @Field("GroupID") String GroupID, @FieldMap Map<String, String> members);
+    Call<ResponseBody> addMembersToGroup(@Field("function") String function, @Field("GroupID") int groupID, @FieldMap Map<String, String> members);
 
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
     Call<Void> createGroup(@Field("function") String function, @Field("groupName") String groupName, @FieldMap Map<String, String> members);
+
+    @FormUrlEncoded
+    @POST("IndexGroups.php")
+    Call<ResponseBody> leaveGroup(@Field("function") String function, @Field("GroupID") int groupID, @Field("email") String email);
 
 
 

@@ -13,6 +13,5 @@ public interface MeetingDetailView {
     void displayNoMembers();
     void setUpprogressBar(int accepted,int total);
     void updateMemberList();
-
     void showError();
 }

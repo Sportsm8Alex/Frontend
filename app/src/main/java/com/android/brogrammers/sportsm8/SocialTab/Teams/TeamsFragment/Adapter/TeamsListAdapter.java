@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
-import com.android.brogrammers.sportsm8.SocialTab.SelectableAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
 import com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsDetailView.TeamDetailActivity;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
 
@@ -51,7 +51,8 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.teamName.setText(teams.get(position).teamName);
         holder.itemView.setBackgroundColor(isSelected(position) ? ContextCompat.getColor(context, R.color.lightblue) : ContextCompat.getColor(context, R.color.cardview_light_background));
-        holder.sportLogo.setImageResource(logoArray.getResourceId(teams.get(position).sportID,R.drawable.beachball));
+        if (teams.get(position).sportID != 8008)
+            holder.sportLogo.setImageResource(logoArray.getResourceId(teams.get(position).sportID, R.drawable.beachball));
         //(setScaleAnimation(holder.itemView);
     }
 
@@ -60,7 +61,6 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
     public int getItemCount() {
         return teams.size();
     }
-
 
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -74,7 +74,7 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
 
         MyViewHolder(final View itemView, Context ctx, ClickListener listener) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             this.contxt = ctx;
 
             itemView.setOnLongClickListener(this);
@@ -87,7 +87,7 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(contxt, TeamDetailActivity.class);
-            intent.putExtra("Team",teams.get(getAdapterPosition()));
+            intent.putExtra("Team", teams.get(getAdapterPosition()));
             contxt.startActivity(intent);
         }
 

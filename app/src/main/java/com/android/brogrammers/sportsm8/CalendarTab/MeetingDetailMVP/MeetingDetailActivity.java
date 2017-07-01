@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.SocialTab.friends.OnlyFriendsView;
+import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
@@ -47,9 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public class MeetingDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MeetingDetailView {
 
     private static final String TAG = "MeetingDetailActivity";
-    private int count = 0;
     private List<UserInfo> members;
-    private List<UserInfo> Selection;
     Meeting thisMeeting;
     MemberListAdapter arrayAdapter;
     DatabaseHelperMeetings databaseHelperMeetings;
@@ -84,7 +82,6 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     TextView newStartTimeView;
     @BindView(R.id.dash_detailView)
     TextView dashView;
-    APIService apiService = APIUtils.getAPIService();
 
     MeetingDetailViewPresenter presenter;
 
@@ -211,6 +208,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         databaseHelperMeetings.confirm(thisMeeting);
         setResult(RESULT_OK, intent);
         ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
+        int count = 0;
         progressBar.findViewById(count).animate().scaleX(1).scaleY(1).alpha(1);
         for (int i = 0; i < members.size(); i++) {
             String email = LoginScreen.getEmailAdress(this);
@@ -233,8 +231,8 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                Selection = (List<UserInfo>) bundle.getSerializable("partyList");
-                presenter.addMembers(thisMeeting, Selection);
+                List<UserInfo> selection = (List<UserInfo>) bundle.getSerializable("partyList");
+                presenter.addMembers(thisMeeting, selection);
             }
         }
     }
