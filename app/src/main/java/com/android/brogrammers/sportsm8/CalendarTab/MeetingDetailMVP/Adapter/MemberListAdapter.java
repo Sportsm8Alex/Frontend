@@ -53,8 +53,10 @@ public class MemberListAdapter extends BaseAdapter {
         if (list.get(i).confirmed == 1) {
             row.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
         }
-        if(!list.get(i).mystartTime.equals("0000-00-00 00:00:00")){
-            time.setText(list.get(i).getStartDateTime().toString("HH:mm") + " - "+ list.get(i).getEndDateTime().toString("HH:mm"));
+        if (list.get(i).mystartTime != null) {
+            if (!list.get(i).mystartTime.equals("0000-00-00 00:00:00")) {
+                time.setText(list.get(i).getStartDateTime().toString("HH:mm") + " - " + list.get(i).getEndDateTime().toString("HH:mm"));
+            }
         }
         return row;
     }

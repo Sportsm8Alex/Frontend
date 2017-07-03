@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -20,24 +19,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
-import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
-import com.android.brogrammers.sportsm8.ZDebugScreen.DebugScreen;
+import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
+import com.android.brogrammers.sportsm8.ZDebugScreen.DebugScreen;
+import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
@@ -57,18 +55,12 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.ResponseBody;
 
 /**
  * Created by alex on 10/30/2016.
