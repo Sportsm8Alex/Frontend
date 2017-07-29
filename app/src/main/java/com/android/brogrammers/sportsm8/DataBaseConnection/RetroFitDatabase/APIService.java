@@ -10,6 +10,8 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.Data
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -101,14 +103,14 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<ResponseBody> leaveGroup(@Field("function") String function, @Field("GroupID") int groupID, @Field("email") String email);
+    Completable leaveGroup(@Field("function") String function, @Field("GroupID") int groupID, @Field("email") String email);
 
 
 
     ///////TEAMS
     @FormUrlEncoded
     @POST("IndexTeams.php")
-    Call<List<Team>> getTeams(@Field("function") String function, @Field("email") String email);
+    Single<List<Team>> getTeams(@Field("function") String function, @Field("email") String email);
 
     @FormUrlEncoded
     @POST("IndexTeams.php")

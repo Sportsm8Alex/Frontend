@@ -6,6 +6,7 @@ import java.security.acl.Group;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 
@@ -15,6 +16,6 @@ import okhttp3.ResponseBody;
 
 public interface GroupRepository {
     Single<List<UserInfo>> getGroupMembers(int groupID);
-    Single<ResponseBody> leaveGroup(int groupID);
+    Completable leaveGroup(int groupID);
     Single<ResponseBody> addMembersToGroup(int groupID, Map<String,String> newMembers);
 }

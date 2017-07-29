@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -48,20 +50,21 @@ class GroupDetailPresenter {
     }
 
     void leaveGroup(int groupID) {
-        disposable.add(repository.leaveGroup(groupID)
+        repository.leaveGroup(groupID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(mainScheduler)
-                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                .subscribeWith(new CompletableObserver() {
                     @Override
-                    public void onSuccess(ResponseBody value) {
-                        view.leave();
-                    }
+                    public void onSubscribe(Disposable d) {}
+
+                    @Override
+                    public void onComplete() { view.leave();      }
 
                     @Override
                     public void onError(Throwable e) {
 
                     }
-                }));
+                });
     }
 
     void addMembersToGroup(final int groupID, List<UserInfo> Selection) {
@@ -73,15 +76,15 @@ class GroupDetailPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(mainScheduler)
                 .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
-            @Override
-            public void onSuccess(ResponseBody value) {
-                loadMembers(groupID);
-            }
+                    @Override
+                    public void onSuccess(ResponseBody value) {
+                        loadMembers(groupID);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
-        }));
+                    }
+                }));
     }
 }

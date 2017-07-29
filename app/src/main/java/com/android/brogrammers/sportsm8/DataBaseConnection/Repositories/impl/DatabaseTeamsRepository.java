@@ -26,12 +26,7 @@ public class DatabaseTeamsRepository implements TeamsRepository {
 
     @Override
     public Single<List<Team>> getTeams() {
-        return Single.fromCallable(new Callable<List<Team>>() {
-            @Override
-            public List<Team> call() throws Exception {
-                return apiService.getTeams("getTeams", LoginScreen.getRealEmail()).execute().body();
-            }
-        });
+        return apiService.getTeams("getTeams", LoginScreen.getRealEmail());
     }
 
     @Override

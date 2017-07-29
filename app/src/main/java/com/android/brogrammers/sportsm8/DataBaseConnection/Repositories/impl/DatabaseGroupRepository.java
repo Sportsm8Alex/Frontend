@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 
@@ -36,13 +37,8 @@ public class DatabaseGroupRepository implements GroupRepository {
     }
 
     @Override
-    public Single<ResponseBody> leaveGroup(final int groupID) {
-        return Single.fromCallable(new Callable<ResponseBody>() {
-            @Override
-            public ResponseBody call() throws Exception {
-                return apiService.leaveGroup("leaveGroup",groupID, LoginScreen.getRealEmail()).execute().body();
-            }
-        });
+    public Completable leaveGroup(final int groupID) {
+        return apiService.leaveGroup("leaveGroup",groupID, LoginScreen.getRealEmail());
     }
 
     @Override
