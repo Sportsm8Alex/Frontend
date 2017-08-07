@@ -17,11 +17,14 @@ import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.CalendarTab.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.TimeCalcObject;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMeetingsRepository;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
@@ -38,8 +41,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-
-import static android.R.attr.checked;
 
 public class DayFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -171,13 +172,15 @@ public class DayFragment extends Fragment {
                         else {
                             DateTime actualStart = meeting.getStartDateTime();
                             DateTime actualEnd = meeting.getEndDateTime();
-                            if(Minutes.minutesBetween(actualStart,endTime).getMinutes()<30) checked=false;
-                            else if(Minutes.minutesBetween(startTime,actualEnd).getMinutes()<30) checked = false;
-                            else checked=true;
+                            if (Minutes.minutesBetween(actualStart, endTime).getMinutes() < 30)
+                                checked = false;
+                            else if (Minutes.minutesBetween(startTime, actualEnd).getMinutes() < 30)
+                                checked = false;
+                            else checked = true;
                         }
 
                         if (checked) {
-                            databaseHelperMeetings.setOtherTime2(startTime, endTime, meeting);
+                            databaseHelperMeetings.setOtherTime(startTime, endTime, meeting);
                             position = meetingsOnDay.indexOf(meeting);
                             meetingsOnDay.get(position).setConfirmed(1);
                             rvAdapter.setMeetingsOnDay(meetingsOnDay);
@@ -192,7 +195,7 @@ public class DayFragment extends Fragment {
                 tdp2.show(((Activity) getContext()).getFragmentManager(), "tag");
             }
         }, 0, 0, true);
-       // tdp.setTimeInterval(1, 15);
+        // tdp.setTimeInterval(1, 15);
         tdp.show(((Activity) getContext()).getFragmentManager(), "tag");
 
     }
@@ -204,32 +207,24 @@ public class DayFragment extends Fragment {
         rvAdapter.setMeetingsOnDay(meetingsOnDay);
         rvAdapter.notifyDataSetChanged();
         meetingsRepository.isMeetingReady(meeting)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                .subscribeWith(new DisposableSingleObserver<JsonObject>() {
                     @Override
-                    public void onSuccess(@NonNull ResponseBody responseBody) {
+                    public void onSuccess(@io.reactivex.annotations.NonNull JsonObject jsonElement) {
                         int x = 0;
-                        try {
-                            x = Integer.valueOf(responseBody.string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        x = jsonElement.get("confirmed_number").getAsInt();
                         if (x >= meeting.minParticipants) {
                             meetingsOnDay.get(position).status = 1;
                             rvAdapter.setMeetingsOnDay(meetingsOnDay);
                             rvAdapter.notifyDataSetChanged();
                         }
-
                     }
 
                     @Override
-                    public void onError(@NonNull Throwable e) {
-
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        e.getMessage();
                     }
                 });
-
-
     }
 
     public static class CustomComperator implements Comparator<Meeting> {

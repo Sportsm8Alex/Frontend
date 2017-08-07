@@ -17,5 +17,5 @@ import okhttp3.ResponseBody;
 public interface GroupRepository {
     Single<List<UserInfo>> getGroupMembers(int groupID);
     Completable leaveGroup(int groupID);
-    Single<ResponseBody> addMembersToGroup(int groupID, Map<String,String> newMembers);
+    Completable addMembersToGroup(int groupID, Map<String,String> newMembers);
 }

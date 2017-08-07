@@ -103,9 +103,11 @@ public class Meeting extends BaseObservable implements Serializable {
 
     public String getMytime() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        if (!myendTime.toString().equals("0000-00-00 00:00:00"))
-            return formatter.parseDateTime(mystartTime).toString("HH:mm - ") + formatter.parseDateTime(myendTime).toString("HH:mm");
-        else return "";
+        if(myendTime!=null) {
+            if (!myendTime.toString().equals("0000-00-00 00:00:00"))
+                return formatter.parseDateTime(mystartTime).toString("HH:mm - ") + formatter.parseDateTime(myendTime).toString("HH:mm");
+            else return "";
+        }else return "";
     }
 
     public void setConfirmed(int confirmed) {

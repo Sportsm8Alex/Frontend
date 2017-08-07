@@ -64,6 +64,10 @@ import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
+import io.reactivex.observers.DisposableSingleObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -160,9 +164,9 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     hideKeyboard();
-                    ViewHelperClass.expand(clearEditText,255);
+                    ViewHelperClass.expand(clearEditText, 255);
                 } else {
-                    ViewHelperClass.expand(clearEditText,255);
+                    ViewHelperClass.expand(clearEditText, 255);
                 }
             }
         });
@@ -328,21 +332,16 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
                     for (int i = 0; i < Selection.size(); i++) {
                         members.put("members" + i, Selection.get(i).email);
                     }
-                    apiService.createMeeting("newMeeting", formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members, longitude, latitude).enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-
-                        }
-                    });
-
-
+                    apiService.createMeeting(formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members, longitude, latitude)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+                                    Toasty.success(getBaseContext(), "Neues Meeting erstellt", Toast.LENGTH_SHORT).show();
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            });
                 } else {
                     Toasty.error(this, "Falsche Zeit eingestellt", Toast.LENGTH_SHORT).show();
                 }
@@ -395,29 +394,32 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
 
     public void mergeGroupsAndFriends() {
         for (int i = 0; i < SelectionGroup.size(); i++) {
-            apiService.getGroupMembers("getGroupMembers", SelectionGroup.get(i).GroupID).enqueue(new Callback<List<UserInfo>>() {
-                @Override
-                public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
-                    List<UserInfo> temp = response.body();
-                    for (int j = 0; j < temp.size(); j++) {
-                        Boolean tempBool = false;
-                        for (int h = 0; h < Selection.size(); h++) {
-                            if (temp.get(j).email.equals(Selection.get(h).email)) {
-                                tempBool = true;
+            apiService.getGroupMembers("getGroupMembers", SelectionGroup.get(i).GroupID)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
+                        @Override
+                        public void onSuccess(@NonNull List<UserInfo> response) {
+
+                            List<UserInfo> temp = response;
+                            for (int j = 0; j < temp.size(); j++) {
+                                Boolean tempBool = false;
+                                for (int h = 0; h < Selection.size(); h++) {
+                                    if (temp.get(j).email.equals(Selection.get(h).email)) {
+                                        tempBool = true;
+                                    }
+                                }
+                                if (!tempBool) {
+                                    Selection.add(temp.get(j));
+                                }
                             }
+                            addFriendsButton.setText(Selection.size() + "  Teilnehmer hinzugefügt");
                         }
-                        if (!tempBool) {
-                            Selection.add(temp.get(j));
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
                         }
-                    }
-                    addFriendsButton.setText(Selection.size() + "  Teilnehmer hinzugefügt");
-                }
-
-                @Override
-                public void onFailure(Call<List<UserInfo>> call, Throwable t) {
-
-                }
-            });
+                    });
         }
     }
 

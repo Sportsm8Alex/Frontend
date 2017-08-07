@@ -28,12 +28,7 @@ public class DatabaseGroupRepository implements GroupRepository {
 
     @Override
     public Single<List<UserInfo>> getGroupMembers(final int groupID) {
-        return Single.fromCallable(new Callable<List<UserInfo>>() {
-            @Override
-            public List<UserInfo> call() throws Exception {
-                return apiService.getGroupMembers("getGroupMembers",groupID).execute().body();
-            }
-        });
+        return apiService.getGroupMembers("getGroupMembers",groupID);
     }
 
     @Override
@@ -42,12 +37,13 @@ public class DatabaseGroupRepository implements GroupRepository {
     }
 
     @Override
-    public Single<ResponseBody> addMembersToGroup(final int groupID, final Map<String, String> newMembers) {
-        return Single.fromCallable(new Callable<ResponseBody>() {
-            @Override
-            public ResponseBody call() throws Exception {
-                return apiService.addMembersToGroup("adMembersToGroup",groupID,newMembers).execute().body();
-            }
-        });
+    public Completable addMembersToGroup(final int groupID, final Map<String, String> newMembers) {
+        return apiService.addMembersToGroup("adMembersToGroup",groupID,newMembers);
+//        return Single.fromCallable(new Callable<ResponseBody>() {
+//            @Override
+//            public ResponseBody call() throws Exception {
+//                return apiService.addMembersToGroup("adMembersToGroup",groupID,newMembers).execute().body();
+//            }
+//        });
     }
 }

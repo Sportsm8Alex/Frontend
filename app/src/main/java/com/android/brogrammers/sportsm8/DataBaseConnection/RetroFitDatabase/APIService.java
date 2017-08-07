@@ -6,6 +6,8 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.Data
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Sport;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,9 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by Korbi on 03.06.2017.
@@ -25,53 +29,38 @@ import retrofit2.http.POST;
 
 public interface APIService {
     //MEETINGS
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<List<Meeting>> getMeetings(@Field("function") String function, @Field("email") String email);
+    @GET("Meetings/Meetings")
+    Single<List<Meeting>> getMeetings(@Query("email") String email);
+
+    @GET("Meetings/MemberList")
+    Single<List<UserInfo>> getMemberList(@Query("MeetingID") int meetingID);
 
     @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<Void> confirmMeeting(@Field("function") String function, @Field("meetingID") int meetingID, @Field("email") String email);
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<ResponseBody> confirmMeeting2(@Field("function") String function, @Field("meetingID") int meetingID, @Field("email") String email);
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<Void> setOtherTime(@Field("function") String function, @Field("start") int beginDatabase, @Field("duration") int duration, @Field("meetingID") int meetingID, @Field("email") String email);
-
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<Void> setOtherTime2(@Field("function") String function, @Field("mystartTime") String startTime, @Field("myendTime") String endTime, @Field("meetingID") int meetingID, @Field("email") String email);
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<List<UserInfo>> getMeetingMemberTimes(@Field("function") String function, @Field("meetingID") int meetingID);
-
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<Void> declineMeeting(@Field("function") String function, @Field("meetingID") int meetingID, @Field("email") String email);
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<ResponseBody> addMembersToMeeting2(@Field("function") String function, @Field("MeetingID") int meetingID, @FieldMap Map<String, String> members);
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<Void> createMeeting(@Field("function") String function, @Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String, String> members, @Field("longitude") double
+    @POST("Meetings/newMeeting")
+    Completable createMeeting(@Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String, String> members, @Field("longitude") double
             longitude, @Field("latitude") double latitude);
 
     @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<List<UserInfo>> getMemberList(@Field("function") String function, @Field("MeetingID") int meetingID);
+    @POST("Meetings/confirmMeeting")
+    Completable confirmMeeting(@Field("meetingID") int meetingID, @Field("email") String email);
 
+    @GET("Meetings/MeetingMemberTimes")
+    Single<List<UserInfo>> getMeetingMemberTimes(@Query("meetingID") int meetingID);
 
     @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Call<ResponseBody> isMeetingConfirmed(@Field("function") String function, @Field("MeetingID") int meetingID);
+    @POST("Meetings/setOtherTime")
+    Completable setOtherTime(@Field("mystartTime") String startTime, @Field("myendTime") String endTime, @Field("meetingID") int meetingID, @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("Meetings/declineMeeting")
+    Completable declineMeeting(@Field("meetingID") int meetingID, @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("Meetings/addMembersToMeeting")
+    Completable addMembersToMeeting(@Field("MeetingID") int meetingID, @FieldMap Map<String, String> members);
+
+    @GET("Meetings/isMeetingConfirmed")
+    Single<JsonObject> isMeetingConfirmed(@Query("MeetingID") int meetingID);
 
     //FRIENDSHIPS
     @FormUrlEncoded
@@ -90,11 +79,11 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") int GroupID);
+    Single<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") int GroupID);
 
     @FormUrlEncoded
     @POST("IndexGroups.php")
-    Call<ResponseBody> addMembersToGroup(@Field("function") String function, @Field("GroupID") int groupID, @FieldMap Map<String, String> members);
+    Completable addMembersToGroup(@Field("function") String function, @Field("GroupID") int groupID, @FieldMap Map<String, String> members);
 
 
     @FormUrlEncoded
@@ -105,8 +94,6 @@ public interface APIService {
     @POST("IndexGroups.php")
     Completable leaveGroup(@Field("function") String function, @Field("GroupID") int groupID, @Field("email") String email);
 
-
-
     ///////TEAMS
     @FormUrlEncoded
     @POST("IndexTeams.php")
@@ -114,13 +101,13 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("IndexTeams.php")
-    Call<List<UserInfo>> getTeamMembers(@Field("function") String function,@Field("teamID") int teamID);
+    Call<List<UserInfo>> getTeamMembers(@Field("function") String function, @Field("teamID") int teamID);
 
     @FormUrlEncoded
     @POST("IndexTeams.php")
-    Call<Void> createTeam(@Field("function") String function, @Field("teamName") String groupName,@Field("longitude") double longitude,@Field("latitude") double latitude,@Field("sportID") int sportID  , @FieldMap Map<String, String> members);
+    Call<Void> createTeam(@Field("function") String function, @Field("teamName") String groupName, @Field("longitude") double longitude, @Field("latitude") double latitude, @Field("sportID") int sportID, @FieldMap Map<String, String> members);
 
-///////////Sports
+    ///////////Sports
     @FormUrlEncoded
     @POST("IndexSports.php")
     Call<List<Sport>> getSports(@Field("function") String function);
@@ -129,6 +116,18 @@ public interface APIService {
     //////////////Matches
     @FormUrlEncoded
     @POST("IndexMatches.php")
-    Call<List<Match>> getFriendsMatches(@Field("function") String function,@Field("email") String email);
+    Call<List<Match>> getFriendsMatches(@Field("function") String function, @Field("email") String email);
+
+
+
+
+
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
+    Single<List<Meeting>> getMeetingsPOST(@Field("function") String function, @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("IndexMeetings.php")
+    Call<ResponseBody> confirmMeeting2(@Field("function") String function, @Field("meetingID") int meetingID, @Field("email") String email);
 
 }

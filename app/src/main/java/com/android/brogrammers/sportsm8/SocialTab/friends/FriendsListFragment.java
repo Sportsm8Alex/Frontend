@@ -58,6 +58,7 @@ public class FriendsListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<UserInfo>> call, Throwable t) {
+                t.getMessage();
             }
         });
     }

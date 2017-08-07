@@ -1,6 +1,7 @@
 package com.android.brogrammers.sportsm8.SocialTab.Groups.GroupDetail;
 
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseGroupRepository;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 
 import java.util.HashMap;
@@ -9,8 +10,11 @@ import java.util.Map;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.Scheduler;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -51,18 +55,11 @@ class GroupDetailPresenter {
 
     void leaveGroup(int groupID) {
         repository.leaveGroup(groupID)
-                .subscribeOn(Schedulers.io())
                 .observeOn(mainScheduler)
-                .subscribeWith(new CompletableObserver() {
+                .subscribe(new Action() {
                     @Override
-                    public void onSubscribe(Disposable d) {}
-
-                    @Override
-                    public void onComplete() { view.leave();      }
-
-                    @Override
-                    public void onError(Throwable e) {
-
+                    public void run() throws Exception {
+                        view.leave();
                     }
                 });
     }
@@ -72,19 +69,13 @@ class GroupDetailPresenter {
         for (int i = 0; i < Selection.size(); i++) {
             membersMap.put("member" + i, Selection.get(i).email);
         }
-        disposable.add(repository.addMembersToGroup(groupID, membersMap)
-                .subscribeOn(Schedulers.io())
+        repository.addMembersToGroup(groupID, membersMap)
                 .observeOn(mainScheduler)
-                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                .subscribe(new Action() {
                     @Override
-                    public void onSuccess(ResponseBody value) {
+                    public void run() throws Exception {
                         loadMembers(groupID);
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                }));
+                });
     }
 }

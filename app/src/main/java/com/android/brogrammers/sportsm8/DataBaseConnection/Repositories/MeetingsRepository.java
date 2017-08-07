@@ -1,6 +1,8 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories;
 
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
@@ -10,5 +12,5 @@ import okhttp3.ResponseBody;
  */
 
 public interface MeetingsRepository {
-    Single<ResponseBody> isMeetingReady(Meeting meeting);
+    Single<JsonObject> isMeetingReady(Meeting meeting);
 }

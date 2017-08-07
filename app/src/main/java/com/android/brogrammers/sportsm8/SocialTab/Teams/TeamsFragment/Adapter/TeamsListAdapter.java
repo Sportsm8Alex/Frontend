@@ -21,6 +21,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 
 public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewHolder> {
@@ -30,6 +32,7 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
     private LayoutInflater inflater;
     private ClickListener clickListener;
     private TypedArray logoArray;
+    private final PublishSubject<Team> onClickSubject = PublishSubject.create();
 
     public TeamsListAdapter(Context context, ClickListener clickListener, List<Team> data) {
         this.context = context;
@@ -56,10 +59,18 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
         //(setScaleAnimation(holder.itemView);
     }
 
+    public Observable<Team> getPositionClicks() {
+        return onClickSubject.hide();
+    }
+
 
     @Override
     public int getItemCount() {
         return teams.size();
+    }
+
+    public void setTeamList(List<Team> teamList) {
+        this.teams = teamList;
     }
 
 
@@ -86,9 +97,7 @@ public class TeamsListAdapter extends SelectableAdapter<TeamsListAdapter.MyViewH
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(contxt, TeamDetailActivity.class);
-            intent.putExtra("Team", teams.get(getAdapterPosition()));
-            contxt.startActivity(intent);
+            onClickSubject.onNext(teams.get(getAdapterPosition()));
         }
 
 

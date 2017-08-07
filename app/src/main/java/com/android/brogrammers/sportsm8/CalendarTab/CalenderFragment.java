@@ -40,9 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
 
 
 /**
@@ -128,30 +127,31 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
     public void getMeetings() {
         SharedPreferences sharedPrefs = parentActivity.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getMeetings("getMeeting2", email).enqueue(new Callback<List<Meeting>>() {
-            @Override
-            public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
-                if (response.body() != null) meetings = response.body();
-                createHighlightList();
-                if (onStartUp) {
-                    createFragmentList(14);
-                    onStartUp = false;
-                    viewPagerAdapter.notifyDataSetChanged();
-                } else {
-                    int position = tabLayout.getSelectedTabPosition();
-                    DayFragment dayFragment = (DayFragment) viewPagerAdapter.getItem(position);
-                    dayFragment.updateInstance(meetings, viewPagerAdapter.getToday().plusDays(position), latitude, longitude, locationMode);
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                customTabs();
+        apiService.getMeetings(email)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<Meeting>>() {
+                    @Override
+                    public void onSuccess(List<Meeting> meetingsList) {
+                        if (meetingsList != null) meetings = meetingsList;
+                        createHighlightList();
+                        if (onStartUp) {
+                            createFragmentList(14);
+                            onStartUp = false;
+                            viewPagerAdapter.notifyDataSetChanged();
+                        } else {
+                            int position = tabLayout.getSelectedTabPosition();
+                            DayFragment dayFragment = (DayFragment) viewPagerAdapter.getItem(position);
+                            dayFragment.updateInstance(meetings, viewPagerAdapter.getToday().plusDays(position), latitude, longitude, locationMode);
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                        customTabs();
+                    }
 
-            }
-
-            @Override
-            public void onFailure(Call<List<Meeting>> call, Throwable t) {
-                Toasty.error(getContext(), "Connection Failed").show();
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        Toasty.error(getContext(), "Connection Failed").show();
+                    }
+                });
     }
 
     private void customTabs() {

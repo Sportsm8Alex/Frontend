@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableSingleObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,24 +95,26 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
 
     private void getOptimalTime(final int position) {
         APIService apiService = APIUtils.getAPIService();
-        apiService.getMeetingMemberTimes("getMeetingMemberTimes", meetingsOnDay.get(position).MeetingID).enqueue(new Callback<List<UserInfo>>() {
-            @Override
-            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
-                if (response.body() != null) {
-                    UserInfo timeObject = calculateTime(response.body(), meetingsOnDay.get(position).minParticipants);
-                    if (timeObject.myendTime != null) {
-                        meetingsOnDay.get(position).setStartTime(timeObject.mystartTime);
-                        meetingsOnDay.get(position).setEndTime(timeObject.myendTime);
-                        notifyDataSetChanged();
+        apiService.getMeetingMemberTimes(meetingsOnDay.get(position).MeetingID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<UserInfo> userInfos) {
+                        if (userInfos != null) {
+                            UserInfo timeObject = calculateTime(userInfos, meetingsOnDay.get(position).minParticipants);
+                            if (timeObject.myendTime != null) {
+                                meetingsOnDay.get(position).setStartTime(timeObject.mystartTime);
+                                meetingsOnDay.get(position).setEndTime(timeObject.myendTime);
+                                notifyDataSetChanged();
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+                });
     }
 
     private UserInfo calculateTime(List<UserInfo> timeList, int min) {

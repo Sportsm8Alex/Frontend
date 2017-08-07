@@ -15,6 +15,7 @@ import java.util.Map;
 
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -35,7 +36,6 @@ public class MeetingDetailViewPresenter extends BaseObservable {
 
     public void loadMembers(final Meeting meeting) {
         compositeDisposable.add(userRepository.getUsers(meeting.MeetingID)
-                .subscribeOn(Schedulers.io())
                 .observeOn(mainScheduler)
                 .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
                     @Override
@@ -67,21 +67,14 @@ public class MeetingDetailViewPresenter extends BaseObservable {
         for (int i = 0; i < selection.size(); i++) {
             membersMap.put("member" + i, selection.get(i).email);
         }
-        compositeDisposable.add(userRepository.addUsersToMeeting(meeting.MeetingID, membersMap)
-                .subscribeOn(Schedulers.io())
+        userRepository.addUsersToMeeting(meeting.MeetingID,membersMap)
                 .observeOn(mainScheduler)
-                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                .subscribe(new Action() {
                     @Override
-                    public void onSuccess(@NonNull ResponseBody responseBody) {
+                    public void run() throws Exception {
                         view.updateMemberList();
                     }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        view.showError();
-                        Log.d(TAG, "Members could not be added");
-                    }
-                }));
+                });
     }
 
 

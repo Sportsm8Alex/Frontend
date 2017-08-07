@@ -6,6 +6,7 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.Data
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 
@@ -15,6 +16,6 @@ import okhttp3.ResponseBody;
 
 public interface UserRepository {
    Single<List<UserInfo>> getUsers(int meetingID);
-   Single<ResponseBody> addUsersToMeeting(int meetingID, Map<String, String> membersMap);
+   Completable addUsersToMeeting(int meetingID, Map<String, String> membersMap);
    Single<ResponseBody> confirmMeeting(Meeting meeting);
 }
