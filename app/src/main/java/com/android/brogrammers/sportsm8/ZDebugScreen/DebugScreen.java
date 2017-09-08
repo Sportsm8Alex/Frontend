@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
@@ -19,18 +19,23 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
-public class DebugScreen extends AppCompatActivity implements UIthread {
+public class DebugScreen extends AppCompatActivity {
 
     @BindView(R.id.email_switcher)
     Button emailSwitch;
     int i;
     int newmeetings = 0;
+    private APIService apiService = APIUtils.getAPIService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,6 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
 
     @OnClick(R.id.random_meetings)
     public void createRandomMeetings() {
-        Database db = new Database(this, getBaseContext());
         SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
         DateTimeFormatter formatter = DateTimeFormat.forPattern("MM-dd-YYYY HH:mm:ss");
@@ -71,8 +75,19 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
         randomStartTime.addHours(randInt);
         randomEndTime = randomStartTime;
         randomEndTime.addHours(2);
-        String[] params = {"IndexMeetings.php", "function", "newMeeting", "mystartTime", formatter.print(randomStartTime), "myendTime", formatter.print(randomEndTime), "minPar", 2 + "", "member", email, "activity", "TEST_MEETING", "sportID", "" + randInt, "dynamic", 0 + ""};
-        db.execute(params);
+        Map<String, String> members = new HashMap<>();
+        members.put("member1","Alex@alex.de");
+        apiService.createMeeting(formatter.print(randomStartTime),formatter.print(randomEndTime),2,email,"Test Meeting",randInt,0,members,0,0)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        while (newmeetings < 10) {
+                            createRandomMeetings();
+                            newmeetings++;
+                        }
+                    }
+                });
     }
 
     @OnClick(R.id.searchUpdates)
@@ -84,18 +99,5 @@ public class DebugScreen extends AppCompatActivity implements UIthread {
                 .showAppUpdated(true);
         appUpdater.start();
 
-    }
-
-    @Override
-    public void updateUI() {
-
-    }
-
-    @Override
-    public void updateUI(String answer) {
-        while (newmeetings < 10) {
-            createRandomMeetings();
-            newmeetings++;
-        }
     }
 }

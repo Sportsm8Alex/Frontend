@@ -9,14 +9,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
 public class RegisterActivity extends AppCompatActivity implements UIthread {
 
@@ -25,9 +29,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
     private EditText password;
     private EditText email;
     protected String enteredUsername;
-    public static final int CONNECTION_TIMEOUT = 10000;
-    public static final int READ_TIMEOUT = 15000;
-
+    private APIService apiService = APIUtils.getAPIService();
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -82,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
                             Toast.makeText(RegisterActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }else{
-                            syncDatabases(enteredUsername,enteredPassword,enteredEmail);
+                            syncDatabases(enteredUsername,enteredEmail);
                         }
 
                         // ...
@@ -91,10 +93,17 @@ public class RegisterActivity extends AppCompatActivity implements UIthread {
 
 
     }
-    public void syncDatabases(String enteredUsername,String enteredPassword,String enteredEmail){
-        String[] params = {"IndexAccounts.php", "function", "createNewAccount","password", enteredPassword, "email", enteredEmail,"username",enteredUsername};
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
+    public void syncDatabases(String enteredUsername,String enteredEmail){
+        apiService.createNewaccount(enteredEmail, enteredUsername)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                    }
+                });
+//        String[] params = {"IndexAccounts.php", "function", "createNewAccount","password", enteredPassword, "email", enteredEmail,"username",enteredUsername};
+//        Database db = new Database(this, getBaseContext());
+//        db.execute(params);
     }
 
 

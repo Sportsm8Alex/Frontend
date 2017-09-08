@@ -12,10 +12,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,6 +31,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+
 public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UIthread, View.OnClickListener {
 
     private static final String TAG = "Tag";
@@ -40,7 +44,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     private String dbReturn;
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
-
+    private APIService apiService = APIUtils.getAPIService();
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -311,9 +315,17 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void syncDatabases(GoogleSignInAccount account) {
-        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", account.getDisplayName(), "password", account.getId(), "email", account.getEmail()};
-        Database db = new Database(this, getBaseContext());
-        db.execute(params);
+        apiService.createNewaccount(account.getEmail(), account.getDisplayName())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                });
+//        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", account.getDisplayName(), "password", account.getId(), "email", account.getEmail()};
+//        Database db = new Database(this, getBaseContext());
+//        db.execute(params);
     }
 
 
@@ -321,7 +333,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
-    public static String getRealEmail(){
+    public static String getRealEmail() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         return mAuth.getCurrentUser().getEmail();
     }
@@ -330,7 +342,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public static String getEmailAdress(Context context) {
 
         SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        return sharedPrefs.getString("email","");
+        return sharedPrefs.getString("email", "");
         //TODO: USE THIS CODE
 //        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 //        return mAuth.getCurrentUser().getEmail();

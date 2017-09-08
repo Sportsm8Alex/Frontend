@@ -28,17 +28,17 @@ public class DatabaseGroupRepository implements GroupRepository {
 
     @Override
     public Single<List<UserInfo>> getGroupMembers(final int groupID) {
-        return apiService.getGroupMembers("getGroupMembers",groupID);
+        return apiService.getGroupMembers(groupID);
     }
 
     @Override
     public Completable leaveGroup(final int groupID) {
-        return apiService.leaveGroup("leaveGroup",groupID, LoginScreen.getRealEmail());
+        return apiService.leaveGroup(groupID, LoginScreen.getRealEmail());
     }
 
     @Override
     public Completable addMembersToGroup(final int groupID, final Map<String, String> newMembers) {
-        return apiService.addMembersToGroup("adMembersToGroup",groupID,newMembers);
+        return apiService.addMembersToGroup(groupID,newMembers);
 //        return Single.fromCallable(new Callable<ResponseBody>() {
 //            @Override
 //            public ResponseBody call() throws Exception {

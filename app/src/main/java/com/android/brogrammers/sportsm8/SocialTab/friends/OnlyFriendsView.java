@@ -21,15 +21,15 @@ import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIS
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.RetroFitClient;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableSingleObserver;
 
 public class OnlyFriendsView extends AppCompatActivity implements UIthread, SearchView.OnQueryTextListener, ClickListener {
 
@@ -87,20 +87,20 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
     private void getSearchResults(String search) {
         SharedPreferences sharedPrefs = getBaseContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.searchFriends("searchNewFriend",email,search).enqueue(new Callback<List<UserInfo>>() {
-            @Override
-            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
-                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()),"friends",getBaseContext());
-                updateUI("");
-            }
+        apiService.searchFriends(email,search)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<UserInfo> searchResults) {
+                        RetroFitClient.storeObjectList(new ArrayList<Object>(searchResults),"friends",getBaseContext());
+                        updateUI("");
+                    }
 
-            @Override
-            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
-
-
+                    }
+                });
 //        String[] params = {"IndexFriendship.php", "function", "searchNewFriend", "email", email, "friendname", search};
 //        Database db = new Database(this, getBaseContext());
 //        db.execute(params);

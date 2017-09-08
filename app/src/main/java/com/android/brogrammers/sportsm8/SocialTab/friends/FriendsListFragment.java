@@ -22,6 +22,9 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableSingleObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,18 +52,20 @@ public class FriendsListFragment extends Fragment {
     public void updateFriendsList() {
         SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getFriends("getFriends", email).enqueue(new Callback<List<UserInfo>>() {
-            @Override
-            public void onResponse(Call<List<UserInfo>> call, Response<List<UserInfo>> response) {
-                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "friends", getContext());
-                updateUI();
-            }
+        apiService.getFriends(email)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<UserInfo> userInfos) {
+                        RetroFitClient.storeObjectList(new ArrayList<Object>(userInfos), "friends", getContext());
+                        updateUI();
+                    }
 
-            @Override
-            public void onFailure(Call<List<UserInfo>> call, Throwable t) {
-                t.getMessage();
-            }
-        });
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
     }
 
     public void updateUI() {

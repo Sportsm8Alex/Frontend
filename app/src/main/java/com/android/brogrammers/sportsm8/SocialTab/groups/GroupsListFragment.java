@@ -23,6 +23,9 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableSingleObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,17 +56,20 @@ public class GroupsListFragment extends Fragment {
     public void updateGroupList() {
         final SharedPreferences sharedPrefs = getContext().getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
         String email = sharedPrefs.getString("email", "");
-        apiService.getGroups("getGroups", email).enqueue(new Callback<List<Group>>() {
-            @Override
-            public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
-                RetroFitClient.storeObjectList(new ArrayList<Object>(response.body()), "groups", getContext());
-                updateUI();
-            }
+        apiService.getGroups(email)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<Group>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<Group> groups) {
+                        RetroFitClient.storeObjectList(new ArrayList<Object>(groups), "groups", getContext());
+                        updateUI();
+                    }
 
-            @Override
-            public void onFailure(Call<List<Group>> call, Throwable t) {
-            }
-        });
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
     }
 
     public void updateUI() {

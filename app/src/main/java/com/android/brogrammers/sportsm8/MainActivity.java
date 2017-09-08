@@ -8,12 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,8 +24,6 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
@@ -52,11 +47,6 @@ import com.roughike.bottombar.OnTabSelectListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.joda.time.DateTime;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,15 +58,12 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
-    private Fragment fragment;
     private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-    private BottomNavigationView bottomNavigationView;
-    private double longitude, latitude;
     private boolean locationON = false;
 
-    List<Information> arrayListMeetings;
+
 
     @BindView(R.id.fab_calendar)
     FloatingActionButton floatingActionButton;
@@ -101,26 +88,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         navigationView();
-
-        fragmentManager = getSupportFragmentManager();
-        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new FragmentSocial();
-        fragmentTransaction.add(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
         setLocation.setOnClickListener(this);
         getNumberOfUnanswered();
         bottomBar.selectTabAtPosition(1);
+        fragmentManager = getSupportFragmentManager();
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                Intent intent;
                 switch (tabId) {
                     //not correct way to do
                     // don't start new activities
                     case R.id.tab_account:
+                        if (fragmentManager.findFragmentByTag("feed") != null) {
+                            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("feed")).commit();
+                        } else {
+                            fragmentManager.beginTransaction().add(R.id.fragment_container, new SocialFeedActivity(), "feed").commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("calendar") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("calendar")).commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("social") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("social")).commit();
+                        }
                         floatingActionButton.setVisibility(View.GONE);
-                        // fragment = new AccountPage();
-                        fragment = new SocialFeedActivity();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
                                 .scaleY(0)
@@ -132,8 +122,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textView.setText("Match Feed");
                         break;
                     case R.id.tab_calendar:
+                        if (fragmentManager.findFragmentByTag("calendar") != null) {
+                            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("calendar")).commit();
+                        } else {
+                            fragmentManager.beginTransaction().add(R.id.fragment_container, new CalenderFragment(), "calendar").commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("feed") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("feed")).commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("social") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("social")).commit();
+                        }
                         floatingActionButton.setVisibility(View.VISIBLE);
-                        fragment = new CalenderFragment();
+                        //fragment = new CalenderFragment();
                         imageButtonToolbar.animate()
                                 .scaleX(0)
                                 .scaleY(0)
@@ -144,8 +145,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textView.setText("Kalender");
                         break;
                     case R.id.tab_friends:
+                        if (fragmentManager.findFragmentByTag("social") != null) {
+                            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("social")).commit();
+                        } else {
+                            fragmentManager.beginTransaction().add(R.id.fragment_container, new FragmentSocial(), "social").commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("feed") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("feed")).commit();
+                        }
+                        if (fragmentManager.findFragmentByTag("calendar") != null) {
+                            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("calendar")).commit();
+                        }
                         floatingActionButton.setVisibility(View.GONE);
-                        fragment = new FragmentSocial();
+                        // fragment = new FragmentSocial();
 
                         setLocation.setVisibility(View.GONE);
                         imageButtonToolbar.animate()
@@ -157,9 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textView.setText("Freunde");
                         break;
                 }
-                getNumberOfUnanswered();
-                final FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment).commit();
+//                getNumberOfUnanswered();
             }
         });
 
@@ -168,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onTabReSelected(@IdRes int tabId) {
                 switch (tabId) {
                     case R.id.tab_calendar:
-                        ((CalenderFragment) fragment).scrollTo(0);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        ((CalenderFragment) fragmentManager.findFragmentByTag("calendar")).scrollTo(0);
                         break;
                     default:
                         break;
@@ -199,14 +210,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @OnClick(R.id.change_start_date)
     public void changeStartDate() {
-        CalenderFragment calenderFragment = (CalenderFragment) fragment;
+        CalenderFragment calenderFragment = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
         calenderFragment.toggleView(startDate);
     }
 
     @OnClick(R.id.fab_calendar)
     public void createNewMeeting() {
-        CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
-        DateTime dateTime = calenderFragment2.getSelectedDate().toDateTime();
+        CalenderFragment calenderFragment = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
+        DateTime dateTime = calenderFragment.getSelectedDate().toDateTime();
         Intent intent = new Intent(this, CreateNewMeeting.class);
         intent.putExtra("date", dateTime.toString("dd/MM/yyyy"));
         startActivityForResult(intent, 3);
@@ -293,20 +304,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void getNumberOfUnanswered() {
-        arrayListMeetings = new ArrayList<>();
-        SharedPreferences sharedPrefs = getSharedPreferences("IndexMeetings", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexMeetingsgetMeetingJSON", "");
-        try {
-            arrayListMeetings = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
         int x = 0;
-        for (int i = 0; i < arrayListMeetings.size(); i++) {
-            if (arrayListMeetings.get(i).confirmed != 1) {
-                x++;
-            }
-        }
+//        for (int i = 0; i < arrayListMeetings.size(); i++) {
+//            if (arrayListMeetings.get(i).confirmed != 1) {
+//                x++;
+//            }
+//        }
         BottomBarTab calendar = bottomBar.getTabAtPosition(1);
         calendar.setBadgeCount(x);
     }
@@ -336,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        CalenderFragment calenderFragment2 = (CalenderFragment) fragment;
+        CalenderFragment calenderFragment2 = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
         calenderFragment2.setStartDate(year, monthOfYear, dayOfMonth);
     }
 
@@ -353,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             locationON = false;
             setLocation.setImageResource(R.drawable.ic_location_off_white_24dp);
-            CalenderFragment c1 = (CalenderFragment) fragment;
+            CalenderFragment c1 = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
             c1.setLocation(0, 0, false);
             c1.toggleView(setLocation);
         }
@@ -363,13 +366,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode < 5) {
-            CalenderFragment c1 = (CalenderFragment) fragment;
+            CalenderFragment c1 = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
             if (requestCode == 1) {
                 if (resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(this, data);
                     LatLng coord = place.getLatLng();
-                    longitude = coord.longitude;
-                    latitude = coord.latitude;
+                    double longitude = coord.longitude;
+                    double latitude = coord.latitude;
                     c1.setLocation(longitude, latitude, true);
                     locationON = true;
                     setLocation.setImageResource(R.drawable.ic_location_on_white_24dp);

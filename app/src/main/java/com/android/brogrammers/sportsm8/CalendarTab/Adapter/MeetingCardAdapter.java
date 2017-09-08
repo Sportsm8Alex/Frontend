@@ -43,7 +43,7 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     private static final int MEETING = 2;
     private Context context;
     private List<Meeting> meetingsOnDay;
-    private List<Match> matchesOnDay = Arrays.asList(new Match(1, 2, 3, 4, 21, 21, "2012-12-12 12:12:12", "team1", "team2"));
+    private List<Match> matchesOnDay = new ArrayList<>();
     private DatabaseHelperMeetings databaseHelperMeetings;
     private MeetingsViewHolder meetingsViewHolder;
     private DayFragment dayFragment;

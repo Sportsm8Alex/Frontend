@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection;
+package com.android.brogrammers.sportsm8.ZZOldClassers;
 
 import android.content.Context;
 import android.content.SharedPreferences;

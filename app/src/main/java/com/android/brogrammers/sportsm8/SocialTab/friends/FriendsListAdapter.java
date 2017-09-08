@@ -16,19 +16,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
-import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
+import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
+import com.android.brogrammers.sportsm8.R;
+import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
+import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
+import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
 
 public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyViewHolder> {
@@ -167,31 +169,53 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
 
         @Override
         public void onClick(View view) {
-            Database db = new Database(this, context);
             SharedPreferences sharedPrefs = contxt.getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
             String emailString = sharedPrefs.getString("email", "");
-            String[] params;
             switch (view.getId()) {
                 case R.id.accept_friendship:
                     friendsrequest.setVisibility(View.GONE);
-                    params = new String[]{"IndexFriendship.php", "function", "confirmFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params);
+                    apiService.confirmFriend(emailString,data.get(getAdapterPosition()).email)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+
+                                }
+                            });
                     break;
                 case R.id.decline_friendship:
-                    params = new String[]{"IndexFriendship.php", "function", "deleteFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params);
+                    apiService.removeFriend(emailString,data.get(getAdapterPosition()).email)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+
+                                }
+                            });
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
                     break;
                 case R.id.add_to_friends:
-                    params = new String[]{"IndexFriendship.php", "function", "setFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params);
+                    apiService.setFriend(emailString,data.get(getAdapterPosition()).email)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+
+                                }
+                            });
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
                     break;
                 case R.id.remove_friend:
-                    params = new String[]{"IndexFriendship.php", "function", "removeFriend", "email", emailString, "friendemail", data.get(getAdapterPosition()).email};
-                    db.execute(params);
+                    apiService.removeFriend(emailString,data.get(getAdapterPosition()).email)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action() {
+                                @Override
+                                public void run() throws Exception {
+
+                                }
+                            });
                     data.remove(getAdapterPosition());
                     notifyDataSetChanged();
                     break;

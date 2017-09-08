@@ -17,9 +17,7 @@ import android.view.ViewGroup;
 
 import com.android.brogrammers.sportsm8.CalendarTab.DayFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;

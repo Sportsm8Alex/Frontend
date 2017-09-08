@@ -37,6 +37,10 @@ import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
+import io.reactivex.observers.DisposableSingleObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -80,18 +84,20 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
         nameEditText.setSingleLine(true);
         apiService = APIUtils.getAPIService();
         spinner.setEnabled(false);
-        apiService.getSports("getData").enqueue(new Callback<List<Sport>>() {
-            @Override
-            public void onResponse(Call<List<Sport>> call, Response<List<Sport>> response) {
-                sports=response.body();
-                setUpSpinner(response.body());
-            }
+        apiService.getSports()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<Sport>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<Sport> sportList) {
+                        sports=sportList;
+                        setUpSpinner(sports);
+                    }
 
-            @Override
-            public void onFailure(Call<List<Sport>> call, Throwable t) {
+                    @Override
+                    public void onError(@NonNull Throwable e) {
 
-            }
-        });
+                    }
+                });
         loadPicture(48, 11);
         return builder.create();
     }
@@ -153,33 +159,27 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
         }
 
         if (isCreatingTeam) {
-            if(selection.size()==sports.get(sportID).teamSize+1||sportID==8008) {
-                apiService.createTeam("newTeam", name, longitude, latitude, sportID, members).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-
-                    }
-                });
+            if(selection.size()+1==sports.get(sportID).teamSize||sportID==8008) {
+                apiService.createTeam(name,longitude,latitude,sportID,members)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                //Toasty.info(getActivity(),"Team erstellt",Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }else {
                  Toasty.error(getContext(), "Du brauchst genau "+sports.get(sportID).teamSize+" Teilnehmer für dein Team", Toast.LENGTH_SHORT).show();
             }
         } else {
-            apiService.createGroup("newGroup", name, members).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+            apiService.createGroup(name,members)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action() {
+                        @Override
+                        public void run() throws Exception {
 
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-
-                }
-            });
+                        }
+                    });
         }
         dismiss();
     }

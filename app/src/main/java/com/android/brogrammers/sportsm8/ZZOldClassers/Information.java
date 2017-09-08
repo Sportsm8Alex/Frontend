@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection;
+package com.android.brogrammers.sportsm8.ZZOldClassers;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

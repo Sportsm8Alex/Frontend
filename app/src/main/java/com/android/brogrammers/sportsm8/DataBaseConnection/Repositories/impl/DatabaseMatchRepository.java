@@ -25,11 +25,6 @@ public class DatabaseMatchRepository implements MatchRepository {
 
     @Override
     public Single<List<Match>> getMatches() {
-        return Single.fromCallable(new Callable<List<Match>>() {
-            @Override
-            public List<Match> call() throws Exception {
-                return apiService.getFriendsMatches("getFriendsMatches", LoginScreen.getRealEmail()).execute().body();
-            }
-        });
+        return apiService.getFriendsMatches(LoginScreen.getRealEmail());
     }
 }

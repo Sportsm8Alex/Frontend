@@ -13,9 +13,6 @@ import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
@@ -27,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AccountPage extends Fragment implements UIthread{
+public class AccountPage extends Fragment {
 
     Activity parentActivity;
     private AccountPage.OnFragmentInteractionListener mListener;
@@ -131,29 +128,4 @@ public class AccountPage extends Fragment implements UIthread{
         void onFragmentInteraction(Uri uri);
     }
 
-    @Override
-    public void updateUI() {
-
-    }
-
-    @Override
-    public void updateUI(String answer) {
-        List<Information> accountData = new ArrayList<>();
-        SharedPreferences sharedPrefs = parentActivity.getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
-        String meetingJson = sharedPrefs.getString("IndexAccountsgetAccountInfoJSON", "");
-        try {
-            accountData = Database.jsonToArrayList(meetingJson);
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
-        usernameTV.setText(accountData.get(0).username);
-        groupcount.setText(accountData.get(0).groupcount+"");
-        friendcount.setText(accountData.get(0).friendcount+"");
-       /* Picasso.with(this)
-                .load("http://sportsm8.bplaced.net" + accountData.get(0).PPpath)
-                .placeholder(R.drawable.dickbutt)
-                .error(R.drawable.dickbutt)
-                // .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
-                .into(circleImageView);*/
-    }
 }

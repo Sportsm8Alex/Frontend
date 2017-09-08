@@ -51,7 +51,7 @@ public class DatabaseHelperMeetings implements Callback {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-                        Log.d(TAG,"othe Time has been set");
+                        Log.d(TAG,"other Time has been set");
                     }
                 });
     }

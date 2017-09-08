@@ -35,6 +35,12 @@ public interface APIService {
     @GET("Meetings/MemberList")
     Single<List<UserInfo>> getMemberList(@Query("MeetingID") int meetingID);
 
+    @GET("Meetings/MeetingMemberTimes")
+    Single<List<UserInfo>> getMeetingMemberTimes(@Query("meetingID") int meetingID);
+
+    @GET("Meetings/isMeetingConfirmed")
+    Single<JsonObject> isMeetingConfirmed(@Query("MeetingID") int meetingID);
+
     @FormUrlEncoded
     @POST("Meetings/newMeeting")
     Completable createMeeting(@Field("startTime") String startTime, @Field("endTime") String endTime, @Field("minPar") int mimMemberCount, @Field("member") String email, @Field("activity") String Activity, @Field("sportID") int sportID, @Field("dynamic") int dynamic, @FieldMap Map<String, String> members, @Field("longitude") double
@@ -43,9 +49,6 @@ public interface APIService {
     @FormUrlEncoded
     @POST("Meetings/confirmMeeting")
     Completable confirmMeeting(@Field("meetingID") int meetingID, @Field("email") String email);
-
-    @GET("Meetings/MeetingMemberTimes")
-    Single<List<UserInfo>> getMeetingMemberTimes(@Query("meetingID") int meetingID);
 
     @FormUrlEncoded
     @POST("Meetings/setOtherTime")
@@ -59,72 +62,75 @@ public interface APIService {
     @POST("Meetings/addMembersToMeeting")
     Completable addMembersToMeeting(@Field("MeetingID") int meetingID, @FieldMap Map<String, String> members);
 
-    @GET("Meetings/isMeetingConfirmed")
-    Single<JsonObject> isMeetingConfirmed(@Query("MeetingID") int meetingID);
+    //GROUPS
+    @GET("Groups/Groups")
+    Single<List<Group>> getGroups(@Query("email") String email);
+
+    @GET("Groups/GroupMembers")
+    Single<List<UserInfo>> getGroupMembers(@Query("GroupID") int GroupID);
+
+    @FormUrlEncoded
+    @POST("Groups/addMembersToGroup")
+    Completable addMembersToGroup(@Field("GroupID") int groupID, @FieldMap Map<String, String> members);
+
+    @FormUrlEncoded
+    @POST("Groups/newGroup")
+    Completable createGroup(@Field("groupName") String groupName, @FieldMap Map<String, String> members);
+
+    @FormUrlEncoded
+    @POST("Groups/leaveGroup")
+    Completable leaveGroup(@Field("GroupID") int groupID, @Field("email") String email);
+
 
     //FRIENDSHIPS
-    @FormUrlEncoded
-    @POST("IndexFriendship.php")
-    Call<List<UserInfo>> getFriends(@Field("function") String function, @Field("email") String email);
+    @GET("Friendships/Friends")
+    Single<List<UserInfo>> getFriends(@Query("email") String email);
 
-
-    @FormUrlEncoded
-    @POST("IndexFriendship.php")
-    Call<List<UserInfo>> searchFriends(@Field("function") String function, @Field("email") String email, @Field("friendname") String searchText);
-
-    //GROUPS
-    @FormUrlEncoded
-    @POST("IndexGroups.php")
-    Call<List<Group>> getGroups(@Field("function") String function, @Field("email") String email);
+    @GET("Friendships/searchFriends")
+    Single<List<UserInfo>> searchFriends( @Query("email") String email, @Query("friendname") String searchText);
 
     @FormUrlEncoded
-    @POST("IndexGroups.php")
-    Single<List<UserInfo>> getGroupMembers(@Field("function") String function, @Field("GroupID") int GroupID);
+    @POST("Friendships/confirmFriend")
+    Completable confirmFriend(@Field("email") String email,@Field("friendemail") String friendemail);
 
     @FormUrlEncoded
-    @POST("IndexGroups.php")
-    Completable addMembersToGroup(@Field("function") String function, @Field("GroupID") int groupID, @FieldMap Map<String, String> members);
-
-
-    @FormUrlEncoded
-    @POST("IndexGroups.php")
-    Call<Void> createGroup(@Field("function") String function, @Field("groupName") String groupName, @FieldMap Map<String, String> members);
+    @POST("Friendships/setFriend")
+    Completable setFriend(@Field("email") String email,@Field("friendemail") String friendemail);
 
     @FormUrlEncoded
-    @POST("IndexGroups.php")
-    Completable leaveGroup(@Field("function") String function, @Field("GroupID") int groupID, @Field("email") String email);
+    @POST("Friendships/removeFriend")
+    Completable removeFriend(@Field("email") String email,@Field("friendemail") String friendemail);
+
+    @FormUrlEncoded
+    @POST("Friendships/confirmPending")
+    Completable confirmPending(@Field("email") String email);
+
 
     ///////TEAMS
-    @FormUrlEncoded
-    @POST("IndexTeams.php")
-    Single<List<Team>> getTeams(@Field("function") String function, @Field("email") String email);
+    @GET("Teams/Teams")
+    Single<List<Team>> getTeams(@Query("email") String email);
+
+    @GET("Teams/Members")
+    Single<List<UserInfo>> getTeamMembers(@Query("teamID") int teamID);
 
     @FormUrlEncoded
-    @POST("IndexTeams.php")
-    Call<List<UserInfo>> getTeamMembers(@Field("function") String function, @Field("teamID") int teamID);
-
-    @FormUrlEncoded
-    @POST("IndexTeams.php")
-    Call<Void> createTeam(@Field("function") String function, @Field("teamName") String groupName, @Field("longitude") double longitude, @Field("latitude") double latitude, @Field("sportID") int sportID, @FieldMap Map<String, String> members);
+    @POST("Teams/newTeam")
+    Completable createTeam(@Field("teamName") String groupName, @Field("longitude") double longitude, @Field("latitude") double latitude, @Field("sportID") int sportID, @FieldMap Map<String, String> members);
 
     ///////////Sports
-    @FormUrlEncoded
-    @POST("IndexSports.php")
-    Call<List<Sport>> getSports(@Field("function") String function);
+    @GET("Sports/sportList")
+    Single<List<Sport>> getSports();
 
 
     //////////////Matches
+    @GET("Matches/Matches")
+    Single<List<Match>> getFriendsMatches(@Query("email") String email);
+
+    //ACCOUNTS
     @FormUrlEncoded
-    @POST("IndexMatches.php")
-    Call<List<Match>> getFriendsMatches(@Field("function") String function, @Field("email") String email);
+    @POST("Accounts/createNewAccount")
+    Completable createNewaccount(@Field("email") String email,@Field("username") String username);
 
-
-
-
-
-    @FormUrlEncoded
-    @POST("IndexMeetings.php")
-    Single<List<Meeting>> getMeetingsPOST(@Field("function") String function, @Field("email") String email);
 
     @FormUrlEncoded
     @POST("IndexMeetings.php")

@@ -22,9 +22,6 @@ import android.widget.Spinner;
 
 import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Database;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Information;
-import com.android.brogrammers.sportsm8.DataBaseConnection.UIthread;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;

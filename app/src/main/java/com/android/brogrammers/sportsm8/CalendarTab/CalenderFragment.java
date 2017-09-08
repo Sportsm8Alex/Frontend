@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.CalendarTab.Adapter.CalendarViewPagerAdapter;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.RetroFitClient;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.ViewHelperClass;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
@@ -42,6 +43,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
+import retrofit2.Retrofit;
 
 
 /**
@@ -132,7 +134,10 @@ public class CalenderFragment extends Fragment implements ViewPager.OnPageChange
                 .subscribeWith(new DisposableSingleObserver<List<Meeting>>() {
                     @Override
                     public void onSuccess(List<Meeting> meetingsList) {
-                        if (meetingsList != null) meetings = meetingsList;
+                        if (meetingsList != null){
+                            meetings = meetingsList;
+                            RetroFitClient.storeObjectList(new ArrayList<Object>(meetingsList),"meetings",getContext());
+                        }
                         createHighlightList();
                         if (onStartUp) {
                             createFragmentList(14);
