@@ -11,11 +11,11 @@
 
         <variable
             name="presenter"
-            type="com.android.brogrammers.sportsm8.CalendarTab.DayFragment" />
+            type="com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.DayFragment" />
 
         <variable
             name="meeting"
-            type="com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting" />
+            type="com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting" />
     </data>
 
 

@@ -1,6 +1,6 @@
 package com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Match;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Match;
 
 import java.util.List;
 

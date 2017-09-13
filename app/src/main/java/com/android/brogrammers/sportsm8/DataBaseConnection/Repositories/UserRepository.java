@@ -1,7 +1,7 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.List;
 import java.util.Map;

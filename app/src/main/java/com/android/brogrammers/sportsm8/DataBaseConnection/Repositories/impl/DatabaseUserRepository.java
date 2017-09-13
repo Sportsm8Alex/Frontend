@@ -1,10 +1,10 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.UserRepository;
 
 import java.util.List;
@@ -17,10 +17,10 @@ import okhttp3.ResponseBody;
 
 public class DatabaseUserRepository implements UserRepository {
 
-    private APIService apiService;
+    private MeetingApiService apiService;
 
     public DatabaseUserRepository() {
-        apiService = APIUtils.getAPIService();
+        apiService = APIUtils.getMeetingAPIService();
     }
 
     @Override

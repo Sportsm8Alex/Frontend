@@ -22,7 +22,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
+import com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.CalenderFragment;
 import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
@@ -56,14 +56,12 @@ import butterknife.OnClick;
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private boolean locationON = false;
-
-
 
     @BindView(R.id.fab_calendar)
     FloatingActionButton floatingActionButton;
@@ -188,12 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        AppUpdater appUpdater = new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.JSON)
-                .setUpdateJSON("http://sportsm8.bplaced.net/Update/update.json")
-                .setDisplay(Display.DIALOG)
-                .showAppUpdated(true);
-        appUpdater.start();
     }
 
 
@@ -333,14 +325,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+    public final void callUpdater(){
+        AppUpdater appUpdater = new AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.JSON)
+                .setUpdateJSON("http://sportsm8.bplaced.net/Update/update.json")
+                .setDisplay(Display.DIALOG)
+                .showAppUpdated(true);
+        appUpdater.start();
     }
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        CalenderFragment calenderFragment2 = (CalenderFragment) fragmentManager.findFragmentByTag("calendar");
-        calenderFragment2.setStartDate(year, monthOfYear, dayOfMonth);
+    public void onFragmentInteraction(Uri uri) {
     }
 
 

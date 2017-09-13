@@ -1,10 +1,9 @@
-package com.android.brogrammers.sportsm8.CalendarTab;
+package com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -19,18 +18,14 @@ import com.android.brogrammers.sportsm8.CalendarTab.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMeetingsRepository;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,8 +34,6 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class DayFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -172,11 +165,7 @@ public class DayFragment extends Fragment {
                         else {
                             DateTime actualStart = meeting.getStartDateTime();
                             DateTime actualEnd = meeting.getEndDateTime();
-                            if (Minutes.minutesBetween(actualStart, endTime).getMinutes() < 30)
-                                checked = false;
-                            else if (Minutes.minutesBetween(startTime, actualEnd).getMinutes() < 30)
-                                checked = false;
-                            else checked = true;
+                            checked = Minutes.minutesBetween(actualStart, endTime).getMinutes() >= 30 && Minutes.minutesBetween(startTime, actualEnd).getMinutes() >= 30;
                         }
 
                         if (checked) {

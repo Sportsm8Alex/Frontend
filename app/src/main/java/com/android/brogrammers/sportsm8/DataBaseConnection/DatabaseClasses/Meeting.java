@@ -1,11 +1,11 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses;
+package com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.widget.TextView;
 
-import com.android.databinding.library.baseAdapters.BR;
+
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -112,7 +112,7 @@ public class Meeting extends BaseObservable implements Serializable {
 
     public void setConfirmed(int confirmed) {
         this.confirmed = confirmed;
-        notifyPropertyChanged(BR.meeting);
+       // notifyPropertyChanged(BR.meeting);
     }
 
     @Bindable

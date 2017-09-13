@@ -15,12 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.FriendshipsApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.RetroFitClient;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitClient;
 import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,7 +40,7 @@ public class OnlyFriendsView extends AppCompatActivity implements UIthread, Sear
     private Toolbar toolbar;
     private ActionMode actionMode;
     private OnlyFriendsView.ActionModeCallBack actionModeCallBack = new OnlyFriendsView.ActionModeCallBack();
-    private APIService apiService = APIUtils.getAPIService();
+    private FriendshipsApiService apiService = APIUtils.getFriendshipsAPIService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

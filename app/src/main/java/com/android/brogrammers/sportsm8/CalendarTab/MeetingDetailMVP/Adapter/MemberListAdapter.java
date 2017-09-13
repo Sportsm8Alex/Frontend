@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.List;
 

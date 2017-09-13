@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.android.brogrammers.sportsm8.CalendarTab.CalenderFragment;
 import com.android.brogrammers.sportsm8.R;
 
 /**

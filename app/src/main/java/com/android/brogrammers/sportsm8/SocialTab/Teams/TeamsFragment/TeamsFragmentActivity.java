@@ -1,7 +1,6 @@
 package com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment;
 
 import android.content.Intent;
-import android.databinding.Bindable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,7 @@ import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsDetailView.TeamDetailActivity;
 import com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment.Adapter.TeamsListAdapter;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseTeamsRepository;
 
 import java.util.ArrayList;

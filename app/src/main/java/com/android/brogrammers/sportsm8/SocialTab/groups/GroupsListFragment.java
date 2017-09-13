@@ -11,12 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.GroupsApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.RetroFitClient;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,16 +26,13 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GroupsListFragment extends Fragment {
     private List<Group> groups;
     private RecyclerView recyclerView;
     private GroupListAdapter adapter;
     private FragmentSocial fragmentSocial;
-    private APIService apiService = APIUtils.getAPIService();
+    private GroupsApiService apiService = APIUtils.getGroupsAPIService();
     private Gson gson;
 
     @Override

@@ -1,18 +1,16 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.GroupsApiService;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.GroupRepository;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import okhttp3.ResponseBody;
 
 /**
  * Created by Korbi on 29.06.2017.
@@ -20,10 +18,10 @@ import okhttp3.ResponseBody;
 
 public class DatabaseGroupRepository implements GroupRepository {
 
-    private APIService apiService;
+    private GroupsApiService apiService;
 
     public DatabaseGroupRepository() {
-        this.apiService = APIUtils.getAPIService();
+        this.apiService = APIUtils.getGroupsAPIService();
     }
 
     @Override

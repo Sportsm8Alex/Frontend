@@ -2,21 +2,14 @@ package com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment;
 
 import android.support.annotation.NonNull;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseTeamsRepository;
-import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
-import com.google.android.gms.common.api.Api;
 
 import java.util.List;
 
 import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Korbi on 16.06.2017.

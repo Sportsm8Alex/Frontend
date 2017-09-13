@@ -11,12 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.FriendshipsApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.RetroFitClient;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitClient;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -25,9 +25,6 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FriendsListFragment extends Fragment {
 
@@ -35,7 +32,7 @@ public class FriendsListFragment extends Fragment {
     private RecyclerView recyclerView;
     private FriendsListAdapter adapter;
     private FragmentSocial fragmentSocial;
-    private APIService apiService = APIUtils.getAPIService();
+    private FriendshipsApiService apiService = APIUtils.getFriendshipsAPIService();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

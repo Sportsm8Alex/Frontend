@@ -1,23 +1,17 @@
 package com.android.brogrammers.sportsm8.SocialTab.Groups.GroupDetail;
 
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseGroupRepository;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.Scheduler;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 /**
  * Created by Korbi on 29.06.2017.

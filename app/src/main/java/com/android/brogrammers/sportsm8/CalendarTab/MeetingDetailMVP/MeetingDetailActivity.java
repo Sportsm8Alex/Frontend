@@ -20,16 +20,14 @@ import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseUserRepository;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.ViewHelperClass;
-import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseUserRepository;
 import com.android.brogrammers.sportsm8.databinding.ActivityMeetingDetailViewBinding;
 
 import org.joda.time.DateTime;
@@ -46,7 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class MeetingDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MeetingDetailView {
 
-    private static final String TAG = "MeetingDetailActivity";
+    private static final String TAG = MeetingDetailActivity.class.getSimpleName();
     private List<UserInfo> members;
     Meeting thisMeeting;
     MemberListAdapter arrayAdapter;
@@ -56,8 +54,8 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
 
     @BindView(R.id.listview_meeting_detail)
     ListView listView;
-    //    @BindView(R.id.meeting_detail_swipeRefresh)
-//    SwipeRefreshLayout swipeRefreshLayout;
+    //@BindView(R.id.meeting_detail_swipeRefresh)
+    //SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.time_meeting_detail)
     TextView textView_time;
     @BindView(R.id.time_meetingdetail)
@@ -89,11 +87,11 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new MeetingDetailViewPresenter(this, new DatabaseUserRepository(), AndroidSchedulers.mainThread());
-       // setContentView(R.layout.activity_meeting_detail_view);
-        ActivityMeetingDetailViewBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_meeting_detail_view);
+        // setContentView(R.layout.activity_meeting_detail_view);
+        ActivityMeetingDetailViewBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_meeting_detail_view);
         Bundle b = getIntent().getExtras();
         thisMeeting = (Meeting) b.getSerializable("MeetingOnDay");
-        binding.setVariable(BR.meeting,thisMeeting);
+        binding.setVariable(BR.meeting, thisMeeting);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -111,6 +109,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         if (thisMeeting.sportID < bannerArray.length()) {
             bannerImage.setImageResource(bannerArray.getResourceId(thisMeeting.sportID, R.drawable.custommeeting));
         }
+        bannerArray.recycle();
         textView_sportID.setText(thisMeeting.meetingActivity);
         members = new ArrayList<>();
         arrayAdapter = new MemberListAdapter(this, members);

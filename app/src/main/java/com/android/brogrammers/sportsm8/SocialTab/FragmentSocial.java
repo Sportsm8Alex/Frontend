@@ -26,8 +26,8 @@ import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupListAdapter;
 import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupsListFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

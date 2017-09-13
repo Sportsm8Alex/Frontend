@@ -15,9 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.brogrammers.sportsm8.CalendarTab.DayFragment;
+import com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.DayFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -216,7 +216,7 @@ public class CalenderFragmentOld extends Fragment implements UIthread, SwipeRefr
 
             int todayInWeek = LocalDate.now().getDayOfWeek() - 1;
             /*for(int i=0; i<7; i++){
-                tabLayout.addTab(tabLayout.newTab().setFilterText(btnText[(todayInWeek+i)%7]));
+                tabLayout.getNextDays(tabLayout.newTab().setFilterText(btnText[(todayInWeek+i)%7]));
             }*/
             return btnText[(todayInWeek + position) % 7];
 

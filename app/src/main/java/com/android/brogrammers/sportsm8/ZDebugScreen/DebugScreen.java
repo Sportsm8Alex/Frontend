@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.enums.Display;
@@ -35,7 +35,7 @@ public class DebugScreen extends AppCompatActivity {
     Button emailSwitch;
     int i;
     int newmeetings = 0;
-    private APIService apiService = APIUtils.getAPIService();
+    private MeetingApiService apiService = APIUtils.getMeetingAPIService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

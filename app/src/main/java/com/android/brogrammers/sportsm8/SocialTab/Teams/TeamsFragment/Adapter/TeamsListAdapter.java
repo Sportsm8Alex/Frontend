@@ -1,7 +1,6 @@
 package com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +13,7 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
 import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
-import com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsDetailView.TeamDetailActivity;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
 
 import java.util.List;
 

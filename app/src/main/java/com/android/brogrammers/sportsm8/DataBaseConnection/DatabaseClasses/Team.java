@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses;
+package com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses;
 
 import java.io.Serializable;
 

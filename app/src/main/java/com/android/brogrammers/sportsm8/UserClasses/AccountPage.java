@@ -2,7 +2,6 @@ package com.android.brogrammers.sportsm8.UserClasses;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,14 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
 import com.android.brogrammers.sportsm8.R;
-
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

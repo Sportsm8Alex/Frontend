@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.CalendarTab.DayFragment;
+import com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.DayFragment;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 
 import org.joda.time.DateTime;
 
@@ -24,14 +24,14 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
     private List<DayFragment> fragmentList = new ArrayList<>();
     private Context context;
     private boolean needsUpdate=false;
-    private DateTime today;
+    private DateTime startDate;
 
-    public CalendarViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, List<DayFragment> meetings) {
+    public CalendarViewPagerAdapter(FragmentManager fragmentManager, Context ApplicationContext, List<DayFragment> meetings,DateTime currentStartDate) {
         super(fragmentManager);
         fragmentList.clear();
         this.context = ApplicationContext;
-        today=new DateTime();
-        fragmentList = meetings; //Sets a reference doesnt copy
+        startDate = currentStartDate;
+        fragmentList.addAll(meetings);
     }
 
     @Override
@@ -57,19 +57,16 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        DateTime todayPosition = today.plusDays(position);
+        DateTime todayPosition = startDate.plusDays(position);
         return todayPosition.getDayOfMonth() + "." + todayPosition.getMonthOfYear();
     }
 
-    public View getTabView(int position) {
-
-        DateTime todayPosition = today.plusDays(position);
+    public View getTabView(DateTime todayPosition,int position) {
         View v = LayoutInflater.from(context).inflate(R.layout.tab_item, null);
         TextView tv = (TextView) v.findViewById(R.id.textView_date);
         TextView tv2 = (TextView) v.findViewById(R.id.textView_day);
         tv.setText(todayPosition.getDayOfMonth() + "." + todayPosition.getMonthOfYear());
         tv2.setText(todayPosition.toString("E"));
-
         DayFragment dayFragment = (DayFragment) this.getItem(position);
         List<Meeting> onDay = dayFragment.getMeetingsOnDay();
         if (onDay != null) {
@@ -90,16 +87,23 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
         return v;
     }
 
+    public void updateFragmentList(List<DayFragment> updatedList){
+        fragmentList.clear();
+        fragmentList.addAll(updatedList);
+    }
+
+    public void addFragmentsToList(List<DayFragment> newDayFragments){
+        fragmentList.addAll(newDayFragments);
+        notifyDataSetChanged();
+    }
+
     public void setNeedsUpdate(boolean needsUpdate) {
         this.needsUpdate = needsUpdate;
     }
 
-    public DateTime getToday() {
-        return today;
+    public void setStartDate(DateTime today) {
+        this.startDate = today;
     }
-
-    public void setToday(DateTime today) {
-        this.today = today;
-    }
+    public DateTime getCurrentStartDate(){ return startDate;}
 }
 

@@ -10,7 +10,7 @@
 
         <variable
             name="Meeting"
-            type="com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting" />
+            type="com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting" />
     </data>
 
 <android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"

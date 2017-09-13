@@ -1,6 +1,6 @@
 package com.android.brogrammers.sportsm8.SocialTab.Teams.TeamsFragment;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
 
 import java.util.List;
 

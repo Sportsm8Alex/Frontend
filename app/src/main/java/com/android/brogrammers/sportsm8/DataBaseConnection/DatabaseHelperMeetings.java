@@ -3,11 +3,9 @@ package com.android.brogrammers.sportsm8.DataBaseConnection;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.View;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,7 +21,7 @@ import retrofit2.Response;
 
 public class DatabaseHelperMeetings implements Callback {
     private static final String TAG = DatabaseHelperMeetings.class.getSimpleName();
-    private APIService apiService = APIUtils.getAPIService();
+    private MeetingApiService apiService = APIUtils.getMeetingAPIService();
     private String email;
 
     public DatabaseHelperMeetings(Context context) {

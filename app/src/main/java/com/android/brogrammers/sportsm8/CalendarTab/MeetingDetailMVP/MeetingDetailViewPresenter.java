@@ -4,10 +4,9 @@ import android.databinding.BaseObservable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.UserRepository;
-import com.android.databinding.library.baseAdapters.BR;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +16,6 @@ import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class MeetingDetailViewPresenter extends BaseObservable {
 

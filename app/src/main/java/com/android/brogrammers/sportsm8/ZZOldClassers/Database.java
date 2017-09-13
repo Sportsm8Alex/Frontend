@@ -114,7 +114,7 @@ public class Database extends AsyncTask<String, String, String>{
         //save database information locally
         // updateUI(success)
 
-        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(filename+function+"JSON", success);
         editor.apply();

@@ -10,8 +10,8 @@ import android.widget.ListView;
 
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseTeamsRepository;
 import com.mypopsy.maps.StaticMap;
 import com.squareup.picasso.Picasso;

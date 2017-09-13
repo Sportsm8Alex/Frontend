@@ -16,9 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.FriendshipsApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
@@ -43,7 +43,7 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
     private Boolean addFriendMode;
     //Instance of clickListener for handling clickevents through Friends.java
     private ClickListener clickListener;
-    private APIService apiService = APIUtils.getAPIService();
+    private FriendshipsApiService apiService = APIUtils.getFriendshipsAPIService();
 
 
     public FriendsListAdapter(Context context, ClickListener clickListener, List<UserInfo> data, Boolean addFriendMode) {
@@ -54,7 +54,6 @@ public class FriendsListAdapter extends SelectableAdapter<FriendsListAdapter.MyV
         //Is for when, adapter is used for searching new Friends
         this.addFriendMode = addFriendMode;
         inflater = LayoutInflater.from(context);
-
     }
 
     @Override

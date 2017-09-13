@@ -1,16 +1,14 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.MeetingsRepository;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.concurrent.Callable;
+import java.util.List;
 
 import io.reactivex.Single;
-import okhttp3.ResponseBody;
 
 /**
  * Created by Korbi on 14.06.2017.
@@ -18,14 +16,20 @@ import okhttp3.ResponseBody;
 
 public class DatabaseMeetingsRepository implements MeetingsRepository {
 
-    private APIService apiService;
+    private MeetingApiService apiService;
 
     public DatabaseMeetingsRepository() {
-        apiService = APIUtils.getAPIService();
+        apiService = APIUtils.getMeetingAPIService();
     }
 
     @Override
     public Single<JsonObject> isMeetingReady(final Meeting meeting) {
         return apiService.isMeetingConfirmed(meeting.MeetingID);
     }
+
+    @Override
+    public Single<List<Meeting>> getMeetings(String email) {
+        return apiService.getMeetings(email);
+    }
+
 }

@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailView;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailViewPresenter;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.UserRepository;
 
 import org.junit.Before;

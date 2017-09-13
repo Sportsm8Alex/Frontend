@@ -12,6 +12,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,11 +24,13 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Sport;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.GroupsApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Sport;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.SelectorContainer;
 import com.android.brogrammers.sportsm8.ViewHelperClass;
@@ -57,9 +60,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class CreateNewMeeting extends AppCompatActivity implements View.OnClickListener {
@@ -77,6 +77,8 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
     private DateTimeFormatter formatter;
     private boolean enoughPeopleInvited = false;
     private double latitude = 0, longitude = 0;
+    private GroupsApiService groupsAPIService = APIUtils.getGroupsAPIService();
+    private MeetingApiService meetingApiService = APIUtils.getMeetingAPIService();
     private APIService apiService = APIUtils.getAPIService();
     private String extraInfoString;
     private int step = 0;
@@ -289,7 +291,7 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
                     for (int i = 0; i < Selection.size(); i++) {
                         members.put("members" + i, Selection.get(i).email);
                     }
-                    apiService.createMeeting(formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members, longitude, latitude)
+                    meetingApiService.createMeeting(formatter.print(startTime), formatter.print(endTime), minMemberCount, email, extraInfoString, sportart_ID, dynamic, members, longitude, latitude)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Action() {
                                 @Override
@@ -351,7 +353,7 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
 
     public void mergeGroupsAndFriends() {
         for (int i = 0; i < SelectionGroup.size(); i++) {
-            apiService.getGroupMembers(SelectionGroup.get(i).GroupID)
+            groupsAPIService.getGroupMembers(SelectionGroup.get(i).GroupID)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {
                         @Override
@@ -430,7 +432,7 @@ public class CreateNewMeeting extends AppCompatActivity implements View.OnClickL
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-
+                        Log.d("TAG","Error");
                     }
                 });
 

@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.GroupsApiService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.TeamsApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Sport;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Sport;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.mypopsy.maps.StaticMap;
 import com.schibstedspain.leku.LocationPickerActivity;
 import com.squareup.picasso.Picasso;
@@ -41,9 +43,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Korbi on 19.12.2016.
@@ -53,7 +52,9 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
     private List<UserInfo> selection;
     private List<Sport> sports;
     private String name;
-    private APIService apiService;
+    private GroupsApiService groupsApiService = APIUtils.getGroupsAPIService();
+    private TeamsApiService teamsApiService = APIUtils.getTeamsAPIService();
+    private APIService apiService = APIUtils.getAPIService();
     private boolean isCreatingTeam;
     @BindView(R.id.editText_new_group_team)
     EditText nameEditText;
@@ -82,7 +83,6 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
         selection = (ArrayList<UserInfo>) bundle.getSerializable("GroupList");
         //Init Listeners
         nameEditText.setSingleLine(true);
-        apiService = APIUtils.getAPIService();
         spinner.setEnabled(false);
         apiService.getSports()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,7 +160,7 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
 
         if (isCreatingTeam) {
             if(selection.size()+1==sports.get(sportID).teamSize||sportID==8008) {
-                apiService.createTeam(name,longitude,latitude,sportID,members)
+                teamsApiService.createTeam(name,longitude,latitude,sportID,members)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action() {
                             @Override
@@ -172,7 +172,7 @@ public class CreateTeamGroup extends android.support.v4.app.DialogFragment {
                  Toasty.error(getContext(), "Du brauchst genau "+sports.get(sportID).teamSize+" Teilnehmer für dein Team", Toast.LENGTH_SHORT).show();
             }
         } else {
-            apiService.createGroup(name,members)
+            groupsApiService.createGroup(name,members)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action() {
                         @Override

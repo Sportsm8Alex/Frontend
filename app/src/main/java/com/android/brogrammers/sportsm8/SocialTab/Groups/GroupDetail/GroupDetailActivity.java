@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseGroupRepository;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;

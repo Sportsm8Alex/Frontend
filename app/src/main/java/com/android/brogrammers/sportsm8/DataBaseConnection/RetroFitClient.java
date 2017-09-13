@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase;
+package com.android.brogrammers.sportsm8.DataBaseConnection;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,21 +12,13 @@ import com.google.gson.JsonParseException;
 
 import org.joda.time.DateTime;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -65,7 +57,7 @@ public class RetroFitClient {
     
     public static void storeObjectList(ArrayList<?> arrayList, String filename, Context context) {
         Gson gson = new Gson();
-        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(filename + "JSON", gson.toJson(arrayList));
         editor.apply();
@@ -73,7 +65,7 @@ public class RetroFitClient {
 
     public static List<?> retrieveObjectList(String filename, Context context, Type listType) {
         Gson gson = new Gson();
-        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
         String JsonString = sharedPrefs.getString(filename+"JSON", "");
         return gson.fromJson(JsonString,listType);
     }

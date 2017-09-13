@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.APIService;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
 import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;

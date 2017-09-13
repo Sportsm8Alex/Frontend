@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.Adapter.MatchCardAdapter;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Match;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Match;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMatchRepository;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses;
+package com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses;
 
 /**
  * Created by Korbi on 14.06.2017.

@@ -8,20 +8,19 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.android.brogrammers.sportsm8.BR;
-import com.android.brogrammers.sportsm8.CalendarTab.DayFragment;
+import com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.DayFragment;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Match;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Meeting;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.TimeCalcObject;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Match;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.TimeCalcObject;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.databinding.ItemMatchBinding;
 import com.android.brogrammers.sportsm8.databinding.ItemMeetingsBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,9 +28,6 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Korbi on 10/30/2016.
@@ -94,7 +90,7 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
 
 
     private void getOptimalTime(final int position) {
-        APIService apiService = APIUtils.getAPIService();
+        MeetingApiService apiService = APIUtils.getMeetingAPIService();
         apiService.getMeetingMemberTimes(meetingsOnDay.get(position).MeetingID)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<List<UserInfo>>() {

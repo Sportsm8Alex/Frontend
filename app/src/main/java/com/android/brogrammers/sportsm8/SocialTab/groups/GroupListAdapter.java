@@ -16,7 +16,7 @@ import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.ClickListener;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialTab.Adapter.SelectableAdapter;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Group;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Group;
 import com.android.brogrammers.sportsm8.SocialTab.Groups.GroupDetail.GroupDetailActivity;
 
 import java.util.List;

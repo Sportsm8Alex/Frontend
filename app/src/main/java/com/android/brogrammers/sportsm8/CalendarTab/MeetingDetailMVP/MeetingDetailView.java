@@ -1,6 +1,6 @@
 package com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 
 import java.util.List;
 

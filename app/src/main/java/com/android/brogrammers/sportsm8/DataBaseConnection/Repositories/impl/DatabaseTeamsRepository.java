@@ -1,14 +1,13 @@
 package com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl;
 
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.TeamsApiService;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIService;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.APIUtils;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.Team;
-import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitDatabase.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Team;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.TeamsRepository;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 
@@ -18,10 +17,10 @@ import io.reactivex.Single;
 
 public class DatabaseTeamsRepository implements TeamsRepository {
 
-    private APIService apiService;
+    private TeamsApiService apiService;
 
     public DatabaseTeamsRepository() {
-        apiService = APIUtils.getAPIService();
+        apiService = APIUtils.getTeamsAPIService();
     }
 
     @Override
