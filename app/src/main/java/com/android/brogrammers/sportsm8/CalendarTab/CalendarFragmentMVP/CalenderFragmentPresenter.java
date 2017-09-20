@@ -7,10 +7,13 @@ import android.util.Log;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailView;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
+import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
+import com.android.brogrammers.sportsm8.DataBaseConnection.OfflineDatabase.DatabaseHelper;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.MeetingsRepository;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.UserRepository;
 import com.android.brogrammers.sportsm8.DataBaseConnection.RetroFitClient;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
+import com.google.gson.reflect.TypeToken;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.joda.time.DateTime;
@@ -35,7 +38,7 @@ public class CalenderFragmentPresenter {
     private Scheduler mainScheduler;
     private List<Meeting> meetings;
     private List<DayFragment> dayFragments = new ArrayList<>();
-    private boolean locationMode=false;
+    private boolean locationMode = false;
     private double longitude;
     private double latitude;
     private DateTime today = new DateTime();
@@ -48,38 +51,54 @@ public class CalenderFragmentPresenter {
         this.mainScheduler = mainScheduler;
     }
 
-    public void loadMeetings(final DateTime today){
+    public void loadMeetings(final DateTime today) {
         this.today = today;
         compositeDisposable.add(meetingsRepository.getMeetings(LoginScreen.getRealEmail())
-        .observeOn(mainScheduler)
-        .subscribeWith(new DisposableSingleObserver<List<Meeting>>() {
-            @Override
-            public void onSuccess(@NonNull List<Meeting> meetingList) {
-                if(meetingList!=null) {
-                    meetings = meetingList;
-                    view.displayMeetings(getDayFragments(meetings,14),getHighlightList(meetings),today);
-                   // RetroFitClient.storeObjectList(new ArrayList<Object>(meetingList),"meetings",getContext);
-                }else{
-                    view.displayNoMeetings();
-                }
-            }
-            @Override
-            public void onError(@NonNull Throwable e) {
-                view.displayNoMeetings();
+                .observeOn(mainScheduler)
+                .subscribeWith(new DisposableSingleObserver<List<Meeting>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<Meeting> meetingList) {
+                        if (meetingList != null) {
+                            meetings = meetingList;
+                            view.displayMeetings(getDayFragments(meetings, 14), getHighlightList(meetings), today);
+                            addData(meetingList.get(0));
+                            RetroFitClient.storeObjectList(new ArrayList<Object>(meetingList), "meetings", view.getContext());
+                        } else {
+                            view.displayNoMeetings();
+                        }
+                    }
 
-            }
-        }));
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public void onError(@NonNull Throwable e) {
+                        meetings = (ArrayList<Meeting>) RetroFitClient.retrieveObjectList("meetings", view.getContext(), new TypeToken<ArrayList<Meeting>>() {
+                        }.getType());
+                        if ( meetings != null) {
+                            view.displayMeetings(getDayFragments(meetings, 14), getHighlightList(meetings), today);
+                        }else{
+                            view.displayNoMeetings();
+                        }
+                    }
+                }));
     }
 
-    public void refreshMeetings(){
+
+
+    public void addData(Meeting meeting){
+        DatabaseHelper databaseHelper = new DatabaseHelper(view.getContext());
+        databaseHelper.addData(meeting);
+    }
+
+
+    public void refreshMeetings() {
         loadMeetings(today);
     }
 
-    private List<DayFragment> getDayFragments(List<Meeting> meetings,int count){
+    private List<DayFragment> getDayFragments(List<Meeting> meetings, int count) {
         dayFragments.clear();
         for (int j = 0; j < count; j++) {
             List<Meeting> meetingsOnDay = new ArrayList<>();
-            Log.i(TAG,"This is today"+today);
+            Log.i(TAG, "This is today" + today);
             for (int i = 0; i < meetings.size(); i++) {
                 DateTime dt1 = meetings.get(i).getStartDateTime();
                 DateTime dt2 = today;
@@ -106,7 +125,7 @@ public class CalenderFragmentPresenter {
         return dayFragments;
     }
 
-    public List<DayFragment> getNextDays(int numberOfNewDays,int numberOfCurrentDays){
+    public List<DayFragment> getNextDays(int numberOfNewDays, int numberOfCurrentDays) {
         List<DayFragment> newDays = new ArrayList<>();
         for (int i = 0; i < numberOfNewDays; i++) {
             List<Meeting> meetingsOnDay = new ArrayList<>();
@@ -122,7 +141,7 @@ public class CalenderFragmentPresenter {
         return newDays;
     }
 
-    private List<CalendarDay> getHighlightList(List<Meeting> meetings){
+    private List<CalendarDay> getHighlightList(List<Meeting> meetings) {
         List<CalendarDay> highlights = new ArrayList<>();
         for (int i = 0; i < meetings.size(); i++) {
             DateTime dateTime = meetings.get(i).getStartDateTime();
@@ -132,11 +151,11 @@ public class CalenderFragmentPresenter {
         return highlights;
     }
 
-    public void setLocation(double longitude, double latitude, boolean locationMode,int tabCount) {
+    public void setLocation(double longitude, double latitude, boolean locationMode, int tabCount) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.locationMode = locationMode;
-        view.displayMeetings(getDayFragments(meetings,tabCount),getHighlightList(meetings),today);
+        view.displayMeetings(getDayFragments(meetings, tabCount), getHighlightList(meetings), today);
     }
 
 }

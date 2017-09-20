@@ -62,7 +62,6 @@ public class RetroFitClient {
         editor.putString(filename + "JSON", gson.toJson(arrayList));
         editor.apply();
     }
-
     public static List<?> retrieveObjectList(String filename, Context context, Type listType) {
         Gson gson = new Gson();
         SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);

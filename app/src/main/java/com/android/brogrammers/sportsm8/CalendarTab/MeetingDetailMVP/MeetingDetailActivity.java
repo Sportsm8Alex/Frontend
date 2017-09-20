@@ -90,8 +90,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         presenter = new MeetingDetailViewPresenter(this, new DatabaseUserRepository(), AndroidSchedulers.mainThread());
         // setContentView(R.layout.activity_meeting_detail_view);
         ActivityMeetingDetailViewBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_meeting_detail_view);
-        Bundle b = getIntent().getExtras();
-        thisMeeting = (Meeting) b.getSerializable("MeetingOnDay");
+        thisMeeting = getIntent().getParcelableExtra("MeetingOnDay");
         binding.setVariable(BR.meeting, thisMeeting);
 
 

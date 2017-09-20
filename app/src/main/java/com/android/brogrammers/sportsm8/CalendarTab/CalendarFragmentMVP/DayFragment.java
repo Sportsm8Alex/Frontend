@@ -120,9 +120,7 @@ public class DayFragment extends Fragment {
 
     public void startDetailView(Meeting meeting) {
         Intent intent = new Intent(getContext(), MeetingDetailActivity.class);
-        Bundle b = new Bundle();
-        b.putSerializable("MeetingOnDay", meeting);
-        intent.putExtras(b);
+        intent.putExtra("MeetingOnDay",meeting);
         startActivityForResult(intent, 2);
     }
 
