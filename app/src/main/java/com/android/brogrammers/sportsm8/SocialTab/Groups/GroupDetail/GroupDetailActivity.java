@@ -47,7 +47,7 @@ public class GroupDetailActivity extends AppCompatActivity implements SwipeRefre
         String groupName = b.getString("GroupName");
         //Views
         ((TextView) findViewById(R.id.group_name_detailview)).setText(groupName);
-        listView = (ListView) findViewById(R.id.listview_group_detail);
+        listView = (ListView) findViewById(R.id.lv_group_member);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.meeting_detail_swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         presenter.loadMembers(groupID);
@@ -62,7 +62,7 @@ public class GroupDetailActivity extends AppCompatActivity implements SwipeRefre
         startActivityForResult(intent, 1);
     }
 
-    @OnClick(R.id.leave_group_button)
+    @OnClick(R.id.btn_leave_group)
     public void leaveGroup(){
         presenter.leaveGroup(groupID);
     }
@@ -86,7 +86,7 @@ public class GroupDetailActivity extends AppCompatActivity implements SwipeRefre
     public void displayMembers(List<UserInfo> memberList) {
         ListViewAdapter arrayAdapter = new ListViewAdapter(this, memberList);
         listView.setAdapter(arrayAdapter);
-        TextView textView = (TextView) findViewById(R.id.group_size_detailview);
+        TextView textView = (TextView) findViewById(R.id.tv_group_size);
         textView.setText(memberList.size() + "");
         swipeRefreshLayout.setRefreshing(false);
     }

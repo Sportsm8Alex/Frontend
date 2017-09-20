@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     //SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.time_meeting_detail)
     TextView textView_time;
-    @BindView(R.id.time_meetingdetail)
+    @BindView(R.id.tv_home_name)
     TextView textView_date;
     @BindView(R.id.activity_name_detailview)
     TextView textView_sportID;
@@ -116,6 +117,14 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         listView.setAdapter(arrayAdapter);
         //    getMemberList();
         presenter.loadMembers(thisMeeting);
+
+        findViewById(R.id.listview_meeting_detail).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override

@@ -46,7 +46,7 @@
             android:name=".ZZOldClassers.CreateNewMeetingOld"
             android:theme="@style/AppTheme.Custom1" />
         <activity
-            android:name=".UserClasses.AccountPage"
+            android:name=".UserClasses.AccountPage.AccountPage"
             android:label="@string/title_activity_account_page"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

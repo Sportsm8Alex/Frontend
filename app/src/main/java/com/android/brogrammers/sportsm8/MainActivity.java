@@ -27,7 +27,7 @@ import com.android.brogrammers.sportsm8.CalendarTab.CreateNewMeeting;
 import com.android.brogrammers.sportsm8.MatchFeedTab.SocialFeedFragment.SocialFeedActivity;
 import com.android.brogrammers.sportsm8.SocialTab.FragmentSocial;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
-import com.android.brogrammers.sportsm8.UserClasses.AccountPage;
+import com.android.brogrammers.sportsm8.UserClasses.AccountPage.AccountPage;
 import com.android.brogrammers.sportsm8.UserClasses.LoginScreen;
 import com.android.brogrammers.sportsm8.ZDebugScreen.DebugScreen;
 import com.android.brogrammers.sportsm8.ZZOldClassers.ActivitiesFragment;
@@ -44,7 +44,6 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.joda.time.DateTime;
 
@@ -56,7 +55,7 @@ import butterknife.OnClick;
  * Created by alex on 10/30/2016.
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, CalenderFragment.OnFragmentInteractionListener, AccountPage.OnFragmentInteractionListener, ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, CalenderFragment.OnFragmentInteractionListener,ActivitiesFragment.OnFragmentInteractionListener, FragmentSocial.OnFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     private DrawerLayout mDrawerLayout;

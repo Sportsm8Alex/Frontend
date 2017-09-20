@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class UserInfo implements Serializable {
     public String email, PPpath, username, friend, mystartTime, myendTime;
-    public int friendcount, groupcount, confirmed,begin,duration;
+    public int friendcount, groupcount,meetingcount, confirmed,begin,duration;
     public Boolean selected = false;
 
     public UserInfo() {
