@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.widget.TextView;
 
 
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -26,16 +25,15 @@ public class Meeting extends BaseObservable implements Parcelable {
 
     private int confirmed = 0;
     public int minParticipants;
-    public int begin;
     public int duration;
     public int dynamic;
     public int sportID;
     public int status;
     public String meetingActivity;
-    private String startTime;
-    private String endTime;
-    private String mystartTime;
-    private String myendTime;
+    private DateTime startTime;
+    private DateTime endTime;
+    private DateTime mystartTime;
+    private DateTime myendTime;
     private String day;
     public float longitude, latitude;
     private String mytime;
@@ -51,16 +49,15 @@ public class Meeting extends BaseObservable implements Parcelable {
         MeetingID = in.readInt();
         confirmed = in.readInt();
         minParticipants = in.readInt();
-        begin = in.readInt();
         duration = in.readInt();
         dynamic = in.readInt();
         sportID = in.readInt();
         status = in.readInt();
         meetingActivity = in.readString();
-        startTime = in.readString();
-        endTime = in.readString();
-        mystartTime = in.readString();
-        myendTime = in.readString();
+        endTime = new DateTime(in.readLong());
+        mystartTime = new DateTime(in.readLong());
+        myendTime = new DateTime(in.readLong());
+        startTime = new DateTime(in.readLong());
         day = in.readString();
         longitude = in.readFloat();
         latitude = in.readFloat();
@@ -72,21 +69,19 @@ public class Meeting extends BaseObservable implements Parcelable {
         dest.writeInt(MeetingID);
         dest.writeInt(confirmed);
         dest.writeInt(minParticipants);
-        dest.writeInt(begin);
         dest.writeInt(duration);
         dest.writeInt(dynamic);
         dest.writeInt(sportID);
         dest.writeInt(status);
         dest.writeString(meetingActivity);
-        dest.writeString(startTime);
-        dest.writeString(endTime);
-        dest.writeString(mystartTime);
-        dest.writeString(myendTime);
+        dest.writeLong(endTime.getMillis());
+        dest.writeLong(mystartTime.getMillis());
+        dest.writeLong(myendTime.getMillis());
+        dest.writeLong(startTime.getMillis());
         dest.writeString(day);
         dest.writeFloat(longitude);
         dest.writeFloat(latitude);
         dest.writeString(mytime);
-        dest.writeLong(dtStartTime.getMillis());
     }
 
     @Override
@@ -107,62 +102,55 @@ public class Meeting extends BaseObservable implements Parcelable {
     };
 
     public DateTime getStartDateTime() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        return formatter.parseDateTime(startTime);
+        return startTime;
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+//        return formatter.parseDateTime(startTime);
     }
 
     public DateTime getEndDateTime() {
-
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        return formatter.parseDateTime(endTime);
+        return endTime;
     }
 
     public String getDay() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        return formatter.parseDateTime(startTime).toString("yyyy-MM-dd");
+        return startTime.toString("yyyy-MM-dd");
     }
 
 
     public String getStartTime() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        return formatter.parseDateTime(startTime).toString("HH:mm");
+        return startTime.toString("HH:mm");
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(DateTime startTime) {
         this.startTime = startTime;
 
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(DateTime endTime) {
         this.endTime = endTime;
     }
 
     public String getEndTime() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        return formatter.parseDateTime(endTime).toString("HH:mm");
+        return endTime.toString("HH:mm");
     }
 
 
     public void setStartDateTime(DateTime dateTime) {
-        startTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
+        startTime = dateTime;
     }
 
     public void setEndStartDateTime(DateTime dateTime) {
-        endTime = dateTime.toString("YYYY-MM-dd HH:mm:ss");
+        endTime = dateTime;
     }
 
     public String getMytime() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
-        if(myendTime!=null) {
-            if (!myendTime.toString().equals("0000-00-00 00:00:00"))
-                return formatter.parseDateTime(mystartTime).toString("HH:mm - ") + formatter.parseDateTime(myendTime).toString("HH:mm");
-            else return "";
-        }else return "";
+        if (myendTime != null && mystartTime!=null) {
+                return mystartTime.toString("HH:mm - ") + myendTime.toString("HH:mm");
+        } else return "";
     }
 
     public void setConfirmed(int confirmed) {
         this.confirmed = confirmed;
-       // notifyPropertyChanged(BR.meeting);
+        // notifyPropertyChanged(BR.meeting);
     }
 
     @Bindable

@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.android.brogrammers.sportsm8.CalendarTab.Adapter.MeetingCardAdapter;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.MeetingDetailActivity;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMeetingsRepository;
 import com.google.gson.JsonObject;
@@ -33,6 +32,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
 
 public class DayFragment extends Fragment {
@@ -42,7 +42,6 @@ public class DayFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
     private DatabaseMeetingsRepository meetingsRepository = new DatabaseMeetingsRepository();
     private int position;
-    private DatabaseHelperMeetings databaseHelperMeetings;
 
     public static DayFragment newInstance(List<Meeting> meetingsOnDay) {
         DayFragment dayFragment = new DayFragment();
@@ -77,13 +76,11 @@ public class DayFragment extends Fragment {
         }
         rvAdapter = new MeetingCardAdapter(getContext(), meetingsOnDay, this);
         recyclerView.setAdapter(rvAdapter);
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseHelperMeetings = new DatabaseHelperMeetings(getContext());
     }
 
     @Override
@@ -134,7 +131,14 @@ public class DayFragment extends Fragment {
     }
 
     public void declineMeeting(final Meeting meeting) {
-        databaseHelperMeetings.declineMeeting(meeting);
+        meetingsRepository.declineMeeting(meeting)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                         Toasty.info(getContext(), "Teilnahme abgesagt", Toast.LENGTH_SHORT).show();
+                    }
+                });
         rvAdapter.removeItem(meeting);
 
     }
@@ -167,7 +171,16 @@ public class DayFragment extends Fragment {
                         }
 
                         if (checked) {
-                            databaseHelperMeetings.setOtherTime(startTime, endTime, meeting);
+                            meetingsRepository.setOtherTime(meeting,startTime,endTime)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action() {
+                                        @Override
+                                        public void run() throws Exception {
+                                             Toasty.info(getContext(), "Andere Zeit gesetzt!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+
                             position = meetingsOnDay.indexOf(meeting);
                             meetingsOnDay.get(position).setConfirmed(1);
                             rvAdapter.setMeetingsOnDay(meetingsOnDay);
@@ -188,7 +201,15 @@ public class DayFragment extends Fragment {
     }
 
     public void acceptMeeting(final Meeting meeting) {
-        databaseHelperMeetings.confirm(meeting);
+        meetingsRepository.confirmMeeting(meeting)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                         Toasty.info(getContext(), "Meeting confirmed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         position = meetingsOnDay.indexOf(meeting);
         meetingsOnDay.get(position).setConfirmed(1);
         rvAdapter.setMeetingsOnDay(meetingsOnDay);

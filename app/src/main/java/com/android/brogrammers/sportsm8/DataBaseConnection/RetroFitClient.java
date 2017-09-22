@@ -9,11 +9,17 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.schedulers.Schedulers;
@@ -38,15 +44,17 @@ public class RetroFitClient {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(loggingInterceptor);
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DateTime.class,new DateTimeConverter());
-        Gson gson = gsonBuilder.create();
+        gsonBuilder.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter());
+        Gson gson = gsonBuilder
+                .setDateFormat("YYYY-MM-dd HH:mm:ss")
+                .create();
 
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(httpClient.build())
                     .build();
         }
@@ -54,7 +62,6 @@ public class RetroFitClient {
     }
 
 
-    
     public static void storeObjectList(ArrayList<?> arrayList, String filename, Context context) {
         Gson gson = new Gson();
         SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
@@ -62,6 +69,7 @@ public class RetroFitClient {
         editor.putString(filename + "JSON", gson.toJson(arrayList));
         editor.apply();
     }
+
     public static List<?> retrieveObjectList(String filename, Context context, Type listType) {
         Gson gson = new Gson();
         SharedPreferences sharedPrefs = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
@@ -69,12 +77,25 @@ public class RetroFitClient {
         return gson.fromJson(JsonString,listType);
     }
 
-    private static class DateTimeConverter implements JsonDeserializer{
+    private static class DateTimeTypeConverter
+            implements JsonSerializer<DateTime>, JsonDeserializer<DateTime> {
         @Override
-        public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return null;
+        public JsonElement serialize(DateTime src, Type srcType, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
+        }
+
+        @Override
+        public DateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+                throws JsonParseException {
+            try {
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+                DateTime dateTime = formatter.parseDateTime(json.getAsString());
+                return dateTime;
+            } catch (IllegalArgumentException e) {
+                // May be it came in formatted as a java.util.Date, so try that
+                Date date = context.deserialize(json, Date.class);
+                return new DateTime(date);
+            }
         }
     }
-
-
 }

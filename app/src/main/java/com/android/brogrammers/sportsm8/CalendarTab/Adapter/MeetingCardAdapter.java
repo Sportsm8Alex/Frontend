@@ -11,7 +11,7 @@ import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.CalendarFragmentMVP.DayFragment;
 import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.MeetingApiService;
 import com.android.brogrammers.sportsm8.R;
-import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
+import com.android.brogrammers.sportsm8.ZZOldClassers.DatabaseHelperMeetings;
 import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Match;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
@@ -29,10 +29,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableSingleObserver;
 
-/**
- * Created by Korbi on 10/30/2016.
- */
-
 public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.MeetingsViewHolder> {
 
     private static final int MATCH = 1;
@@ -40,7 +36,6 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     private Context context;
     private List<Meeting> meetingsOnDay;
     private List<Match> matchesOnDay = new ArrayList<>();
-    private DatabaseHelperMeetings databaseHelperMeetings;
     private MeetingsViewHolder meetingsViewHolder;
     private DayFragment dayFragment;
 
@@ -53,7 +48,6 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
     //doesnt need an int position because the card looks the same for all; still this is iterated through before and just like onBindViewHolder!
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        databaseHelperMeetings = new DatabaseHelperMeetings(context);
         if (viewType == MEETING) {
             ItemMeetingsBinding viewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_meetings, parent, false);
             viewDataBinding.setPresenter(dayFragment);
@@ -131,11 +125,11 @@ public class MeetingCardAdapter extends RecyclerView.Adapter<MeetingCardAdapter.
         for (int i = 1; i < timeCalcList.size() && !timeFound; i++) {
             timeCalcList.get(i).number = timeCalcList.get(i - 1).number + timeCalcList.get(i).minusOrPlus;
             if (timeCalcList.get(i).number >= min && !startSet) {
-                userInfo.setMystartTime(timeCalcList.get(i).time.toString("YYYY-MM-dd HH:mm:ss"));
+                userInfo.setMystartTime(timeCalcList.get(i).time);
                 startSet = true;
             }
             if (startSet && timeCalcList.get(i).number < min) {
-                userInfo.setMyendTime(timeCalcList.get(i).time.toString("YYYY-MM-dd HH:mm:ss"));
+                userInfo.setMyendTime(timeCalcList.get(i).time);
                 timeFound = true;
             }
         }

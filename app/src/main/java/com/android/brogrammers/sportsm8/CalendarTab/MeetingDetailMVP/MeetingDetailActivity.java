@@ -23,7 +23,7 @@ import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
-import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseHelperMeetings;
+import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMeetingsRepository;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseUserRepository;
 import com.android.brogrammers.sportsm8.R;
 import com.android.brogrammers.sportsm8.SocialTab.Friends.OnlyFriendsView;
@@ -42,6 +42,7 @@ import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import io.apptik.widget.MultiSlider;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
 public class MeetingDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MeetingDetailView {
 
@@ -49,7 +50,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     private List<UserInfo> members;
     Meeting thisMeeting;
     MemberListAdapter arrayAdapter;
-    DatabaseHelperMeetings databaseHelperMeetings;
+    DatabaseMeetingsRepository meetingsRepository;
     DateTime startDateTime, endDateTime;
     private Intent intent;
 
@@ -133,7 +134,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
                 scaleView(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView}, offset);
             }
         });
-        databaseHelperMeetings = new DatabaseHelperMeetings(this);
+        meetingsRepository = new DatabaseMeetingsRepository();
         if (thisMeeting.dynamic == 0) {
             rangeBar.setVisibility(View.GONE);
         } else {
@@ -212,7 +213,16 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
 
     @OnClick(R.id.accept_meeting)
     public void acceptMeeting() {
-        databaseHelperMeetings.confirm(thisMeeting);
+        meetingsRepository.confirmMeeting(thisMeeting)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                         Toasty.info(getBaseContext(), "Teilnahme zugesagt", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
         setResult(RESULT_OK, intent);
         ViewHelperClass.setInvisible(new View[]{acceptMeeting, declineMeeting, rangeBar, newEndTimeView, newStartTimeView, dashView});
         int count = 0;
@@ -228,7 +238,14 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
 
     @OnClick(R.id.decline_meeting)
     public void declineMeeting() {
-        databaseHelperMeetings.declineMeeting(thisMeeting);
+        meetingsRepository.declineMeeting(thisMeeting)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                         Toasty.info(getBaseContext(), "Teilnahme abgesagt", Toast.LENGTH_SHORT).show();
+                    }
+                });
         setResult(RESULT_OK, intent);
         finish();
     }

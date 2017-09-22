@@ -12,10 +12,9 @@ public class TimeCalcObject {
     public DateTime time;
     public int minusOrPlus;
     public int number = 1;
-    DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
 
-    public TimeCalcObject(String time, int minusOrPlus) {
-            this.time = formatter.parseDateTime(time);
+    public TimeCalcObject(DateTime time, int minusOrPlus) {
+            this.time = time;
             this.minusOrPlus = minusOrPlus;
     }
 }
