@@ -12,9 +12,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.APIService;
 import com.android.brogrammers.sportsm8.DataBaseConnection.APIUtils;
-import com.android.brogrammers.sportsm8.ZZOldClassers.UIthread;
+import com.android.brogrammers.sportsm8.DataBaseConnection.ApiServices.APIService;
 import com.android.brogrammers.sportsm8.MainActivity;
 import com.android.brogrammers.sportsm8.R;
 import com.google.android.gms.auth.api.Auth;
@@ -34,16 +33,13 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 
-public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UIthread, View.OnClickListener {
+public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private static final String TAG = "Tag";
+    private static final String TAG = LoginScreen.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
     protected EditText email;
     private EditText password;
     protected String enteredEmail;
-    private String dbReturn;
-    public static final int CONNECTION_TIMEOUT = 10000;
-    public static final int READ_TIMEOUT = 15000;
     private APIService apiService = APIUtils.getAPIService();
 
     private FirebaseAuth mAuth;
@@ -89,18 +85,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                 // ...
             }
         };
-
-
-        //try to read local database if a user is already logged in
-        SharedPreferences sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-        String loginJson = sharedPrefs.getString("islogin", "");
-
-       /* if (loginJson.equalsIgnoreCase("1")) {
-            System.out.println("session continued");
-            Intent intent = new Intent(LoginScreen.this, MainActivity.class);
-            startActivity(intent);
-            LoginScreen.this.finish();
-        }*/
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -114,20 +98,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         progressDialog.setMessage("Logging in");
     }
 
-    @Override
-    public void updateUI(String xyz) {
-        /*try {
-            ArrayList<Information> info = Database.jsonToArrayList(dbReturn);
-            System.out.println("UPDATING UI");
-            if (info.get(0).success == 0) {
-                Intent intent = new Intent(LoginScreen.this, MainActivity.class);
-                startActivity(intent);
-                LoginScreen.this.finish();
-            }
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }*/
-    }
+
 
     public void login() {
         enteredEmail = email.getText().toString();
@@ -172,73 +143,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
-    @Override
-    public void updateUI() {
-
-    /*    SharedPreferences sharedPrefs = getSharedPreferences("IndexAccounts", Context.MODE_PRIVATE);
-        String loginJson = sharedPrefs.getString("IndexAccountsloginAccountJSON", "");
-
-        try {
-            org.json.JSONObject jsonObject = new org.json.JSONObject(loginJson);
-            int success = (int) jsonObject.get("success");
-
-            System.out.println("UPDATING UI");
-            if (success == 1) {
-
-                //save login information locally for session management
-                sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("email", enteredEmail);
-                editor.putString("islogin", "1");
-                editor.apply();
-
-                //start home screen in case of successful login
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                this.finish();
-            } else if (success == 0) {
-                Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-            }
-        } catch (JSONException e) {
-            Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-
-            /*
-            IN CASE OF ParseException e
-            } else if (info.get(0).success.equalsIgnoreCase("exception") || info.get(0).success.equalsIgnoreCase("unsuccessful")) {
-                Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
-            }
-            */
-
-//        JSONParser parser = new JSONParser();
-//        JSONObject json = null;
-//        String success = "";
-//        try {
-//            json = (JSONObject) parser.parse(loginJson);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        success = Long.toString((Long)json.get("success"));
-//
-//        if (success.equalsIgnoreCase("1")) {
-//
-//            //save login information locally for session management
-//            sharedPrefs = getSharedPreferences("loginInformation", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPrefs.edit();
-//            editor.putString("email", enteredEmail);
-//            editor.apply();
-//
-//            //start home screen in case of successful login
-//            Intent intent = new Intent(this, MainActivity.class);
-//            startActivity(intent);
-//            this.finish();
-//        } else if (success.equalsIgnoreCase("0")) {
-//            Toast.makeText(LoginScreen.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-//        } else if (success.equalsIgnoreCase("exception") || success.equalsIgnoreCase("unsuccessful")) {
-//            Toast.makeText(LoginScreen.this, "Connection Problem", Toast.LENGTH_LONG).show();
-//        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -323,9 +227,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
                     }
                 });
-//        String[] params = {"IndexAccounts.php", "function", "createNewAccount", "username", account.getDisplayName(), "password", account.getId(), "email", account.getEmail()};
-//        Database db = new Database(this, getBaseContext());
-//        db.execute(params);
     }
 
 

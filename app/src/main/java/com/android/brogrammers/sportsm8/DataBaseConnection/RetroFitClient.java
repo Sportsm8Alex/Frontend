@@ -18,6 +18,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +48,7 @@ public class RetroFitClient {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter());
         Gson gson = gsonBuilder
-                .setDateFormat("YYYY-MM-dd HH:mm:ss")
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
 
 
@@ -88,7 +90,7 @@ public class RetroFitClient {
         public DateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context)
                 throws JsonParseException {
             try {
-                DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
                 DateTime dateTime = formatter.parseDateTime(json.getAsString());
                 return dateTime;
             } catch (IllegalArgumentException e) {

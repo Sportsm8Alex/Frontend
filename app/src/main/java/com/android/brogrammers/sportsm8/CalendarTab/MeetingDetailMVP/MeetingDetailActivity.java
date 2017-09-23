@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.android.brogrammers.sportsm8.BR;
 import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapter;
+import com.android.brogrammers.sportsm8.CalendarTab.MeetingDetailMVP.Adapter.MemberListAdapterRV;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.Meeting;
 import com.android.brogrammers.sportsm8.DataBaseConnection.DatabaseClasses.UserInfo;
 import com.android.brogrammers.sportsm8.DataBaseConnection.Repositories.impl.DatabaseMeetingsRepository;
@@ -50,12 +53,15 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     private List<UserInfo> members;
     Meeting thisMeeting;
     MemberListAdapter arrayAdapter;
+    MemberListAdapterRV arrayAdapterRV;
     DatabaseMeetingsRepository meetingsRepository;
     DateTime startDateTime, endDateTime;
     private Intent intent;
 
     @BindView(R.id.listview_meeting_detail)
     ListView listView;
+    @BindView(R.id.recyclerview_meeting_detail)
+    RecyclerView recyclerView;
     //@BindView(R.id.meeting_detail_swipeRefresh)
     //SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.time_meeting_detail)
@@ -115,6 +121,10 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         members = new ArrayList<>();
         arrayAdapter = new MemberListAdapter(this, members);
         listView.setAdapter(arrayAdapter);
+        arrayAdapterRV = new MemberListAdapterRV(this,members);
+        recyclerView.setAdapter(arrayAdapterRV);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        recyclerView.setLayoutManager(linearLayoutManager);
         //    getMemberList();
         presenter.loadMembers(thisMeeting);
 
@@ -280,6 +290,9 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
         this.members.addAll(members);
         arrayAdapter.setList(this.members);
         arrayAdapter.notifyDataSetChanged();
+
+        arrayAdapterRV.setList(this.members);
+        arrayAdapterRV.notifyDataSetChanged();
     }
 
     @Override
@@ -294,4 +307,8 @@ public class MeetingDetailActivity extends AppCompatActivity implements SwipeRef
     }
 
 
+    public void showUsername(String username) {
+        TextView usernameTextView = (TextView) findViewById(R.id.username_detail_meetingdetail);
+        usernameTextView.setText(username);
+    }
 }
